@@ -1,0 +1,72 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar-user.ejs') %>
+<%- include ('partials/navbar-lateral.ejs') %>
+
+
+  <div id="conteiner-home">
+    <div class="card" id="row-elements">
+      <div id="column-elements">
+        <h1 id="label">Inicio</h1>
+      </div>
+      <div id="column-elements-two">
+        <div id="dropdown">
+          <label for="options"></label>
+          <select id="options">
+            <option value="">Carregando...</option> <!-- Texto inicial enquanto as opções estão sendo carregadas -->
+          </select>
+          
+        </div>
+      </div>
+    </div>
+    <div id="row-buttons">
+      <div id="column-buttons">
+        <a href="/scanner">
+          <button class="btn btn-block rounded-5" id="btn-scan">Escanear Folha</button>
+        </a>
+        <!--<div id="resultMessage">
+          <p id="message"></p>
+        </div>
+        <script src="script.js"></script>-->
+        <!--Para o scanner funcionar ir no tunderclient/ 
+        new request/ selecionar metodo post e colocar a 
+        url do localhost-->
+      </div>
+      <div id="column-buttons">
+        <form action="/upload" class="card rounded-5" method="POST" enctype="multipart/form-data" id="upload-form">
+          <!-- O label vai ser o botão de escolha de arquivo -->
+          <label for="btn-upload-one" id="custom-file-upload">
+            <input type="file" name="file" id="btn-upload-one" style="display: none;" />
+            <input type="submit" value="Fazer upload" class="btn btn-block rounded-5" id="btn-upload-two">
+          </label>
+          <!-- O input de arquivo é escondido -->
+        </form>
+        <div id="message" style="margin-top: 20px;"></div>
+      </div>
+    </div>
+    <div id="row-home">
+      <div id="column-home">
+        <div class="card mx-5 rounded-5" id="card-home-css">
+          <div class="card-body rounded-5" id="card-body-home">
+            <h4>Ocorrências totais em %</h4>
+            <div class="graficoContainer">
+              <!-- O gráfico de pizza será desenhado neste div -->
+              <div class="graficoBackground" id="grafico-pizza"></div>
+            </div>
+              <div id="grafico-pizza" class="graficoContainer"></div>
+              <div id="legenda" class="legenda"></div>
+              <div id="grafico-pizza" class="graficoContainer"></div>
+                <input type="submit" value="Detalhar" class="btn btn-block rounded-3" id="btn-detalhar" />
+          </div>
+        </div>
+      </div>
+      <div id="column-home">
+        <div class="card mx-5 rounded-5" id="card-home-css">
+          <div class="card-body rounded-5" id="card-body-home-two">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<%- include ('partials/footer.ejs') %>

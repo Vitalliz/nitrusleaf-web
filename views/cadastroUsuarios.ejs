@@ -1,0 +1,177 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs') %>
+
+<% if (messages.danger) { %>
+    <div class="alert alert-danger">
+        <%= messages.danger %>
+    </div>
+<% } %>
+
+<div class="container mt-5">
+    <h1 id="titulo">Cadastrar</h1>
+    <div class="card mt-2" id="form-bg">
+        <div class="card-body p-5">
+            <h4 id="titulo">Dados da conta</h4>
+            <form action="/createUsuarios" method="POST">
+                <div class="row">
+                    <!-- Nome -->
+                    <div class="col m-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira seu nome" required>
+                    </div>
+
+                    <!-- Sobrenome -->
+                    <div class="col m-3">
+                        <label for="sobrenome" class="form-label">Sobrenome</label>
+                        <input type="text" class="form-control" id="sobrenome" name="sobrenome" placeholder="Insira seu sobrenome" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Telefone -->
+                    <div class="col m-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Insira seu telefone">
+                    </div>
+
+                    <!-- Celular -->
+                    <div class="col m-3">
+                        <label for="celular" class="form-label">Celular</label>
+                        <input type="text" class="form-control" id="celular" name="celular" placeholder="Insira seu celular">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- E-mail -->
+                    <div class="col m-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Insira seu e-mail" required>
+                    </div>
+                    <div class="col m-3"></div>
+                </div>
+                <div class="row">
+                    <!-- Senha -->
+                    <div class="col m-3">
+                        <label for="senha" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Crie sua senha" required>
+                    </div>
+                    <div class="col m-3"></div>
+                </div>
+
+                <!-- Checkbox para exibir campos adicionais
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="mostrarCampos" name="mostrarCampos">
+                    <label class="form-check-label" for="mostrarCampos"></label>
+                </div> -->
+
+                
+                <!-- Campos adicionais (class="d-none")-->
+                <div id="camposAdicionais" class="mt-5">
+                    <h4 id="titulo">Dados do Usuário</h4>
+                    <!-- Seleção do Tipo de Pessoa (CPF ou CNPJ) -->
+                    <div class="mb-3">
+                        <label for="tipo_pessoa" class="form-label">Tipo de pessoa</label>
+                        <select name="tipo_pessoa" id="tipo_pessoa" class="form-control" required>
+                            <option value="" selected disabled>Selecione o tipo de pessoa</option>
+                            <option value="fisica">Pessoa Física</option>
+                            <option value="juridica">Pessoa Jurídica</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Campo CPF ou CNPJ -->
+                        <div id="cpfContainer" class="col m-3">
+                            <label for="cpf" class="form-label">CPF</label>
+                            <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Insira seu CPF">
+                        </div>
+                        <div id="cnpjContainer" class="col m-3 d-none">
+                            <label for="cnpj" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj" placeholder="Insira seu CNPJ">
+                        </div>
+                        <div class="col m-3"></div>
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="row">
+                        <div class="col m-3">
+                            <label for="logradouro" class="form-label">Logradouro</label>
+                            <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Insira seu logradouro">
+                        </div>
+                        <div class="col m-3">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero" name="numero" placeholder="Insira o número da residência">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col m-3">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Insira seu bairro">
+                        </div>
+                        <div class="col m-3">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Insira sua cidade">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão para cadastrar -->
+                 <div class="container  my-2">
+                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar">Cadastrar</button>
+                </div>
+            </form>
+
+            <!-- TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
+            <div class="card my-4" id="form-bg-claro">
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr id="tabela-dados">
+                                <th>Nome Propriedade</th>
+                                <th>Informações</th>
+                                <th colspan="1">Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- INSERIR FOREACH TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <hr>
+            <div class="d-flex justify-content-center">
+                <h6>Já possui conta? <a href="/login">Faça o login</a></h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer.ejs') %>
+
+<script>
+    // // Mostra ou oculta os campos adicionais ao selecionar a checkbox
+    // document.getElementById('mostrarCampos').addEventListener('change', function () {
+    //     const camposAdicionais = document.getElementById('camposAdicionais');
+    //     camposAdicionais.classList.toggle('d-none', !this.checked);
+    // });
+
+    // Alterna entre CPF e CNPJ dependendo do tipo de pessoa selecionado
+    document.getElementById('tipo_pessoa').addEventListener('change', function () {
+        const tipoPessoa = this.value;
+        const cpfContainer = document.getElementById('cpfContainer');
+        const cnpjContainer = document.getElementById('cnpjContainer');
+        
+        // Exibe o campo correto
+        if (tipoPessoa === 'fisica') {
+            cpfContainer.classList.remove('d-none');
+            cnpjContainer.classList.add('d-none');
+            document.getElementById('cpf').required = true;
+            document.getElementById('cnpj').required = false;
+        } else if (tipoPessoa === 'juridica') {
+            cpfContainer.classList.add('d-none');
+            cnpjContainer.classList.remove('d-none');
+            document.getElementById('cpf').required = false;
+            document.getElementById('cnpj').required = true;
+        }
+    });
+</script>

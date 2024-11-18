@@ -1,0 +1,79 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar.ejs') %>
+
+<main>
+        <div class="container mt-5">
+            <h1 id="titulo">Cadastrar Talhão</h1>
+            <div class="card mt-2" id="form-bg">
+                <div class="card-body p-5">
+                    <h4 id="titulo">Dados do talhão</h4>
+                    <form action="/talhoes/new" method="post">
+                        
+                        <div class="m-3">
+                            <label for="" class="form-label">Tipo de pessoa</label>
+                            <select name="" id="" class="form-control" required>
+                                <option value="" selected disabled>Seleciona a propriedade</option>
+                                <option value="">Propriedade 1</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col m-3">
+                                <label>Nome do Talhão:</label>
+                                <input type="text" name="nome" id="nome" placeholder="Insira o nome do talhão"
+                                class="form-control" required>
+                            </div>
+                            <div class="col m-3"></div>
+                        </div>  
+                        <div class="row">                            
+                            <div class="col m-3">
+                                <label>Nome pé: </label>
+                                <input type="text" name="cpf" id="cpf" placeholder="Insira o nome do pé "
+                                class="form-control" required>
+                                
+                            </div>
+                            <div class="col m-3"></div>
+                        </div>
+
+                        <!-- Botão para Inserir -->
+                        <div class="container my-1">
+                            <input type="submit" class="btn pt-2 mt-" style="padding-inline: 7rem;" id="btn-entrar" value="Inserir">
+                        </div>
+                    </form>
+                    <!-- TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
+                    <div class="card my-4" id="form-bg-claro">
+                        <div class="card-body">
+                            <table>
+                                <thead>
+                                    <tr id="tabela-dados">
+                                        <th>Nome Talhão</th>
+                                        <th>Nome pé</th>
+                                        <th colspan="2">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% talhoes.forEach(talhoes=> { %>
+                                        <tr>
+                                            <td><img src="imgs/avatar.png" width="30px"></td>
+                                            <td>
+                                                <%= talhoes.nome %>
+                                            </td>
+                                            <td>
+                                                <%= talhoes.pe %>
+                                            </td>
+                                            <td><a style = "color: orange;" href="/talhoes/edit/<%= talhoes.id %>">Editar</a></td>
+                                            <td><a style = "color: red " href="/talhoes/delete/<%= talhoes.id%>" onclick="return confirm('Deseja realmente deletar o talhoes <%= talhoes.nome %>')">Deletar</a></td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <br>
+
+</main>
+
+<%- include ('partials/footer.ejs') %>

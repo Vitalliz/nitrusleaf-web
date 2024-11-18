@@ -1,0 +1,73 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar.ejs') %>
+
+<main>
+<% if (messages.danger) { %>
+    <div class="alert alert-danger">
+        <%= messages.danger %>
+    </div>
+<% } %>
+
+        <div class="conteiner py-5">
+            <div class="container">
+                <h2 id="text">Cadastrar</h2>
+            </div>
+            
+            <div class="card" id="card-css">
+                <div id="row">
+                    <div class="card-body mx-5 my-5" id="card-body-css">
+                        <h3>Dados da conta</h3>
+                        <form action="/createUser" method="post">
+                        <div id="row">
+                            <div id="column">
+                                <label>Nome:</label>
+                                <input class="form-control" type="nome" name="nome" placeholder="Digite seu nome"
+                                    required>
+                                <br>
+                                <label>Telefone:</label>
+                                <input class="form-control" type="telefone" name="telefone"
+                                    placeholder="Insira seu telefone" required>
+                                <br>
+                                <label>E-mail:</label>
+                                <input class="form-control" type="sobrenome" name="email"
+                                    placeholder="email@exemplo.com" required>
+                                <br>
+                                <label>Senha:</label>
+                                <input class="form-control" type="password" name="password"
+                                    placeholder="Insira uma senha com no mínimo 8 caracteres" required>
+                              
+                            </div>
+                            <div id="column">
+                                <label>Sobrenome:</label>
+                                <input class="form-control" type="sobrenome" name="sobrenome" placeholder="Sobrenome"
+                                    required>
+                                <br>
+                                <label>Celular:</label>
+                                <input class="form-control" type="celular" name="celular"
+                                    placeholder="Insira um número de celular" required>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <label>Confirmar senha:</label>
+                                <input class="form-control" type="password" name="password"
+                                    placeholder="Confirme sua senha" required>
+                                <br>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="container">
+                            <input type="submit" value="Cadastrar" class="btn btn-block px-5" id="btn-entrar">
+                        </div>
+                        </form>
+                        <div class="container">
+                             <h6>Já possui conta?<a href="/login">Faça o login</a></h6>
+                        </div>                           
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+</main>
+
+<%- include ('partials/footer.ejs') %>

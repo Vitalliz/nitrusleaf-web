@@ -1,0 +1,40 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs') %>
+
+<div class="conteiner">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h2>Cadastrar</h2>
+        </div>
+        <div class="card-body">
+            <form action="/createUser" method="post">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Dados de usuário</h2>
+                        <label>Tipo de pessoa:</label>
+                        <input type="radio" id="html" name="pessoa" value="html">
+                        <label>CPF:</label>
+                        <input type="cpf"  name="cpf" placeholder="Insira seu cpf" required>
+                        <label>Logradouro:</label>
+                        <input type="logradouro"  name="logradouro" placeholder="Insira seu logradouro" required>
+                        <label>Número:</label>
+                        <input type="numero"  name="numero" placeholder="Insira o número da sua casa" required>
+                        <label>Bairro:</label>
+                        <input type="bairro"  name="bairro" placeholder="Insira seu bairro" required>
+                        <label>Cidade:</label>
+ 
+
+                        <input type="cidade"  name="cidade" placeholder="Insira sua cidade" required>
+                        <input type="submit" value="Próximo" class="btn btn-success btn-block">
+                    </div>
+                  </div>
+            </form>
+            <hr>
+            <h6>Já possui conta?<a href="/login">Faça o login</a></h6>
+        </div>
+    </div>
+</div>
+
+
+<%- include('partials/footer.ejs') %>
+

@@ -1,0 +1,60 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar.ejs') %>
+<!--
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Histórico</h1>
+                </div>
+                <div class="card-body">
+                    <form action="/histal/new" method="post">
+                        <label>Nome do pé:</label>
+                        <input class="form-control" type="text" name="nome" id="nome"
+                            placeholder="Insira o nome do pé" required></input>
+
+                        <input type="submit" class="btn btn-success" value="Cadastrar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    -->
+<!--
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Histórico de Talhões</h1>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Planta:</th>
+                                <th>Status:</th>
+                                <th colspan="2">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% histal.forEach(histal=> { %>
+                                <tr>
+                                    <td><img src="imgs/product.png" width="30px"></td>
+                                    <td>
+                                        <%= histal.planta %>
+                                    </td>
+                                    <td>
+                                        <%= histal.status %>
+                                    </td>
+                                    <td><a style="color: orange" href="/histal/edit/<%= histal.id %>">Editar</a></td>
+                                    <td><a href="/histal/delete/<%= histal.id %>"
+                                            onclick="return confirm('Deseja realmente apagar esse cadastro?')">Apagar</a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    -->
+
+        <%- include ('partials/footer.ejs') %>
