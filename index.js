@@ -14,6 +14,7 @@ import PropriedadesController from './controllers/PropriedadesController.js';
 import HomeController from './controllers/HomeController.js'
 import HistalController from './controllers/HistalController.js'
 import DeficienciaController from './controllers/DeficienciaController.js';
+import HistoricoController from './controllers/HistoricoController.js';
 // Importando o gerador de sessões do express
 import session from 'express-session';
 // Importando o middleware Auth
@@ -29,6 +30,7 @@ import Foto from './models/Foto.js';
 import Relatorios from './models/Relatorios.js';
 import Home from './models/Home.js';
 import Deficiencia from './models/Deficiencia.js';
+import Historico from './models/Historico.js';
 
 // Função para criar as tabelas
 async function createTables() {
@@ -100,6 +102,7 @@ app.use('/', PropriedadesController);
 app.use('/', HomeController);
 app.use('/', HistalController);
 app.use('/', DeficienciaController);
+app.use('/', HistoricoController);
 
 // ROTA PRINCIPAL
 app.get('/', (req, res) => {
