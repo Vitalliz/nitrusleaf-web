@@ -1,7 +1,73 @@
 <%- include ('partials/header.ejs') %>
-<%- include ('partials/navbar.ejs') %>
-<!--
-    <div class="container">
+<%- include ('partials/navbar-user.ejs') %>
+<%- include ('partials/navbar-lateral.ejs') %>
+
+<main>
+    <div class="container mt-5">
+        <div class="d-flex align-items-center justify-content-between mt-2" >
+            <h1 class="align-self-end m-0 p-0 fonte" id="titulo">Histórico</h1>
+        </div>
+        <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
+    </div>
+
+    <div class="container pt-3">
+        <div class="card p-5" id="tab">
+            <h2 id="titulo">Registros</h2>
+            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-1" />
+            <table class="mt-2">
+                <thead>
+                    <tr>
+                        <th>Talhões Registrados</th>
+                        <th>Total de pés</th>
+                        <th>Pés Diagnosticados</th>
+                        <th>Pés analisados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3</td>
+                        <td>82</td>
+                        <td>42</td>
+                        <td>52/82</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container pt-3">
+        <div class="card px-5 pb-5 pt-4" id="tab">
+            <div class="d-flex align-items-center justify-content-between" >
+                <h2 id="titulo">Talhões</h2>
+                <a href="">Adicionar Talhão<img class="ms-3" src="/imgs/adicionar.svg"  alt=""></a>
+            </div>
+            
+            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-1" />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome Talhão</th>
+                        <th>Pés Analisados</th>
+                        <th>Data de Criação</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% historico.forEach(historico => { %>
+                    <tr>
+                        <td><%= historico.talhao %></td>
+                        <td><%= historico.descricao %></td>
+                        <td><a style = "color: orange;" href="/historico/edit/<%= historico.id %>">Editar</a></td>
+                        <td><a style = "color: red " href="/historico/delete/<%= historico.id %>" onclick="return confirm('Deseja realmente deletar o fazenda <%= fazenda.numero %>')">Deletar</a></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+    <!-- <div class="container">
         <div class="card">
             <div class="card-header">
                 <h1>Histórico</h1>
@@ -28,6 +94,6 @@
                 </table>
             </div>
         </div>
-    </div>
--->
+    </div> -->
+
 <%- include ('partials/footer.ejs') %>
