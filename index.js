@@ -12,6 +12,8 @@ import PesController from './controllers/PesController.js';
 import RelatoriosController from './controllers/RelatoriosController.js';
 import PropriedadesController from './controllers/PropriedadesController.js';
 import HomeController from './controllers/HomeController.js'
+import HistalController from './controllers/HistalController.js'
+import DeficienciaController from './controllers/DeficienciaController.js';
 // Importando o gerador de sessões do express
 import session from 'express-session';
 // Importando o middleware Auth
@@ -26,6 +28,7 @@ import Pes from './models/Pes.js';
 import Foto from './models/Foto.js';
 import Relatorios from './models/Relatorios.js';
 import Home from './models/Home.js';
+import Deficiencia from './models/Deficiencia.js';
 
 // Função para criar as tabelas
 async function createTables() {
@@ -94,7 +97,9 @@ app.use('/', FotoController);
 app.use('/', PesController);
 app.use('/', RelatoriosController);
 app.use('/', PropriedadesController);
-app.use('/', HomeController)
+app.use('/', HomeController);
+app.use('/', HistalController);
+app.use('/', DeficienciaController);
 
 // ROTA PRINCIPAL
 app.get('/', (req, res) => {

@@ -1,60 +1,59 @@
-<%- include ('partials/header.ejs') %>
-<%- include ('partials/navbar.ejs') %>
-<!--
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h1>Histórico</h1>
-                </div>
-                <div class="card-body">
-                    <form action="/histal/new" method="post">
-                        <label>Nome do pé:</label>
-                        <input class="form-control" type="text" name="nome" id="nome"
-                            placeholder="Insira o nome do pé" required></input>
+<%- include ('partials/header.ejs') %> 
+<%- include ('partials/navbar-user.ejs') %>
+<%- include ('partials/navbar-lateral.ejs') %>
 
-                        <input type="submit" class="btn btn-success" value="Cadastrar">
-                    </form>
-                </div>
-            </div>
-        </div>
-    -->
-<!--
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h1>Histórico de Talhões</h1>
-                </div>
-                <div class="card-body">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Planta:</th>
-                                <th>Status:</th>
-                                <th colspan="2">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% histal.forEach(histal=> { %>
-                                <tr>
-                                    <td><img src="imgs/product.png" width="30px"></td>
-                                    <td>
-                                        <%= histal.planta %>
-                                    </td>
-                                    <td>
-                                        <%= histal.status %>
-                                    </td>
-                                    <td><a style="color: orange" href="/histal/edit/<%= histal.id %>">Editar</a></td>
-                                    <td><a href="/histal/delete/<%= histal.id %>"
-                                            onclick="return confirm('Deseja realmente apagar esse cadastro?')">Apagar</a>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    -->
 
-        <%- include ('partials/footer.ejs') %>
+<main>
+    <div class="container mt-5">
+        <div class="d-flex align-items-center justify-content-between mt-2" >
+            <h1 class="align-self-end m-0 p-0 fonte" id="titulo">Histórico</h1>
+            <a href="/historico" id="btn-voltar" class="py-2 px-5 align-self-end" id="titulo">
+                <img src="/imgs/back.svg" alt="" style="max-height: 50px; object-fit: contain;" id="img-voltar">
+                Voltar        
+            </a>
+        </div>
+        <img src="/imgs/linha.png" alt="" id="voltar-linha" style="max-height: 50px; object-fit: contain;"  class="p-0 mt-0" />
+    </div>
+
+    <div class="container pt-3">
+    <div class="card px-5" id="tab">
+        <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+        <h2 class="align-self-center m-0 px-2 fonte titulo">Talhão 1</h2>
+        <div class="d-flex align-items-center">
+            <div class="search me-3">
+            <!-- Mantém os campos de pesquisa agrupados -->
+            <label>
+            <span class=" border-0" id="search-addon"><i class="fas fa-search" id="pesqb"></i></span>
+            </label>
+            <input type="text" class="" placeholder="Buscar" id="pesq"/>
+            </div>
+            <a href="/fazerupload"><img src="/imgs/adicionar.svg"  alt=""></a>
+            <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+        </div>
+        </div>
+        <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
+        <table class="tabe">
+        <thead id="thead">
+            <th class="fonte" id="thead">Nome Pé</th>
+            <th class="fonte" id="thead">Status</th>
+            <th class="fonte" id="thead">Data de Criação</th>
+            <th class="fonte" id="thead"></th>
+        </thead>
+        <tbody>
+            <% histal.forEach(pes => { %>
+            <tr class="tb">
+            <td class="fonte" id="tabody"><%= pes.nome%></td>
+            <td class="fonte" id="tabody"><%= pes.situacao%></td>
+            <td class="fonte" id="tabody"><%= pes.data_criacao%></td>
+            <td class="fonte" id="tabody">
+                <a href="/HisTalEdit"><img src="/imgs/setinha.svg" alt="" /></a>
+            </td>
+            </tr>
+            <% }) %>
+        </tbody>
+        </table>
+    </div>
+    </div>
+</main>
+
+<%- include ('partials/footer.ejs') %>

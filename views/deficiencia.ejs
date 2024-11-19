@@ -1,37 +1,77 @@
 <%- include ('partials/header.ejs') %>
-<%- include ('partials/navbar.ejs') %>
+<%- include ('partials/navbar-user.ejs') %>
+<%- include ('partials/navbar-lateral.ejs') %>
 
-<!--
 
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h1>Deficiencia</h1>
-            </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Talhão:</th>
-                            <th>Descrição:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% deficiencia.forEach(deficiencia => { %>
-                        <tr>
-                            <td><img src="imgs/order.png" width="30px"></td>
-                            <td><%= deficiencia.p %></td>
-                            <td><%= deficiencia.s %></td>
-                            <td><a style = "color: orange;" href="/deficiencia/edit/<%= deficiencia.id %>">Editar</a></td>
-                            <td><a style = "color: red " href="/deficiencia/delete/<%= deficiencia.id %>" onclick="return confirm('Deseja realmente deletar  <%= deficiencia.id %>')">Deletar</a></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
+<main>
+    <div class="container mt-5">
+        <div class="d-flex align-items-center justify-content-between mt-2" >
+            <h1 class="align-self-end m-0 p-0 fonte" id="titulo">Resultado</h1>
         </div>
+        <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
     </div>
 
--->
+    <div class="container pt-3">
+        <div class="card p-5" id="tab">
+            <div class="row">
+                <div class="col-8">
+                    <div class="mt-4 ms-4" >
+                        <h2 class="" id="titulo">Probabilidade de ser</h2>
+                        <h1 id="titulo">Deficiência de Cobre</h1>
+                    </div>
+                    <div >
+                        <div class="card-body">
+                            <img src="/imgs/linha.png" alt=""  id="voltar-linha"  class="p-0 mt-0" />
+                            <table>
+                                <thead>
+                                    <tr id="tabela-dados">
+                                        <th><!-- Nome do talhão --></th>
+                                        <th><!-- Nome do pé --></th>
+                                        <th colspan="1"><!-- Editar --></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- INSERIR FOREACH TABELA DE DADOS DO DIAGNOSTICO CADASTRADAS -->
+                                    <div class="row">
+                                        <div class="col-4 m-3">
+                                            <input type="text" class="form-control p-2" id="" name="" placeholder="Talhão 1">
+                                        </div>
+                                        <div class="col m-3">
+                                            <input type="text" class="form-control p-2" id="" name="" placeholder="Pé 1">
+                                        </div>
+                                        <div class="col mt-3">
+                                            <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+                                        </div>
+                                    </div>  
+                                    <div class="row">
+                                        <div class="col-8 mt-3 mx-3">
+                                            <input type="text" class="form-control p-3" id="" name="" placeholder="Escrever Relatório">
+                                        </div>
+                                        
+                                        <div class="col mt-3">
+                                            <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+                                        </div>
+                                    </div>  
+                                    <!-- Botão para cadastrar -->
+                                    <div class="container my-4">
+                                        <button type="submit" class="btn pt-2 ms-5" style="padding-inline: 10rem;" id="btn-entrar">Finalizar</button>
+                                    </div>
 
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <img class="col " id="diag-img" src="/imgs/deficiencia-diag.svg" alt="">
+                    
+
+            </div>
+        </div>
+        
+    </div>
+
+
+</main>
+
+ 
 <%- include ('partials/footer.ejs') %>

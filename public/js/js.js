@@ -54,7 +54,7 @@ currentDate.innerHTML = `Novos pedidos foram realizados desde o último acesso a
 
     criarGraficoPizza(dados, cores);
 
-// Função para criar a legenda com textos
+    // Função para criar a legenda com textos
     function criarLegenda(textos, cores) {
         const legendaContainer = document.getElementById('legenda');
         textos.forEach((texto, index) => {
@@ -84,6 +84,7 @@ currentDate.innerHTML = `Novos pedidos foram realizados desde o último acesso a
 
     // Criar a legenda com textos personalizados e cores
     criarLegenda(textos, cores);
+
 
 // Função para manipular o envio do formulário via AJAX
 document.getElementById('upload-form').onsubmit = async (e) => {
