@@ -10,6 +10,7 @@ router.get("/deficiencia", function (req, res) {
     })
 
 })
+
 router.post("/deficiencia/new", function (req, res) {
     try {
         const dDados = req.body;
