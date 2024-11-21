@@ -15,6 +15,7 @@ import HomeController from './controllers/HomeController.js'
 import HistalController from './controllers/HistalController.js'
 import DeficienciaController from './controllers/DeficienciaController.js';
 import HistoricoController from './controllers/HistoricoController.js';
+// import ConfiguracoesController from './controllers/ConfiguracoesController.js'
 // Importando o gerador de sessões do express
 import session from 'express-session';
 // Importando o middleware Auth
@@ -103,6 +104,7 @@ app.use('/', HomeController);
 app.use('/', HistalController);
 app.use('/', DeficienciaController);
 app.use('/', HistoricoController);
+// app.use('/', ConfiguracoesController);
 
 // ROTA PRINCIPAL
 app.get('/', (req, res) => {
