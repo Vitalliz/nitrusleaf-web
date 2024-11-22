@@ -32,6 +32,7 @@ import Relatorios from './models/Relatorios.js';
 import Home from './models/Home.js';
 import Deficiencia from './models/Deficiencia.js';
 import Historico from './models/Historico.js';
+import MapaController from "./controllers/MapaController.js"
 
 // Função para criar as tabelas
 async function createTables() {
@@ -104,6 +105,7 @@ app.use('/', HomeController);
 app.use('/', HistalController);
 app.use('/', DeficienciaController);
 app.use('/', HistoricoController);
+app.use("/", MapaController);
 // app.use('/', ConfiguracoesController);
 
 // ROTA PRINCIPAL

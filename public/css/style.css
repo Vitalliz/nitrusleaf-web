@@ -298,6 +298,16 @@ margin-right: 20%;
     pointer-events: none;
 }
 
+.titulo{
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.titulo1{
+    font-weight: 700;
+    font-size: 48px;
+}
+
 #row-home{
     display: flex;
     gap: 21px;
@@ -524,3 +534,40 @@ a#voltar{
     height: 20px;
 }
 
+
+/*Mapas*/
+#options {
+    border: none; /* Remove a borda */
+    background: none; /* Remove o fundo */
+    outline: none; /* Remove o contorno ao focar */
+    font-size: 30px; /* Ajuste o tamanho da fonte, se necessário */
+    color: inherit; /* Cor do texto */
+    appearance: none; /* Remove o estilo padrão do navegador */
+    -webkit-appearance: none; /* Remove o estilo em navegadores WebKit */
+    -moz-appearance: none; /* Remove o estilo em navegadores Mozilla */
+  }
+  
+  #options-container {
+    display: inline-block; /* Para alinhar corretamente o contêiner */
+    position: relative; /* Para elementos adicionais no contêiner */
+  }
+  
+  #options-label {
+    margin-right: 10px; /* Espaço entre o rótulo e o select */
+  }
+  
+  #mapas {
+      border: none; /* Remove a borda */
+      background: none; /* Remove o fundo */
+      outline: none; /* Remove o contorno ao focar */
+      font-size: 30px; /* Ajuste o tamanho da fonte, se necessário */
+      color: inherit; /* Cor do texto */
+      appearance: none; /* Remove o estilo padrão do navegador */
+      -webkit-appearance: none; /* Remove o estilo em navegadores WebKit */
+      -moz-appearance: none; /* Remove o estilo em navegadores Mozilla */
+  }
+  
+  #mapas-container {
+      display: inline-block; /* Para alinhar corretamente o contêiner */
+      position: relative; /* Para elementos adicionais no contêiner */
+  }

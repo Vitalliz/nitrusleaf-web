@@ -1,10 +1,32 @@
 <%- include ('partials/header.ejs') %>
 <%- include ('partials/navbar.ejs') %>
-<!--
-    <div class="container">
-        <div class="card">
-         <input type="button" value="mapa">
-        </div>
+
+
+    
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+      <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
+      <div id="options-container">
+        <label for="options" id="options-label"></label>
+        <select id="options">
+          <option value="Propriedade 1">Propriedade 1</option> 
+        </select>
+      </div>
     </div>
--->
+  
+    <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
+  </div>
+  
+  <div class="container pt-3">
+    <div id="options-container">
+      <label for="options" id="mapas-label"></label>
+      <select id="mapas">
+        <option value="Mapa Infravermelho (NDVI)">Mapa Infravermelho (NDVI)</option> 
+        <option value="Mapa Imagem Satelite">Mapa Imagem Satélite</option>
+        <option value="Mapa Localização Pes (Apex)">Mapa Localização Pés(Apex)</option>
+        <option value="Mapa de Calor (Apex)">Mapa de calor (Apex)</option>
+      </select>
+    </div>
+  </div>
+ 
 <%- include ('partials/footer.ejs') %>
