@@ -35,13 +35,20 @@ main {
     flex: 1;
 }
 
+svg{
+    display: block;
+}
+
 #footer {
     background: var(--background-gradient);
+    margin-top: auto;
+    padding: 10%;
     width: 100%;
     height: 130px;
     padding: 20px 0;
     border-top: 2px solid var(--cor-fundo-bege);
     font-family: var(--fonte-roboto);
+    
 }
 
 ul {
@@ -96,6 +103,21 @@ footer {
     height: auto;
 }
 
+#btn-google{
+    background-color: #FFFFFF;
+    border: 1px solid #677283;
+    border-radius: 40px;
+    color: black;
+    font-weight: 600;
+    transition-duration: 0.3ms;
+    text-align: center;
+}
+
+#btn-google:hover{
+    background-color: #ECECEC;
+    color: #220303;
+}
+
 #btn-cadastrar{
     background-color: var(--cor-fundo-bege);
     border: 1px solid var(--verde-escuro);
@@ -126,15 +148,70 @@ footer {
     color: white;
 }
 
-#wave-conteiner{
+#wave-container{
     background: var(--background-gradient);
     position: relative;
     width: 100%;
     height: 200px;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    min-height: auto;
+    margin-top: 10%;
+    margin-bottom: 0;
+    
    
     /* clip-path: path("M0,30 Q500,230 1000,90 T2000,80 L2000,500 L0,600 Z"); */
+    
     clip-path: polygon(100% 100%, 0% 100% , 0.00% 10.69%, 2.50% 14.54%, 5.00% 18.95%, 7.50% 23.82%, 10.00% 29.03%, 12.50% 34.45%, 15.00% 39.94%, 17.50% 45.37%, 20.00% 50.61%, 22.50% 55.53%, 25.00% 60.00%, 27.50% 63.91%, 30.00% 67.18%, 32.50% 69.72%, 35.00% 71.46%, 37.50% 72.37%, 40.00% 72.41%, 42.50% 71.60%, 45.00% 69.95%, 47.50% 67.50%, 50.00% 64.31%, 52.50% 60.46%, 55.00% 56.05%, 57.50% 51.18%, 60.00% 45.97%, 62.50% 40.55%, 65.00% 35.06%, 67.50% 29.63%, 70.00% 24.39%, 72.50% 19.47%, 75.00% 15.00%, 77.50% 11.09%, 80.00% 7.82%, 82.50% 5.28%, 85.00% 3.54%, 87.50% 2.63%, 90.00% 2.59%, 92.50% 3.40%, 95.00% 5.05%, 97.50% 7.50%, 100.00% 10.69%);
+    
 }
+
+/* Cards Infos */
+
+#mexericas{
+    border-radius: 35px;
+    box-shadow: 0px 14px 10px #FFD9C0;
+}
+
+#texto{
+    display:block;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--font-weight-bold);
+    text-align: justify;
+}
+#texto h1{
+    font-family: var(--font-weight-bold);
+    font-weight: bold;
+    color: var(--texto-marrom)
+}
+#teste{
+    display: flex;
+    justify-content: space-between;
+}
+#cartas{
+    background-color: #ffffff;
+    display:block;
+    height: auto;
+    width: 300px;
+    border-radius: 40px;
+    box-shadow: 0px 14px 10px #FFD9C0;
+}
+
+#textocarta{
+    text-align: inherit;
+    margin-bottom: 2rem;
+}
+#vetores{
+    margin-top: 50px;
+    margin-bottom: 10px;
+    width: 100px;
+    height: 100px;
+    object-fit:fill;
+}
+
+/*  */
 
 .transparent-container {
     background-color: rgba(255, 255, 255, 0);
@@ -146,10 +223,11 @@ footer {
     
 }
 
-#btn-index{
-    padding-inline: 76px;
-    width: 436px;
+#bg-card{
+    background: var(--background-gradient);
+    margin-bottom: a;
 }
+
 
 /* ----------- */
 
