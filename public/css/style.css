@@ -76,6 +76,7 @@ footer {
 #navbar-lp{
     background-color: var(--cor-fundo-bege);
     display: flex;
+    justify-content: space-between;
     align-items: center;
     padding-inline: 10%; 
     border-bottom: 3px solid #E88239;
@@ -167,6 +168,60 @@ footer {
     
 }
 
+/* Navbar User */
+
+.user-pic{
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1px solid var(--texto-marrom);
+}
+.sub-menu-wrap{
+    position: absolute;
+    top: 11%;
+    right: 11%;
+    width: 300px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.5s;
+}
+.sub-menu-wrap.open-menu{
+    max-height: 300px;
+}
+
+.sub-menu{
+    background: var(--background-gradient);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.sub-menu-link{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--texto-marrom);
+    padding: 5px;
+}
+.sub-menu-link p{
+    width: 100%;
+    margin-top: 1rem;
+    margin-left: 5px;
+    
+}
+.sub-menu-link img{
+    width: 40px;
+}
+
+.sub-menu-link:hover{
+    background: #FCCE7A;
+    border-radius: 10px;
+}
+
+#user-info{
+    display: flex;
+    justify-content: space-between
+}
 /* Cards Infos */
 
 #mexericas{

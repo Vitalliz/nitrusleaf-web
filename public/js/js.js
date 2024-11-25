@@ -5,6 +5,13 @@ const year = date.getFullYear()
 const currentDate = document.querySelector('.currentDate')
 currentDate.innerHTML = `Novos pedidos foram realizados desde o último acesso ao sistema. Hoje é <strong>${day}/${month}/${year}</strong>.`
 
+// Mini Perfil
+    let subMenu = document.getElementById("subMenu");
+    function toggleMenu(){
+        subMenu.classList.toggle("open-menu");
+    }
+
+
 // Grafico de pizza
     const dados = [19, 43, 38]; // Total: 100%
     const coresP = ['#D84A0F', '#ACACAC', '#FFB534'];
