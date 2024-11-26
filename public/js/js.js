@@ -143,3 +143,4 @@ async function loadOptions() {
 
 // Carregar as opções assim que a página for carregada
 window.onload = loadOptions;
+

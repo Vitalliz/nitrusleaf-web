@@ -1,15 +1,23 @@
 <%- include ('partials/header.ejs') %>
 <%- include ('partials/navbar-user.ejs') %>
-<%- include ('partials/navbar-lateral.ejs') %>
 
-<main>
-    <div class="container mt-5">
-        <div class="d-flex align-items-center justify-content-between mt-2" >
-            <h1 class="align-self-end m-0 p-0 fonte" id="titulo">Histórico</h1>
-        </div>
-        <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
-    </div>
 
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <div class="container cont">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+              <h2 class="align-self-end m-0 p-0 fonte titulo1">Histórico</h2>
+              <div id="options-container">
+                <select id="prop" class="options">
+                  <option value="Propriedade 1">Propriedade 1</option>
+                  <option value="Propriedade 2">Propriedade 2</option>
+                </select>
+                <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+              </div>
+              
+          </div>
+   <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
     <div class="container pt-3">
         <div class="card p-5" id="tab">
             <h2 id="titulo">Registros</h2>
@@ -64,6 +72,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 </main>
 

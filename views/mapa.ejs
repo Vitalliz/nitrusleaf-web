@@ -1,32 +1,46 @@
 <%- include ('partials/header.ejs') %>
 <%- include ('partials/navbar.ejs') %>
-
-
-    
+<main class="main-content">
+<%- include ('partials/navbar-lateral.ejs') %>  
+<div class="container cont">     
 <div class="container">
-    <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-      <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
-      <div id="options-container">
-        <label for="options" id="options-label"></label>
-        <select id="options">
-          <option value="Propriedade 1">Propriedade 1</option> 
-        </select>
-      </div>
-    </div>
-  
-    <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
-  </div>
-  
-  <div class="container pt-3">
+  <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+    <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
     <div id="options-container">
-      <label for="options" id="mapas-label"></label>
-      <select id="mapas">
-        <option value="Mapa Infravermelho (NDVI)">Mapa Infravermelho (NDVI)</option> 
-        <option value="Mapa Imagem Satelite">Mapa Imagem Satélite</option>
-        <option value="Mapa Localização Pes (Apex)">Mapa Localização Pés(Apex)</option>
-        <option value="Mapa de Calor (Apex)">Mapa de calor (Apex)</option>
+      <select id="prop" class="options">
+        <option value="Propriedade 1">Propriedade 1</option>
+        <option value="Propriedade 2">Propriedade 2</option>
       </select>
+      <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
     </div>
+</div>
+
+  <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
+</div>
+<div class="container pt-3">
+  <div class="custom-menu" tabindex="0">
+    <div class="menu-header">
+      <span class="menu-selected">Mapa Infravermelho (NDVI)</span>
+      <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrow" />
+    </div>
+    <ul class="menu-options">
+      <li class="menu-option" data-value="Mapa Imagem Satelite">Mapa Imagem Satélite</li>
+      <li class="menu-option" data-value="Mapa Localização Pes (Apex)">Mapa Localização Pés (Apex)</li>
+      <li class="menu-option" data-value="Mapa de Calor (Apex)">Mapa de Calor (Apex)</li>
+    </ul>
   </div>
- 
+  <div class="infrared-map">
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.835434509425!2d-122.47825528468154!3d37.81993297975192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c10b554a1%3A0x44db2f78c9e2a98e!2sGolden%20Gate%20Bridge!5e0!3m2!1sen!2sus!4v1690136005154!5m2!1sen!2sus" 
+      width="500px" 
+      height="300" 
+      allowfullscreen="" 
+      loading="lazy" 
+      class="mapama"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+</div>
+</div>
+</main>
 <%- include ('partials/footer.ejs') %>

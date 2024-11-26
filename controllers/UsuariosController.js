@@ -4,17 +4,7 @@ import bcrypt from "bcrypt";
 import Usuarios from "../models/Usuarios.js";
 import session from 'express-session';
 import flash from 'express-flash';
-
 const router = express.Router();
-
-// Configurando o middleware de sessão no router
-router.use(session({
-    secret: 'nitrusleafsecret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 3600000 } // 1 hora de duração
-}));
-
 // Middleware para mensagens de flash
 router.use(flash());
 
@@ -33,43 +23,41 @@ router.get("/logout", (req, res) => {
     res.redirect("/login");
 });
 
-// ROTA DE AUTENTICAÇÃO
 router.post("/authenticate", async (req, res) => {
     const { email, senha } = req.body;
 
     try {
-        // Verifica se o campo de email foi preenchido
-        if (!email || !senha) {
-            req.flash("danger", "Preencha todos os campos.");
-            return res.redirect("/login");
-        }
-
         // Busca o usuário pelo email
         const usuario = await Usuarios.findOne({ where: { email } });
 
-        // Verifica se o usuário foi encontrado
+        // Verifica se o usuário existe
         if (!usuario) {
-            req.flash("danger", "Usuário não encontrado. Verifique o email e tente novamente.");
+            req.flash("danger", "Usuário não encontrado.");
             return res.redirect("/login");
         }
 
-        // Compara a senha com o hash do banco de dados
+        // Logs para diagnóstico
+        console.log("Senha fornecida:", senha);
+        console.log("Hash armazenado no banco:", usuario.senha);
+
+        // Comparar a senha com o hash do banco
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
         if (senhaValida) {
             req.session.user = { id_usuario: usuario.id_usuario, email: usuario.email };
             req.flash("success", "Login efetuado com sucesso!");
-            res.redirect("/");
+            return res.redirect("/");
         } else {
-            req.flash("danger", "Senha incorreta. Tente novamente.");
-            res.redirect("/login");
+            req.flash("danger", "Senha incorreta.");
+            return res.redirect("/login");
         }
     } catch (error) {
-        console.error("Erro de autenticação:", error);
-        req.flash("danger", "Erro ao autenticar. Por favor, tente novamente.");
+        console.error("Erro ao autenticar:", error);
+        req.flash("danger", "Erro ao autenticar. Tente novamente.");
         res.redirect("/login");
     }
 });
+
 
 // ROTA DE CADASTRO
 router.get("/cadastroUsuarios", (req, res) => {
