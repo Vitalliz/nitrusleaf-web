@@ -1,27 +1,25 @@
-// Importando o Express com ES6 Modules
+// Importando os pacotes necessários com ES6 Modules
 import express from 'express';
-// Iniciando o Express na variável app
-const app = express();
-// Importando o ORM sequelize com os dados de conexão
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';  // Usado para verificar e criar a pasta uploads
 import connection from './config/sequelize-config.js';
-// Importando os Controllers (onde estão as rotas)
+import session from 'express-session';
+import flash from 'express-flash';
+
+// Importando os Controllers
 import TalhoesController from './controllers/TalhoesController.js';
 import UsuariosController from './controllers/UsuariosController.js';
 import FotoController from './controllers/FotoController.js';
 import PesController from './controllers/PesController.js';
 import RelatoriosController from './controllers/RelatoriosController.js';
 import PropriedadesController from './controllers/PropriedadesController.js';
-import HomeController from './controllers/HomeController.js'
-import HistalController from './controllers/HistalController.js'
+import HomeController from './controllers/HomeController.js';
+import HistalController from './controllers/HistalController.js';
 import DeficienciaController from './controllers/DeficienciaController.js';
 import HistoricoController from './controllers/HistoricoController.js';
-// import ConfiguracoesController from './controllers/ConfiguracoesController.js'
-// Importando o gerador de sessões do express
-import session from 'express-session';
-// Importando o middleware Auth
-import Auth from './middleware/Auth.js';
-// Importando o express-flash
-import flash from 'express-flash';
+import MapaController from './controllers/MapaController.js';
+
 // Importando os modelos
 import Usuarios from './models/Usuarios.js';
 import Propriedades from './models/Propriedades.js';
@@ -32,9 +30,11 @@ import Relatorios from './models/Relatorios.js';
 import Home from './models/Home.js';
 import Deficiencia from './models/Deficiencia.js';
 import Historico from './models/Historico.js';
-import MapaController from "./controllers/MapaController.js"
 
-// Função para criar as tabelas
+// Iniciando o Express
+const app = express();
+
+// Função para criar as tabelas no banco de dados
 async function createTables() {
     try {
         await Usuarios.sync({ force: false });
@@ -59,10 +59,25 @@ async function createTables() {
     }
 }
 
-// Iniciando a configuração do Express-flash
-app.use(flash());
+// Criando a pasta 'uploads' se não existir
+const uploadsDir = './uploads';
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
 
-// Configurando o express-session
+// Configuração do Multer para o armazenamento de arquivos
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Diretório para onde os arquivos serão enviados
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Nome do arquivo com timestamp
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Configurações do express-session e express-flash
 app.use(session({
     secret: 'nitrusleafsecret',
     cookie: { maxAge: 3600000 }, // Sessão expira em 1 hora
@@ -70,13 +85,15 @@ app.use(session({
     resave: false
 }));
 
-// Permite capturar dados vindo de formulários
-app.use(express.urlencoded({ extended: false }));
+app.use(flash());
 
-// Realizando a conexão com o banco de dados
+// Configuração do express para capturar dados de formulários
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // Adicionando suporte para JSON
+
+// Conectando ao banco de dados
 connection.authenticate().then(() => {
     console.log('Conexão com o banco de dados feita com sucesso!');
-    // Criando as tabelas após a conexão
     createTables();
 }).catch((error) => {
     console.log(error);
@@ -89,12 +106,28 @@ connection.query('CREATE DATABASE IF NOT EXISTS NitrusLeaf_PI;').then(() => {
     console.log(error);
 });
 
-// Define o EJS como renderizador de páginas
-app.set('view engine', 'ejs');
-// Define o uso da pasta "public" para uso de arquivos estáticos
+// Servindo arquivos estáticos (HTML, CSS, JS)
 app.use(express.static('public'));
 
-// Definindo o uso das rotas dos Controllers
+// Endpoint para o upload de arquivos
+app.post('/uploads', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'Nenhum arquivo foi enviado.' });
+    }
+    res.status(200).json({ success: true, message: 'Arquivo enviado com sucesso!', file: req.file });
+});
+
+// Endpoint principal
+app.get('/', (req, res) => {
+    // Defina o nome da imagem ou a lógica para pegar a imagem dinamicamente
+    const imageUrl = '/uploads/1732670720985.png';  // Aqui você pode colocar a lógica para pegar a imagem desejada
+    res.render('home', { imageUrl });
+});
+
+// Definindo o motor de templates EJS
+app.set('view engine', 'ejs');
+
+// Usando os Controllers
 app.use('/', TalhoesController);
 app.use('/', UsuariosController);
 app.use('/', FotoController);
@@ -106,17 +139,16 @@ app.use('/', HistalController);
 app.use('/', DeficienciaController);
 app.use('/', HistoricoController);
 app.use("/", MapaController);
-// app.use('/', ConfiguracoesController);
 
 // ROTA PRINCIPAL
 app.get('/', (req, res) => {
     res.render('index', {
-        messages: req.flash() // Passando as mensagens de flash para a view
+        messages: req.flash() // Passando mensagens de flash para a view
     });
 });
 
-// INICIA O SERVIDOR NA PORTA 8080
-const port = '8080';
+// Inicializando o servidor na porta 8080
+const port = 8080;
 app.listen(port, (erro) => {
     if (erro) {
         console.log('Ocorreu um erro!');

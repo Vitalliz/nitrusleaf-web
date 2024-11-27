@@ -1,0 +1,27 @@
+<script>
+    // Função para manipular o envio do formulário via AJAX
+    document.getElementById('upload-form').onsubmit = async (e) => {
+        e.preventDefault();  // Impede o envio tradicional do formulário
+
+        const formData = new FormData(document.getElementById('upload-form'));  // Cria o objeto FormData
+
+        try {
+            const res = await fetch('/upload', {
+                method: 'POST',
+                body: formData,  // Envia os dados do formulário, incluindo o arquivo
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('message').innerText = data.message;
+                alert(data.message);  // Alerta de sucesso
+            } else {
+                document.getElementById('message').innerText = 'Erro no upload';
+                alert('Erro no upload');
+            }
+        } catch (error) {
+            document.getElementById('message').innerText = 'Erro ao enviar o arquivo';
+            alert('Erro de rede ao tentar fazer o upload');
+        }
+    };
+</script>
