@@ -8,8 +8,9 @@
     <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
     <div id="options-container">
       <select id="prop" class="options">
-        <option value="Propriedade 1">Propriedade 1</option>
-        <option value="Propriedade 2">Propriedade 2</option>
+        <% Propriedades.forEach(prop => {%>
+        <option value="<%= prop.id_propriedade%>"><%= prop.nome%></option>
+      <%})%>
       </select>
       <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
     </div>
@@ -30,15 +31,17 @@
     </ul>
   </div>
   <div class="infrared-map">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v1732678760574!5m2!1spt-BR!2sbr" width="600px" height="450px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="mapama"></iframe>
     <iframe 
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.835434509425!2d-122.47825528468154!3d37.81993297975192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c10b554a1%3A0x44db2f78c9e2a98e!2sGolden%20Gate%20Bridge!5e0!3m2!1sen!2sus!4v1690136005154!5m2!1sen!2sus" 
-      width="500px" 
-      height="300" 
-      allowfullscreen="" 
-      loading="lazy" 
-      class="mapama"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
+    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v1732678760574!5m2!1spt-BR!2sbr&maptype=satellite" 
+    width="600px" 
+    height="450px" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade"
+    class="mapama">
+</iframe>
+
   </div>
 </div>
 </div>

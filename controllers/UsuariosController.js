@@ -46,7 +46,7 @@ router.post("/authenticate", async (req, res) => {
         if (senhaValida) {
             req.session.user = { id_usuario: usuario.id_usuario, email: usuario.email };
             req.flash("success", "Login efetuado com sucesso!");
-            return res.redirect("/");
+            return res.redirect("/home");
         } else {
             req.flash("danger", "Senha incorreta.");
             return res.redirect("/login");

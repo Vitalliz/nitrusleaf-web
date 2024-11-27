@@ -1,16 +1,16 @@
 import express from 'express';
 import Historico from "../models/Historico.js"
 const router = express.Router()
-
+import Auth from "../middleware/Auth.js"
 // ROTA PEDIDOS
-router.get("/historico", function (req, res) {
+router.get("/historico", Auth,(req, res) => {
     Historico.findAll().then(historico => {
         res.render("historico", { historico })
     })
 
 })
 
-router.post("/historico/new", function (req, res) {
+router.post("/historico/new", Auth,(req, res) => {
     try {
         const historicoDados = req.body;
         const historico = Historico.create({ talhao: historicoDados.talhao, descricao: pedidoDados.descricao  })
@@ -20,7 +20,7 @@ router.post("/historico/new", function (req, res) {
         res.status(400);
     }
 })
-router.get("/historico/delete/:id", (req, res) => {
+router.get("/historico/delete/:id", Auth,(req, res) => {
     const id = req.params.id
     Historico.destroy({
         where: {
@@ -31,7 +31,7 @@ router.get("/historico/delete/:id", (req, res) => {
     })
 })
 
-router.get("/historico/edit/:id", (req, res) => {
+router.get("/historico/edit/:id", Auth,(req, res) => {
     const id = req.params.id
     Historico.findByPk(id).then(function (historico) {
         res.render("historicoEdit", {
@@ -40,7 +40,7 @@ router.get("/historico/edit/:id", (req, res) => {
     })
 })
 
-router.post("/historico/update/:id", (req, res) => {
+router.post("/historico/update/:id", Auth,(req, res) => {
     const id = req.params.id
     const talhao = req.body.talhao
     const descricao = req.body.descricao

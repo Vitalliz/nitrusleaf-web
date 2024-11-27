@@ -590,13 +590,22 @@ a#voltar{
 }
 
 #thead{
-    background-color: #FBF6EE;
     border: none;
     font-size: 24px;
 }
 
 #tabody{
    background-color: #FAF0D7; 
+   border: none;
+   font-weight: 400;
+   font-size: 24px;;
+   padding: 5px 25px; /* Reduza os valores de padding conforme necessário */
+   text-align: left; /* Alinhe o texto para a esquerda */
+   vertical-align: middle; /* Garante alinhamento vertical */
+   height: 10px;
+}
+
+#tabodyp{
    border: none;
    font-weight: 400;
    font-size: 24px;;
@@ -680,10 +689,32 @@ a#voltar{
     padding-right: 40px; /* Deixa espaço para a seta */
 }
 
+.optionspo {
+    border: 2px solid var(--verde-escuro); /* Remove a borda */
+    background-color: white; /* Remove o fundo */
+    outline: none; /* Remove o contorno ao focar */
+    font-size: 14px; /* Ajuste o tamanho da fonte, se necessário */
+    color: inherit; /* Cor do texto */
+    appearance: none; /* Remove o estilo padrão do navegador */
+    -webkit-appearance: none; /* Remove o estilo em navegadores WebKit */
+    -moz-appearance: none; /* Remove o estilo em navegadores Mozilla */
+    width: 100%; /* Faz o select ocupar a largura do contêiner */
+    padding-right: 40px; /* Deixa espaço para a seta */
+}
+
+.options-container {
+    display: inline-block; /* Para alinhar corretamente o contêiner */
+    position: relative; /* Para elementos adicionais no contêiner */
+}
+
 #options-container {
     display: inline-block; /* Para alinhar corretamente o contêiner */
     position: relative; /* Para elementos adicionais no contêiner */
     width: 300px; /* Ajuste a largura conforme necessário */
+}
+
+.opcaot{
+    width: 200px;
 }
 
 .menu-arrowp {
@@ -876,7 +907,7 @@ body {
 .main-content {
     flex: 1; /* Faz o conteúdo principal ocupar o restante do espaço disponível */
      /* Espaço para a navbar */
-    min-height: 900px;
+    min-height: 1000px;
     padding: 10px 0px 10px 0px;
     position: relative;
     width: 100vw;
@@ -895,4 +926,8 @@ footer {
 
 .cont{
     position: relative;
+}
+
+.propme{
+    margin-left: auto;
 }

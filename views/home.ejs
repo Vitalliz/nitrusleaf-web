@@ -1,6 +1,10 @@
 <%- include ('partials/header.ejs') %>
 <%- include ('partials/navbar-user.ejs') %>
-
+<% if (messages.success) { %>
+  <div class="alert alert-success">
+      <%= messages.success %>
+  </div>
+<% } %>
 <main class="main-content">
   <%- include ('partials/navbar-lateral.ejs') %>
   <div class="container mt-5 cont">

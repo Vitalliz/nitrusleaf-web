@@ -1,19 +1,20 @@
 import express from 'express'
 const router = express.Router()
 import Home from "../models/Home.js"
+import Auth from "../middleware/Auth.js"
 
-
-router.get("/home", function(req,res){
+router.get("/home", Auth,(req,res) => {
     Home.findAll().then(home => {
         res.render("home", {
-            home: home
+            home: home,
+            messages: req.flash(),
         })
 
     })
 
 })
 
-router.post("/home/new", (req, res) =>{
+router.post("/home/new", Auth,(req, res) =>{
     const nome = req.body.nome
     Home.create({
         nome:nome,
@@ -22,7 +23,7 @@ router.post("/home/new", (req, res) =>{
     })
 })
 
-router.get("/home/delete/:id?", (req, res) => {
+router.get("/home/delete/:id?", Auth,(req, res) => {
 
 const id = req.params.id
 
@@ -40,7 +41,7 @@ Home.destroy({
 
 })
 //ROTA DE EDIÇÃO DE HOME
-router.get("/home/edit/:id", (req, res) => {
+router.get("/home/edit/:id", Auth,(req, res) => {
    const id = req.params.id
     Home.findByPk(id).then((home)=> {
         res.render("homeEdit",{
@@ -52,7 +53,7 @@ router.get("/home/edit/:id", (req, res) => {
 });
 
 //ROTA DE ALTERAÇÃO DE HOME
-router.post("/home/update", (req , res) => {
+router.post("/home/update", Auth,(req , res) => {
     const id = req.body.id
     const nome = req.body.nome
 

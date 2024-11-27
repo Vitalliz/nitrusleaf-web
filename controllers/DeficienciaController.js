@@ -1,5 +1,6 @@
 import express from 'express'
 import Deficiencia from "../models/Deficiencia.js"
+import Auth from "../middleware/Auth.js"
 
 const router = express.Router()
 

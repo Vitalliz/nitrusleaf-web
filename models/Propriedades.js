@@ -1,6 +1,7 @@
 import sequelize from "sequelize";
 import connection from "../config/sequelize-config.js";
 import Usuarios from "./Usuarios.js";
+import '../config/relacionamentos-config.js';  // Importa a configuração dos relacionamentos
 
 const Propriedades = connection.define('propriedades', {
     id_propriedade: {
@@ -16,6 +17,26 @@ const Propriedades = connection.define('propriedades', {
         }
     },
     nome: {
+        type: sequelize.STRING,
+        allowNull: false,
+    },
+    cep: {
+        type: sequelize.STRING,
+        allowNull: false,
+    },
+    logradouro: {
+        type: sequelize.STRING,
+        allowNull: false,
+    },
+    numero: {
+        type: sequelize.INTEGER,
+        allowNull: false,
+    },
+    bairro: {
+        type: sequelize.STRING,
+        allowNull: false,
+    },
+    cidade: {
         type: sequelize.STRING,
         allowNull: false,
     },
@@ -36,7 +57,6 @@ const Propriedades = connection.define('propriedades', {
         defaultValue: 0,
     }
 });
-
 
 Propriedades.sync({ force: false });
 

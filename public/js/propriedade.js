@@ -26,3 +26,4 @@ select.addEventListener("change", () => {
   isMenuOpen = false; // Reseta o estado
   seta.classList.remove("menuseta-girar"); // Garante que a seta volte ao estado inicial
 });
+

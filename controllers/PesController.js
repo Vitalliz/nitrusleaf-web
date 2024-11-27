@@ -2,9 +2,9 @@ import express from 'express';
 const router = express.Router();
 import Pes from "../models/Pes.js";
 import Talhoes from "../models/Talhoes.js"; // Para associar a tabela "talhoes"
-
+import Auth from "../middleware/Auth.js"
 // ROTA PARA LISTAR TODOS OS PES
-router.get("/pes", (req, res) => {
+router.get("/pes", Auth,(req, res) => {
     Pes.findAll({
         include: [
             { model: Talhoes, as: 'talhao' } // Incluir informações de 'Talhoes'
@@ -22,7 +22,7 @@ router.get("/pes", (req, res) => {
 });
 
 // ROTA PARA CRIAR NOVO PES
-router.post("/pes/new", (req, res) => {
+router.post("/pes/new", Auth,(req, res) => {
     const { nome, id_talhao, situacao } = req.body;
 
     Pes.create({
@@ -40,7 +40,7 @@ router.post("/pes/new", (req, res) => {
 });
 
 // ROTA PARA EXCLUIR PES
-router.get("/pes/delete/:id?", (req, res) => {
+router.get("/pes/delete/:id?", Auth,(req, res) => {
     const id = req.params.id;
 
     Pes.destroy({
@@ -56,7 +56,7 @@ router.get("/pes/delete/:id?", (req, res) => {
 });
 
 // ROTA DE EDIÇÃO DE PES
-router.get("/pes/edit/:id", (req, res) => {
+router.get("/pes/edit/:id", Auth,(req, res) => {
     const id = req.params.id;
 
     Pes.findByPk(id, {
@@ -76,7 +76,7 @@ router.get("/pes/edit/:id", (req, res) => {
 });
 
 // ROTA PARA ALTERAÇÃO DE PES
-router.post("/pes/update", (req, res) => {
+router.post("/pes/update", Auth,(req, res) => {
     const { id_pe, nome, id_talhao, situacao } = req.body;
 
     Pes.update(

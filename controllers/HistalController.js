@@ -1,10 +1,11 @@
 import express from 'express';
 import HisTal from "../models/HisTal.js"; // Certifique-se de que o nome do modelo está correto
+import Auth from "../middleware/Auth.js"
 
 const router = express.Router();
 
 // ROTA HISTAL
-router.get("/histal", function (req, res) {
+router.get("/histal", Auth,(req, res) => {
     HisTal.findAll().then(histal => {
         // Ordena os dados pela data mais recente (aplica o quickSort)
         const sortedHistal = quickSort(histal, 'data_criacao');
@@ -36,7 +37,7 @@ function quickSort(data, key) {
 }
 
 // Função para criar novo registro
-router.post("/histal/new", function (req, res) {
+router.post("/histal/new", Auth,(req, res) => {
     try {
         const histalDados = req.body;
         HisTal.create({ planta: histalDados.planta, status: histalDados.status })
@@ -48,7 +49,7 @@ router.post("/histal/new", function (req, res) {
 });
 
 // Função para excluir registro
-router.get("/histal/delete/:id", (req, res) => {
+router.get("/histal/delete/:id", Auth,(req, res) => {
     const id = req.params.id;
     HisTal.destroy({
         where: {
@@ -60,7 +61,7 @@ router.get("/histal/delete/:id", (req, res) => {
 });
 
 // Função para editar registro
-router.get("/histal/edit/:id", (req, res) => {
+router.get("/histal/edit/:id", Auth,(req, res) => {
     const id = req.params.id;
     HisTal.findByPk(id).then(function (histal) {
         res.render("histalEdit", {
@@ -70,7 +71,7 @@ router.get("/histal/edit/:id", (req, res) => {
 });
 
 // Função para atualizar registro
-router.post("/histal/update/:id", (req, res) => {
+router.post("/histal/update/:id", Auth,(req, res) => {
     const id = req.params.id;
     const planta = req.body.planta;
     const status = req.body.status;

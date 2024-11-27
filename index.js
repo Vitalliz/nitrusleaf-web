@@ -73,6 +73,9 @@ app.use(session({
 // Permite capturar dados vindo de formulários
 app.use(express.urlencoded({ extended: false }));
 
+// Permite capturar dados enviados como JSON
+app.use(express.json());
+
 // Realizando a conexão com o banco de dados
 connection.authenticate().then(() => {
     console.log('Conexão com o banco de dados feita com sucesso!');

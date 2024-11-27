@@ -25,6 +25,8 @@ const Talhoes = connection.define('talhoes', {
     }
 });
 
+import '../config/relacionamentos-config.js';
+
 Talhoes.sync({ force: false });
 
 export default Talhoes;

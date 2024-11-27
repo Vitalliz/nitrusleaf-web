@@ -1,79 +1,74 @@
-<%- include ('partials/header.ejs') %>
-<%- include ('partials/navbar.ejs') %>
-
-<main>
-        <div class="container mt-5">
-            <h1 id="titulo">Cadastrar Talhão</h1>
-            <div class="card mt-2" id="form-bg">
-                <div class="card-body p-5">
-                    <h4 id="titulo">Dados do talhão</h4>
-                    <form action="/talhoes/new" method="post">
-                        
-                        <div class="m-3">
-                            <label for="" class="form-label">Tipo de pessoa</label>
-                            <select name="" id="" class="form-control" required>
-                                <option value="" selected disabled>Seleciona a propriedade</option>
-                                <option value="">Propriedade 1</option>
-                            </select>
-                        </div>
-                        <div class="row">
-                            <div class="col m-3">
-                                <label>Nome do Talhão:</label>
-                                <input type="text" name="nome" id="nome" placeholder="Insira o nome do talhão"
-                                class="form-control" required>
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs') %>
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <form action="/talhoes/new" method="POST">
+<div class="container mt-5">
+    <h1 id="titulo">Cadastrar Talhão</h1>
+    <div class="card mt-2" id="form-bg">
+        <div class="card-body p-5">        
+                <!-- Campos adicionais (class="d-none")-->
+                <div id="camposAdicionais" class="mt-5">
+                    <h4 id="titulo">Dados do Talhão</h4>
+                    <!-- Endereço -->  
+                    <div class="row">
+                        <label for="">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+                                <div class="options-container col-md-5">
+                                  <select id="prop" class="form-control" name="id_propriedade">
+                                    <% Propriedades.forEach(prop => {%>
+                                    <option value="<%= prop.id_propriedade%>" class="form-control"><%= prop.nome%></option>
+                                  <%})%>
+                                  </select>
+                                  <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                                </div>
                             </div>
-                            <div class="col m-3"></div>
-                        </div>  
-                        <div class="row">                            
-                            <div class="col m-3">
-                                <label>Nome pé: </label>
-                                <input type="text" name="cpf" id="cpf" placeholder="Insira o nome do pé "
-                                class="form-control" required>
-                                
-                            </div>
-                            <div class="col m-3"></div>
-                        </div>
-
-                        <!-- Botão para Inserir -->
-                        <div class="container my-1">
-                            <input type="submit" class="btn pt-2 mt-" style="padding-inline: 7rem;" id="btn-entrar" value="Inserir">
-                        </div>
-                    </form>
-                    <!-- TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
-                    <div class="card my-4" id="form-bg-claro">
-                        <div class="card-body">
-                            <table>
-                                <thead>
-                                    <tr id="tabela-dados">
-                                        <th>Nome Talhão</th>
-                                        <th>Nome pé</th>
-                                        <th colspan="2">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% talhoes.forEach(talhoes=> { %>
-                                        <tr>
-                                            <td><img src="imgs/avatar.png" width="30px"></td>
-                                            <td>
-                                                <%= talhoes.nome %>
-                                            </td>
-                                            <td>
-                                                <%= talhoes.pe %>
-                                            </td>
-                                            <td><a style = "color: orange;" href="/talhoes/edit/<%= talhoes.id %>">Editar</a></td>
-                                            <td><a style = "color: red " href="/talhoes/delete/<%= talhoes.id%>" onclick="return confirm('Deseja realmente deletar o talhoes <%= talhoes.nome %>')">Deletar</a></td>
-                                        </tr>
-                                        <% }) %>
-                                </tbody>
-                            </table>
+                        </label>
+                        <div class="form-group col-md-5 mt-4">
+                            <label for="cep" class="form-label">Nome talhão</label>
+                            <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira o nome do talhão" required>
                         </div>
                     </div>
-                    <hr>
+                        <div class="form-group col-md-5 mt-4">
+                            <label for="cep" class="form-label">Espécie Plantada</label>
+                            <input type="text" class="form-control" id="especie_fruta" name="especie_fruta" placeholder="Insira a espécie de fruta que é plantada no talhão" required>
+                        </div>
+
+                <!-- Botão para cadastrar -->
+                 <div class="container  my-2">
+                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar">Cadastrar</button>
+                </div>
+            </div>
+            </form>
+
+            <!-- TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
+            <div class="card my-4" id="form-bg-claro">
+                <div class="card-body">
+                    <table class="tabe">
+                        <thead id="thead">
+                            <th class="fonte" id="thead">Nome Talhão</th>
+                            <th class="fonte" id="thead">Espécie Plantada</th>
+                            <th class="fonte" id="thead">Propriedade</th>
+                            <th class="fonte" id="thead">Editar</th>
+                        </thead>
+                        <tbody>
+                            <% Talhoes.forEach(tal => { %>
+                            <tr class="tb">
+                            <td class="fonte" id="tabodyp"><%= tal.nome%></td>
+                            <td class="fonte" id="tabodyp"><%= tal.especie_fruta%></td>
+                            <td class="fonte" id="tabodyp"><%= tal.Propriedades.nome%></td>
+                            <td class="fonte" id="tabodyp">
+                                <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+                            </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                        </table>
                 </div>
             </div>
         </div>
-        <br>
-
+    </div>
+</div>
 </main>
-
-<%- include ('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

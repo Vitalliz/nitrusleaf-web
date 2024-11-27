@@ -1,0 +1,97 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs') %>
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <form action="/propriedades/new" method="POST">
+<div class="container mt-5">
+    <h1 id="titulo">Cadastrar</h1>
+    <div class="card mt-2" id="form-bg">
+        <div class="card-body p-5">        
+                <!-- Campos adicionais (class="d-none")-->
+                <div id="camposAdicionais" class="mt-5">
+                    <h4 id="titulo">Cadastro de Propriedade</h4>
+                    <!-- Endereço -->  
+                    <div class="row">
+                        <div class="form-group col-md-6 m-3">
+                            <label for="nome" class="form-label">Nome propriedade</label>
+                            <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira o nome da propriedade">
+                        </div>
+                        <div class="form-group col-md-5 m-3">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" name="cep" placeholder="Insira o CEP da propriedade">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-8 m-3">
+                            <label for="logradouro" class="form-label">Logradouro</label>
+                            <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Insira o logradouro da propriedade">
+                        </div>
+                        <div class="form-group col-md-3 m-3">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero" name="numero" placeholder="Insira o número ">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6  m-3">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Insira o bairro da propriedade">
+                        </div>
+                        <div class="form-group col-md-5 m-3">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Insira o cidade da propriedade">
+                        </div>
+                    </div>
+                
+
+                <!-- Botão para cadastrar -->
+                 <div class="container  my-2">
+                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar">Cadastrar</button>
+                </div>
+            </div>
+            </form>
+
+            <!-- TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
+            <div class="card my-4" id="form-bg-claro">
+                <div class="card-body">
+                    <table class="tabe">
+                        <thead id="thead">
+                            <th class="fonte" id="thead">Nome Propriedade</th>
+                            <th class="fonte" id="thead">Rua</th>
+                            <th class="fonte" id="thead">Bairro</th>
+                            <th class="fonte" id="thead">Cidade</th>
+                            <th class="fonte" id="thead">Editar</th>
+                        </thead>
+                        <tbody>
+                            <% Propriedades.forEach(prop => { %>
+                            <tr class="tb">
+                            <td class="fonte" id="tabodyp"><%= prop.nome%></td>
+                            <td class="fonte" id="tabodyp"><%= prop.logradouro%> Nº<%= prop.numero%></td>
+                            <td class="fonte" id="tabodyp"><%= prop.bairro%></td>
+                            <td class="fonte" id="tabodyp"><%= prop.cidade%></td>
+                            <td class="fonte" id="tabodyp">
+                                <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+                            </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                        </table>
+                </div>
+            </div>
+
+            <hr>
+            <div class="d-flex justify-content-center">
+                <h6>Já possui conta? <a href="/login">Faça o login</a></h6>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+<%- include('partials/footer.ejs') %>
+
+<script>
+    // // Mostra ou oculta os campos adicionais ao selecionar a checkbox
+    // document.getElementById('mostrarCampos').addEventListener('change', function () {
+    //     const camposAdicionais = document.getElementById('camposAdicionais');
+    //     camposAdicionais.classList.toggle('d-none', !this.checked);
+    // });
+</script>
