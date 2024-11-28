@@ -1,17 +1,24 @@
 import Talhoes from "../models/Talhoes.js";
 import Propriedades from "../models/Propriedades.js";
-
-// Atrasar a configuração do relacionamento até que os modelos estejam completamente carregados
-if (Talhoes && Propriedades) {
+import Pes from "../models/Pes.js";
+export default function configurarRelacionamentos() {
     Talhoes.belongsTo(Propriedades, {
         foreignKey: 'id_propriedade',
-        as: 'propriedade', // Alias para a associação
+        as: 'propriedade',
     });
 
     Propriedades.hasMany(Talhoes, {
         foreignKey: 'id_propriedade',
-        as: 'talhoes', // Alias para a associação
+        as: 'talhoes',
     });
-} else {
-    console.log('Modelos não carregados corretamente.');
+
+    Pes.belongsTo(Talhoes, {
+        foreignKey: 'id_talhao',
+        as: 'talhoes',
+    });
+
+    Talhoes.hasMany(Pes, {
+        foreignKey: 'id_talhao',
+        as: 'pes',
+    });
 }

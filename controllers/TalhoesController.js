@@ -11,7 +11,7 @@ router.get("/talhoes", Auth, (req, res) => {
         Talhoes.findAll({
             include: {
                 model: Propriedades,
-                attributes: ['nome'], // Apenas o nome da propriedade
+                as: 'propriedade', // Alias definido no relacionamento
             }
         }),
         Propriedades.findAll()  // Buscando todas as propriedades para ordená-las
@@ -71,8 +71,12 @@ router.get("/talhoes/delete/:id?", Auth, (req, res) => {
 // ROTA DE EDIÇÃO DE TALHÃO
 router.get("/talhoes/edit/:id", Auth, (req, res) => {
     const id = req.params.id;
-
-    Talhoes.findByPk(id)
+    Talhoes.findByPk(id, {
+            include: {
+                model: Propriedades,
+                as: 'propriedade', // Alias definido no relacionamento
+            }
+    })
         .then((talhao) => {
             res.render("talhoesEdit", {
                 talhao: talhao,
@@ -89,7 +93,7 @@ router.post("/talhoes/update", Auth, (req, res) => {
     const { id_talhao, nome, especie_fruta, id_propriedade } = req.body;
 
     Talhoes.update(
-        { nome, especie_fruta, id_propriedade },
+        { nome, especie_fruta },
         { where: { id_talhao } }
     )
     .then(() => {

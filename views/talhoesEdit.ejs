@@ -1,27 +1,43 @@
-<%- include ('partials/header.ejs') %>
-<%- include ('partials/navbar.ejs') %>
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs') %>
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <form action="/talhoes/update" method="POST">
+<div class="container mt-5">
+    <h1 id="titulo">Editar Talhão</h1>
+    <div class="card mt-2" id="form-bg">
+        <div class="card-body p-5">        
+                <!-- Campos adicionais (class="d-none")-->
+                <div id="camposAdicionais" class="mt-5">
+                    <h4 id="titulo">Dados do Talhão</h4>
+                    <!-- Endereço -->  
+                    <div class="row">
+                        <input type="hidden" name="id_propriedade" value="<%= talhao.id_propriedade%>">
+                        <input type="hidden" name="id_talhao" value="<%= talhao.id_talhao%>">
+                        <div class="form-group col-md-5 mt-4">
+                            <label for="cep" class="form-label">Propriedade</label>
+                            <input type="text" class="form-control" name="id_propriedade" id="id_propriedade" value="<%= talhao.propriedade.nome %>" readonly>
+                        </div>
+                        </label>
+                        <div class="form-group col-md-5 mt-4">
+                            <label for="cep" class="form-label">Nome talhão</label>
+                            <input type="text" class="form-control" id="nome" name="nome" value="<%= talhao.nome %>" required>
+                        </div>
+                    </div>
+                        <div class="form-group col-md-5 mt-4">
+                            <label for="cep" class="form-label">Espécie Plantada</label>
+                            <input type="text" class="form-control" id="especie_fruta" name="especie_fruta" value="<%= talhao.especie_fruta %>" required>
+                        </div>
 
-
-<div class="conteiner">
-    <div class="card">
-        <div class="card-header">
-            <h1>Editar Cliente</h1>
-            <hr>
-        </div>
-        <div class="card-body">
-            <form action="/clientes/update" method="post">
-                <label>Nome Talhão :</label>
-                <input type="text" name="nome" id="nome" value="<%= talhoes.nome %>" class="form-control" required>
-                <label>Nome Pé :</label>
-                <input type="text" name="cpf" id="cpf" value="<%= talhoes.cpf %>" class="form-control" required>
-                <input type="hidden" name="id" value="<%= talhoes.id %>">
-                <br>
-                <input type="submit" class="btn btn-warning" value="Alterar" onclick="return confirm('Deseja realmente alterar as informações do talhão <%= talhoes.nome %>?')">
+                <!-- Botão para cadastrar -->
+                 <div class="container  my-2">
+                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar" onclick="return confirm('Deseja realmente alterar o talhão <%= talhao.nome %>')">Editar</button>
+                </div>
+            </div>
             </form>
-            <hr>
+
         </div>
     </div>
 </div>
-
-
-<%- include ('partials/footer.ejs') %>
+</main>
+<%- include('partials/footer.ejs') %>

@@ -1,14 +1,36 @@
 import express from 'express';
-import Historico from "../models/Historico.js"
+import Propriedades from "../models/Propriedades.js";
+import Talhoes from "../models/Talhoes.js";
 const router = express.Router()
 import Auth from "../middleware/Auth.js"
 // ROTA PEDIDOS
 router.get("/historico", Auth,(req, res) => {
-    Historico.findAll().then(historico => {
-        res.render("historico", { historico })
-    })
+    Promise.all([
+        Talhoes.findAll({
+            include: {
+                model: Propriedades,
+                as: 'propriedade', // Alias definido no relacionamento
+            }
+        }),
+        Propriedades.findAll()  // Buscando todas as propriedades para ordená-las
+    ])
+    .then(([talhoes, propriedades]) => {
+        // Ordena as propriedades pelo nome
+        const NomepOrdenado = propriedades.sort((a, b) => {
+            return a.nome.localeCompare(b.nome);
+        });
 
-})
+        // Renderiza a página com os talhões e propriedades ordenadas
+        res.render("historico", {
+            Talhoes: talhoes,
+            Propriedades: NomepOrdenado,
+        });
+    })
+    .catch((error) => {
+        console.error("Erro ao listar talhões e propriedades:", error);
+        res.status(500).send("Erro ao listar talhões.");
+    });
+});
 
 router.post("/historico/new", Auth,(req, res) => {
     try {

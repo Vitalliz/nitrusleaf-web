@@ -1,7 +1,6 @@
 import sequelize from "sequelize";
 import connection from "../config/sequelize-config.js";
 import Usuarios from "./Usuarios.js";
-import '../config/relacionamentos-config.js';  // Importa a configuração dos relacionamentos
 
 const Propriedades = connection.define('propriedades', {
     id_propriedade: {

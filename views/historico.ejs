@@ -7,14 +7,16 @@
     <div class="container cont">
         <div class="container">
             <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-              <h2 class="align-self-end m-0 p-0 fonte titulo1">Histórico</h2>
-              <div id="options-container">
-                <select id="prop" class="options">
-                  <option value="Propriedade 1">Propriedade 1</option>
-                  <option value="Propriedade 2">Propriedade 2</option>
-                </select>
-                <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
-              </div>
+                <h2 class="align-self-end m-0 p-0 fonte titulo1">Histórico</h2>
+                <div id="options-container">
+                  <select id="prop" class="options">
+                    <% Propriedades.forEach(prop => {%>
+                    <option value="<%= prop.id_propriedade%>"><%= prop.nome%></option>
+                  <%})%>
+                  </select>
+                  <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                </div>
+            </div>
               
           </div>
    <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
@@ -61,48 +63,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% historico.forEach(historico => { %>
-                    <tr>
-                        <td><%= historico.talhao %></td>
-                        <td><%= historico.descricao %></td>
-                        <td><a style = "color: orange;" href="/historico/edit/<%= historico.id %>">Editar</a></td>
-                        <td><a style = "color: red " href="/historico/delete/<%= historico.id %>" onclick="return confirm('Deseja realmente deletar o fazenda <%= fazenda.numero %>')">Deletar</a></td>
-                    </tr>
-                    <% }) %>
+                    
                 </tbody>
             </table>
         </div>
     </div>
     </div>
 </main>
-
-    <!-- <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h1>Histórico</h1>
-            </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Talhão:</th>
-                            <th>Descrição:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% historico.forEach(historico => { %>
-                        <tr>
-                            <td><img src="imgs/order.png" width="30px"></td>
-                            <td><%= historico.talhao %></td>
-                            <td><%= historico.descricao %></td>
-                            <td><a style = "color: orange;" href="/historico/edit/<%= historico.id %>">Editar</a></td>
-                            <td><a style = "color: red " href="/historico/delete/<%= historico.id %>" onclick="return confirm('Deseja realmente deletar o fazenda <%= fazenda.numero %>')">Deletar</a></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div> -->
 
 <%- include ('partials/footer.ejs') %>

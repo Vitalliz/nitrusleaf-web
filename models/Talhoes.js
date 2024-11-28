@@ -22,10 +22,20 @@ const Talhoes = connection.define('talhoes', {
     especie_fruta: {
         type: sequelize.STRING,
         allowNull: false,
+    },
+    total_pes: {
+        type: sequelize.INTEGER,
+        defaultValue: 0,
+    },
+    pes_analisados: {
+        type: sequelize.INTEGER,
+        defaultValue: 0,
+    },
+    pes_diagnosticados: {
+        type: sequelize.INTEGER,
+        defaultValue: 0,
     }
 });
-
-import '../config/relacionamentos-config.js';
 
 Talhoes.sync({ force: false });
 

@@ -1,5 +1,5 @@
 <%- include('partials/header.ejs') %>
-<%- include('partials/navbar.ejs') %>
+<%- include('partials/navbar-user.ejs') %>
 <main class="main-content">
     <%- include ('partials/navbar-lateral.ejs') %>
     <form action="/propriedades/new" method="POST">
@@ -69,7 +69,7 @@
                             <td class="fonte" id="tabodyp"><%= prop.bairro%></td>
                             <td class="fonte" id="tabodyp"><%= prop.cidade%></td>
                             <td class="fonte" id="tabodyp">
-                                <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+                                <a href="/propriedades/edit/<%= prop.id_propriedade %>"><img src="/imgs/btn-editar.svg" alt=""></a>
                             </td>
                             </tr>
                             <% }) %>

@@ -21,8 +21,24 @@ const Pes = connection.define('pes', {
     },
     situacao: {
         type: sequelize.ENUM('tratado', 'nao tratado', 'sem informacoes'),
-        allowNull: false,
-    }
+        defaultValue: 'sem informacoes',
+    },
+    deficiencia_cobre: {
+        type: sequelize.BOOLEAN,
+        defaultValue: false,
+    },
+    deficiencia_manganes: {
+        type: sequelize.BOOLEAN,
+        defaultValue: false,
+    },
+    outros: {
+        type: sequelize.BOOLEAN,
+        defaultValue: false,
+    },
+    observacoes: {
+        type: sequelize.STRING,
+        allowNull: true
+    },
 });
 
 Pes.sync({ force: false });

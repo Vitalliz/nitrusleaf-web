@@ -1,1 +1,74 @@
 <%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar-user.ejs') %>
+
+
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <div class="container cont">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+                <h2 class="align-self-end m-0 p-0 fonte titulo1">Histórico</h2>
+                <div id="options-container">
+                  <select id="prop" class="options">
+                    <% Propriedades.forEach(prop => {%>
+                    <option value="<%= prop.id_propriedade%>"><%= prop.nome%></option>
+                  <%})%>
+                  </select>
+                  <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                </div>
+            </div>
+              
+          </div>
+   <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
+    <div class="container pt-3">
+        <div class="card p-5" id="tab">
+            <h2 id="titulo">Registros</h2>
+            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-1" />
+            <table class="mt-2">
+                <thead>
+                    <tr>
+                        <th>Talhões Registrados</th>
+                        <th>Total de pés</th>
+                        <th>Pés Diagnosticados</th>
+                        <th>Pés analisados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3</td>
+                        <td>82</td>
+                        <td>42</td>
+                        <td>52/82</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container pt-3">
+        <div class="card px-5 pb-5 pt-4" id="tab">
+            <div class="d-flex align-items-center justify-content-between" >
+                <h2 id="titulo">Talhões</h2>
+                <a href="/talhoes">Adicionar Talhão<img class="ms-3" src="/imgs/adicionar.svg"  alt=""></a>
+            </div>
+            
+            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-1" />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome Talhão</th>
+                        <th>Pés Analisados</th>
+                        <th>Data de Criação</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</main>
+
+<%- include ('partials/footer.ejs') %>

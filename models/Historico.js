@@ -4,12 +4,12 @@ import Sequelize from "sequelize";
 import connection from "../config/sequelize-config.js";
 //.define cria a tabela no banco
 const Historico = connection.define('historico', {
-    id: {
+    id_historico: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    talhao: {
+    id_talhao: {
         type: Sequelize.STRING,
         allowNull: false,
     },

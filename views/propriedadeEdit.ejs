@@ -1,0 +1,69 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar-user.ejs') %>
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <form action="/propriedades/update" method="POST">
+<div class="container mt-5">
+    <h1 id="titulo">Edição</h1>
+    <div class="card mt-2" id="form-bg">
+        <div class="card-body p-5">        
+                <!-- Campos adicionais (class="d-none")-->
+                <div id="camposAdicionais" class="mt-5">
+                    <div class="d-flex justify-content-center">
+                    <h4 id="titulo">Edição da propriedade <%= propriedade.nome %></h4>
+                    <!-- Endereço -->  
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6 m-3">
+                            <label for="nome" class="form-label">Nome propriedade</label>
+                            <input type="text" class="form-control" id="nome" name="nome" value="<%= propriedade.nome %>" required>
+                        </div>
+                        <div class="form-group col-md-5 m-3">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" name="cep" value="<%= propriedade.cep %>" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-8 m-3">
+                            <label for="logradouro" class="form-label">Logradouro</label>
+                            <input type="text" class="form-control" id="logradouro" name="logradouro" value="<%= propriedade.logradouro %>" required>
+                        </div>
+                        <div class="form-group col-md-3 m-3">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero" name="numero" value="<%= propriedade.numero %>" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6  m-3">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="bairro" value="<%= propriedade.bairro %>" required>
+                        </div>
+                        <div class="form-group col-md-5 m-3">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade" name="cidade" value="<%= propriedade.cidade %>" required>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="id_propriedade" value="<%= propriedade.id_propriedade%>">
+
+                    <input type="hidden" name="id_usuario" value="<%= propriedade.id_usuario%>">
+
+                <!-- Botão para cadastrar -->
+                 <div class="container  my-2">
+                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar" onclick="return confirm('Deseja realmente alterar a propriedade <%= propriedade.nome %>')">Editar</button>
+                </div>
+               </div>
+            </form>
+        </div>
+    </div>
+</div>
+</main>
+<%- include('partials/footer.ejs') %>
+
+<script>
+    // // Mostra ou oculta os campos adicionais ao selecionar a checkbox
+    // document.getElementById('mostrarCampos').addEventListener('change', function () {
+    //     const camposAdicionais = document.getElementById('camposAdicionais');
+    //     camposAdicionais.classList.toggle('d-none', !this.checked);
+    // });
+</script>

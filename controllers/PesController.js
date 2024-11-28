@@ -4,34 +4,46 @@ import Pes from "../models/Pes.js";
 import Talhoes from "../models/Talhoes.js"; // Para associar a tabela "talhoes"
 import Auth from "../middleware/Auth.js"
 // ROTA PARA LISTAR TODOS OS PES
-router.get("/pes", Auth,(req, res) => {
-    Pes.findAll({
-        include: [
-            { model: Talhoes, as: 'talhao' } // Incluir informações de 'Talhoes'
-        ]
-    })
-    .then(pes => {
-        res.render("pes", {
-            pes: pes
+router.get("/cadastroPes", Auth, (req, res) => {
+    // Usando Promise.all para buscar talhões e propriedades
+    Promise.all([
+        Pes.findAll({
+            include: {
+                model: Talhoes,
+                as: 'talhao', // Alias definido no relacionamento
+            }
+        }),
+        Talhoes.findAll()  // Buscando todas as propriedades para ordená-las
+    ])
+    .then(([pes, talhoes]) => {
+
+        // Renderiza a página com os talhões e propriedades ordenadas
+        res.render("cadastroPes", {
+            pes: pes,
+            talhoes: talhoes,
         });
     })
     .catch((error) => {
-        console.log(error);
-        res.status(500).send("Erro ao listar pes.");
+        console.error("Erro ao listar talhões e propriedades:", error);
+        res.status(500).send("Erro ao listar talhões.");
     });
 });
 
 // ROTA PARA CRIAR NOVO PES
-router.post("/pes/new", Auth,(req, res) => {
-    const { nome, id_talhao, situacao } = req.body;
+router.post("/pes/new/:id", Auth,(req, res) => {
+    const { nome, id_talhao, situacao, deficiencia_cobre, deficiencia_manganes, outros, observacoes } = req.body;
 
     Pes.create({
         nome,
         id_talhao,
-        situacao
+        situacao,
+        deficiencia_cobre,
+        deficiencia_manganes,
+        outros,
+        observacoes,
     })
     .then(() => {
-        res.redirect("/pes");
+        res.redirect("/cadastroPes");
     })
     .catch((error) => {
         console.log(error);

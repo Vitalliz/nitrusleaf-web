@@ -37,27 +37,19 @@ const app = express();
 // Função para criar as tabelas no banco de dados
 async function createTables() {
     try {
-        await Usuarios.sync({ force: false });
-        console.log('Tabela "Usuarios" criada.');
-        
-        await Propriedades.sync({ force: false });
-        console.log('Tabela "Propriedades" criada.');
-        
-        await Talhoes.sync({ force: false });
-        console.log('Tabela "Talhoes" criada.');
-        
-        await Pes.sync({ force: false });
-        console.log('Tabela "Pes" criada.');
-        
-        await Foto.sync({ force: false });
-        console.log('Tabela "Foto" criada.');
-        
-        await Relatorios.sync({ force: false });
-        console.log('Tabela "Relatorios" criada.');
+        // Sincroniza todas as tabelas e respeita os relacionamentos definidos
+        await connection.sync({ force: false });
+        console.log('Tabelas sincronizadas com sucesso!');
     } catch (error) {
-        console.error('Erro ao criar as tabelas:', error);
+        console.error('Erro ao sincronizar as tabelas:', error);
     }
 }
+
+import configurarRelacionamentos from './config/relacionamentos-config.js';
+
+// Configure os relacionamentos
+configurarRelacionamentos();
+
 
 // Criando a pasta 'uploads' se não existir
 const uploadsDir = './uploads';
@@ -119,6 +111,13 @@ app.post('/uploads', upload.single('file'), (req, res) => {
     res.status(200).json({ success: true, message: 'Arquivo enviado com sucesso!', file: req.file });
 });
 
+// ROTA PRINCIPAL
+app.get('/', (req, res) => {
+    res.render('index', {
+        messages: req.flash() // Passando mensagens de flash para a view
+    });
+});
+
 // Endpoint principal
 app.get('/', (req, res) => {
     // Defina o nome da imagem ou a lógica para pegar a imagem dinamicamente
@@ -141,13 +140,6 @@ app.use('/', HistalController);
 app.use('/', DeficienciaController);
 app.use('/', HistoricoController);
 app.use("/", MapaController);
-
-// ROTA PRINCIPAL
-app.get('/', (req, res) => {
-    res.render('index', {
-        messages: req.flash() // Passando mensagens de flash para a view
-    });
-});
 
 // Inicializando o servidor na porta 8080
 const port = 8080;

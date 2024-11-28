@@ -72,7 +72,7 @@ router.get("/propriedades/edit/:id", Auth,(req, res) => {
 
     Propriedades.findByPk(id)
         .then((propriedade) => {
-            res.render("propriedadesEdit", {
+            res.render("propriedadeEdit", {
                 propriedade: propriedade,
             });
         })
