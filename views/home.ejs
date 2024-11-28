@@ -26,15 +26,13 @@
     <div class="container">
       <div class="row">
         <div class="col m-1">
-          <a href="/scanner">
             <button class="btn btn-block rounded-5" id="btn-scan">ESCANEAR FOLHA</button>
-          </a>
-        </div>
-
+          </div>
         <div class="col m-1">
-          <a href="/scanner">
-            <button class="btn btn-block rounded-5" id="btn-scan">FAZER UPLOAD DA IMAGEM</button>
-          </a>
+          <button class="btn btn-block rounded-5" id="btn-upload">FAZER UPLOAD DA IMAGEM</button>
+            <!-- Input de arquivo oculto -->
+            <input type="file" id="file-input" accept="image/*">
+            <script src="script/upload.js"></script>
         </div>
       </div>
       <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
@@ -95,8 +93,16 @@
             </div>
           </div>
         </div>
-          
   </div>
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <button class="btn btn-block rounded-5" id="close-btn">ESCANEANDO</button>
+      <div id="action-one"></div>
+      <div id="action-two"></div>
+    </div>
+    <div id="scanear"></div>
+  </div>
+  <script src="script/popup.js"></script>
 </div>
 </main>
 
