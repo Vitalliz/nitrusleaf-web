@@ -22,8 +22,8 @@ router.get("/historico", Auth,(req, res) => {
 
         // Renderiza a página com os talhões e propriedades ordenadas
         res.render("historico", {
-            Talhoes: talhoes,
-            Propriedades: NomepOrdenado,
+            talhoes: talhoes,
+            propriedades: NomepOrdenado,
         });
     })
     .catch((error) => {
@@ -32,16 +32,6 @@ router.get("/historico", Auth,(req, res) => {
     });
 });
 
-router.post("/historico/new", Auth,(req, res) => {
-    try {
-        const historicoDados = req.body;
-        const historico = Historico.create({ talhao: historicoDados.talhao, descricao: pedidoDados.descricao  })
-        res.status(201).send("Cadastrado")
-    } catch (e) {
-        console.error("erro", e);
-        res.status(400);
-    }
-})
 router.get("/historico/delete/:id", Auth,(req, res) => {
     const id = req.params.id
     Historico.destroy({

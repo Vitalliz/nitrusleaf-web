@@ -12,13 +12,13 @@ export default function configurarRelacionamentos() {
         as: 'talhoes',
     });
 
-    Pes.belongsTo(Talhoes, {
-        foreignKey: 'id_talhao',
-        as: 'talhoes',
-    });
-
     Talhoes.hasMany(Pes, {
         foreignKey: 'id_talhao',
         as: 'pes',
+    });
+
+    Pes.belongsTo(Talhoes, {
+        foreignKey: 'id_talhao',
+        as: 'talhao',
     });
 }

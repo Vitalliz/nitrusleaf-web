@@ -24,13 +24,13 @@ router.get("/cadastroPes", Auth, (req, res) => {
         });
     })
     .catch((error) => {
-        console.error("Erro ao listar talhões e propriedades:", error);
-        res.status(500).send("Erro ao listar talhões.");
+        console.error("Erro ao listar pés e talhões:", error);
+        res.status(500).send("Erro ao listar pés.");
     });
 });
 
 // ROTA PARA CRIAR NOVO PES
-router.post("/pes/new/:id", Auth,(req, res) => {
+router.post("/pes/new/", Auth,(req, res) => {
     const { nome, id_talhao, situacao, deficiencia_cobre, deficiencia_manganes, outros, observacoes } = req.body;
 
     Pes.create({
