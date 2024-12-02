@@ -2,6 +2,9 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import Usuarios from "../models/Usuarios.js";
+import Propriedades from "../models/Propriedades.js";
+import Talhoes from "../models/Talhoes.js";
+import Pes from "../models/Pes.js";
 import session from 'express-session';
 import flash from 'express-flash';
 const router = express.Router();
@@ -23,6 +26,7 @@ router.get("/logout", (req, res) => {
     res.redirect("/login");
 });
 
+// ROTA DE AUTENTICAÇÃO DO LOGIN
 router.post("/authenticate", async (req, res) => {
     const { email, senha } = req.body;
 
@@ -139,6 +143,37 @@ router.get("/", (req, res) => {
         messages: req.flash(),
         user: req.session.user,
     });
+});
+
+// **NOVA ROTA PARA BUSCAR DADOS HIERÁRQUICOS**
+router.get('/dados/:id_usuario', async (req, res) => {
+    const { id_usuario } = req.params;
+
+    try {
+        const usuario = await Usuarios.findByPk(id_usuario, {
+            include: {
+                model: Propriedades,
+                as: 'propriedades',
+                include: {
+                    model: Talhoes,
+                    as: 'talhoes',
+                    include: {
+                        model: Pes,
+                        as: 'pes',
+                    },
+                },
+            },
+        });
+
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        res.status(200).json(usuario);
+    } catch (error) {
+        console.error("Erro ao buscar dados do usuário:", error);
+        res.status(500).json({ error: 'Erro ao buscar dados do usuário.' });
+    }
 });
 
 export default router;

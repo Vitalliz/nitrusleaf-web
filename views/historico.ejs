@@ -9,15 +9,18 @@
             <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
                 <h2 class="align-self-end m-0 p-0 fonte titulo1">Histórico</h2>
                 <div id="options-container">
-                  <select id="prop" class="options">
+                  <select id="propriedades" class="options">
                     <% propriedades.forEach(prop => {%>
-                    <option value="<%= prop.id_propriedade%>"><%= prop.nome%></option>
-                  <%})%>
+                        <option 
+                        value="<%= prop.id_propriedade %>" 
+                        <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>>
+                        <%= prop.nome %>
+                    </option>
+                    <%})%>
                   </select>
                   <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
                 </div>
             </div>
-              
           </div>
    <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
     <div class="container pt-3">
@@ -60,14 +63,14 @@
                     <th class="fonte" id="thead">Data de Criação</th>
                     <th class="fonte" id="thead"></th>
                 </thead>
-                <tbody>
+                <tbody id="tabel">
                     <% talhoes.forEach(tal => { %>
                     <tr class="tb">
                     <td class="fonte" id="tabody"><%= tal.nome%></td>
                     <td class="fonte" id="tabody"><%= tal.pes_analisados%>/<%= tal.total_pes %></td>
-                    <td class="fonte" id="tabody"><%= tal.createdAt%></td>
+                    <td class="fonte" id="tabody"><%= tal.createdAt.toLocaleDateString() %></td>
                     <td class="fonte" id="tabody">
-                        <a href="/histal"><img src="/imgs/setinha.svg" alt="" /></a>
+                        <a href="/histal/<%= tal.id_talhao%>"><img src="/imgs/setinha.svg" alt="" /></a>
                     </td>
                     </tr>
                     <% }) %>
@@ -77,5 +80,47 @@
     </div>
     </div>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+    const propriedadesSelect = document.getElementById('propriedades');
+    const idPropriedade = propriedadesSelect.value; // Captura o ID da propriedade selecionada inicialmente
 
+    // Função para atualizar a tabela de talhões
+    const atualizarTabelaTalhoes = async (idPropriedade) => {
+        try {
+            const response = await fetch(`/historico/talhoes/${idPropriedade}`);
+            if (!response.ok) throw new Error('Erro ao buscar talhões.');
+
+            const talhoes = await response.json(); // Recebe os talhões do servidor
+            const tbody = document.getElementById('tabel'); // Seleciona o corpo da tabela
+
+            // Atualiza a tabela de talhões
+            tbody.innerHTML = talhoes
+                .map(
+                    (tal) => `
+                    <tr class="tb">
+                        <td class="fonte" id="tabody">${tal.nome}</td>
+                        <td class="fonte" id="tabody">${tal.pes_analisados}/${tal.total_pes}</td>
+                        <td class="fonte" id="tabody">${new Date(tal.createdAt).toLocaleDateString()}</td>
+                        <td class="fonte" id="tabody">
+                            <a href="/histal/${tal.id_talhao}"><img src="/imgs/setinha.svg" alt="" /></a>
+                        </td>
+                    </tr>`
+                )
+                .join('');
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao atualizar os talhões.');
+        }
+    };
+
+    // Atualiza a tabela ao carregar a página
+    atualizarTabelaTalhoes(idPropriedade);
+
+    // Adiciona o evento para atualizar ao trocar a propriedade
+    propriedadesSelect.addEventListener('change', (e) => {
+        atualizarTabelaTalhoes(e.target.value);
+    });
+});
+</script>
 <%- include ('partials/footer.ejs') %>

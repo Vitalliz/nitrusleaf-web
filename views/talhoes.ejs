@@ -11,17 +11,26 @@
                 <div id="camposAdicionais" class="mt-5">
                     <h4 id="titulo">Dados do Talhão</h4>
                     <!-- Endereço -->  
+                    <input type="hidden" name="id_propriedade" value="<%= propriedadeSelecionada || '' %>">
                     <div class="row">
                         <label for="">
                         <div>
                             <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
                                 <div class="options-container col-md-5">
-                                  <select id="prop" class="form-control" name="id_propriedade">
-                                    <% Propriedades.forEach(prop => {%>
-                                    <option value="<%= prop.id_propriedade%>" class="form-control"><%= prop.nome%></option>
-                                  <%})%>
-                                  </select>
-                                  <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                                  <label for="">Propriedade</label>
+                                  <div id="propriedades" class="form-control">
+                                    <% 
+                                    const propriedadeAtual = propriedades.find(prop => prop.id_propriedade == propriedadeSelecionada);
+                                %>
+                                <% if (propriedadeAtual) { %>
+                                    <div value="<%= propriedadeAtual.id_propriedade %>" selected>
+                                        <%= propriedadeAtual.nome %>
+                                    </div>
+                                <% } else { %>
+                                    <div disabled selected>Propriedade não encontrada</div>
+                                <% } %>
+                                </div>
+
                                 </div>
                             </div>
                         </label>
@@ -34,7 +43,6 @@
                             <label for="cep" class="form-label">Espécie Plantada</label>
                             <input type="text" class="form-control" id="especie_fruta" name="especie_fruta" placeholder="Insira a espécie de fruta que é plantada no talhão" required>
                         </div>
-
                 <!-- Botão para cadastrar -->
                  <div class="container  my-2">
                     <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar">Cadastrar</button>
@@ -53,11 +61,11 @@
                             <th class="fonte" id="thead">Editar</th>
                         </thead>
                         <tbody>
-                            <% Talhoes.forEach(tal => { %>
+                            <% talhoes.forEach(tal => { %>
                             <tr class="tb">
                             <td class="fonte" id="tabodyp"><%= tal.nome %></td>
                             <td class="fonte" id="tabodyp"><%= tal.especie_fruta %></td>
-                            <td class="fonte" id="tabodyp"><%= tal.propriedade.nome%></td>
+                            <td class="fonte" id="tabodyp"><%= tal.propriedade.nome %></td>
                             <td class="fonte" id="tabodyp">
                                 <a href="/talhoes/edit/<%= tal.id_talhao %>"><img src="/imgs/btn-editar.svg" alt=""></a>
                             </td>
@@ -71,4 +79,5 @@
     </div>
 </div>
 </main>
+
 <%- include('partials/footer.ejs') %>

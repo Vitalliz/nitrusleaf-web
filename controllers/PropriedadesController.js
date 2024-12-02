@@ -5,7 +5,7 @@ import Auth from "../middleware/Auth.js"
 
 // ROTA PARA LISTAR TODAS AS PROPRIEDADES
 router.get("/cadastroPropriedade", Auth,(req, res) => {
-    Propriedades.findAll()
+    Propriedades.findAll({where: { id_usuario: req.session.user.id_usuario }})
     .then(Propriedades => {
             const NomepOrdenado = Propriedades.sort((a, b) => {
                 return a.nome.localeCompare(b.nome);

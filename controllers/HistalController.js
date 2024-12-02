@@ -1,15 +1,18 @@
 import express from 'express';
 import HisTal from "../models/HisTal.js"; // Certifique-se de que o nome do modelo está correto
 import Auth from "../middleware/Auth.js"
-
+import Pes from "../models/Pes.js"
+import Talhoes from "../models/Talhoes.js"
 const router = express.Router();
 
 // ROTA HISTAL
-router.get("/histal", Auth,(req, res) => {
-    HisTal.findAll().then(histal => {
+router.get("/histal/:id", Auth,(req, res) => {
+    const id_talhao = req.params.id; 
+    Promise.all([
+    HisTal.findAll(), Pes.findAll({where: {id_talhao: id_talhao}}), Talhoes.findAll({where: {id_talhao: id_talhao}})]).then(([histal, pes, talhoes]) => {
         // Ordena os dados pela data mais recente (aplica o quickSort)
         const sortedHistal = quickSort(histal, 'data_criacao');
-        res.render("histal", { histal: sortedHistal });
+        res.render("histal", { histal: sortedHistal, pes: pes, talhoes: talhoes });
     })
 })
 

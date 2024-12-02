@@ -30,9 +30,15 @@ import Relatorios from './models/Relatorios.js';
 import Home from './models/Home.js';
 import Deficiencia from './models/Deficiencia.js';
 import Historico from './models/Historico.js';
+import configurarRelacionamentos from './config/relacionamentos-config.js';
+
+
 
 // Iniciando o Express
 const app = express();
+
+// Configure os relacionamentos
+configurarRelacionamentos();
 
 // Função para criar as tabelas no banco de dados
 async function createTables() {
@@ -45,10 +51,6 @@ async function createTables() {
     }
 }
 
-import configurarRelacionamentos from './config/relacionamentos-config.js';
-
-// Configure os relacionamentos
-configurarRelacionamentos();
 
 
 // Criando a pasta 'uploads' se não existir
@@ -118,13 +120,14 @@ app.get('/', (req, res) => {
     });
 });
 
+/*
 // Endpoint principal
-app.get('/', (req, res) => {
+app.get('/home', (req, res) => {
     // Defina o nome da imagem ou a lógica para pegar a imagem dinamicamente
     const imageUrl = '/uploads/1732670720985.png';  // Aqui você pode colocar a lógica para pegar a imagem desejada
     res.render('home', { imageUrl });
 });
-
+*/
 // Definindo o motor de templates EJS
 app.set('view engine', 'ejs');
 

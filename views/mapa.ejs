@@ -7,7 +7,7 @@
   <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
     <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
     <div id="options-container">
-      <select id="prop" class="options">
+      <select id="propriedades" class="options">
         <% Propriedades.forEach(prop => {%>
         <option value="<%= prop.id_propriedade%>"><%= prop.nome%></option>
       <%})%>

@@ -4,13 +4,13 @@ import Pes from "../models/Pes.js";
 import Talhoes from "../models/Talhoes.js"; // Para associar a tabela "talhoes"
 import Auth from "../middleware/Auth.js"
 // ROTA PARA LISTAR TODOS OS PES
-router.get("/cadastroPes", Auth, (req, res) => {
+router.get("/cadastroPes/:id", Auth, (req, res) => {
     // Usando Promise.all para buscar talhões e propriedades
     Promise.all([
         Pes.findAll({
             include: {
                 model: Talhoes,
-                as: 'talhao', // Alias definido no relacionamento
+                as: 'talhoes', // Alias definido no relacionamento
             }
         }),
         Talhoes.findAll()  // Buscando todas as propriedades para ordená-las

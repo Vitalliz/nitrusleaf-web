@@ -5,14 +5,18 @@ const router = express.Router()
 import Auth from "../middleware/Auth.js"
 // ROTA PEDIDOS
 router.get("/historico", Auth,(req, res) => {
+    const propriedadeSelecionada = req.session.propriedadeSelecionada || null;
     Promise.all([
         Talhoes.findAll({
             include: {
                 model: Propriedades,
                 as: 'propriedade', // Alias definido no relacionamento
+            },
+            where:{
+            id_propriedade: propriedadeSelecionada
             }
         }),
-        Propriedades.findAll()  // Buscando todas as propriedades para ordená-las
+        Propriedades.findAll({where: { id_usuario: req.session.user.id_usuario }})  // Buscando todas as propriedades para ordená-las
     ])
     .then(([talhoes, propriedades]) => {
         // Ordena as propriedades pelo nome
@@ -20,10 +24,26 @@ router.get("/historico", Auth,(req, res) => {
             return a.nome.localeCompare(b.nome);
         });
 
+        router.get("/historico/talhoes/:id_propriedade", Auth, async (req, res) => {
+            const { id_propriedade } = req.params;
+        
+            try {
+                const talhoes = await Talhoes.findAll({
+                    where: { id_propriedade },
+                });
+                res.json(talhoes); // Retorna os talhões em formato JSON
+            } catch (error) {
+                console.error("Erro ao buscar talhões:", error);
+                res.status(500).json({ error: "Erro ao buscar talhões." });
+            }
+        });
+        
+
         // Renderiza a página com os talhões e propriedades ordenadas
         res.render("historico", {
             talhoes: talhoes,
             propriedades: NomepOrdenado,
+            propriedadeSelecionada,
         });
     })
     .catch((error) => {

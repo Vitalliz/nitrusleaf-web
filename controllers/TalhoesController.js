@@ -7,14 +7,18 @@ import Propriedades from "../models/Propriedades.js";
 // ROTA PARA LISTAR TALHÕES
 router.get("/talhoes", Auth, (req, res) => {
     // Usando Promise.all para buscar talhões e propriedades
+    const propriedadeSelecionada = req.session.propriedadeSelecionada || null;
     Promise.all([
         Talhoes.findAll({
             include: {
                 model: Propriedades,
                 as: 'propriedade', // Alias definido no relacionamento
-            }
+            },
+            where:{
+                id_propriedade: propriedadeSelecionada,
+            }   
         }),
-        Propriedades.findAll()  // Buscando todas as propriedades para ordená-las
+        Propriedades.findAll({where: { id_usuario: req.session.user.id_usuario, id_propriedade: propriedadeSelecionada}})  // Buscando todas as propriedades para ordená-las
     ])
     .then(([talhoes, propriedades]) => {
         // Ordena as propriedades pelo nome
@@ -24,8 +28,9 @@ router.get("/talhoes", Auth, (req, res) => {
 
         // Renderiza a página com os talhões e propriedades ordenadas
         res.render("talhoes", {
-            Talhoes: talhoes,
-            Propriedades: NomepOrdenado,
+            talhoes: talhoes,
+            propriedades: NomepOrdenado,
+            propriedadeSelecionada
         });
     })
     .catch((error) => {

@@ -1,4 +1,4 @@
-const select = document.getElementById("prop");
+const select = document.getElementById("propriedades");
 const seta = document.getElementById("setajs");
 
 // Estado para controlar o giro da seta
