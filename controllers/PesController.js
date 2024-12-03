@@ -5,22 +5,24 @@ import Talhoes from "../models/Talhoes.js"; // Para associar a tabela "talhoes"
 import Auth from "../middleware/Auth.js"
 // ROTA PARA LISTAR TODOS OS PES
 router.get("/cadastroPes/:id", Auth, (req, res) => {
+    const id_talhao = req.params.id; 
     // Usando Promise.all para buscar talhões e propriedades
     Promise.all([
         Pes.findAll({
             include: {
                 model: Talhoes,
-                as: 'talhoes', // Alias definido no relacionamento
-            }
+                as: 'talhao', // Alias definido no relacionamento
+            },
+            where:{id_talhao}
         }),
-        Talhoes.findAll()  // Buscando todas as propriedades para ordená-las
+        Talhoes.findOne({where:{id_talhao}})  // Buscando todas as propriedades para ordená-las
     ])
-    .then(([pes, talhoes]) => {
+    .then(([pes, talhao]) => {
 
         // Renderiza a página com os talhões e propriedades ordenadas
         res.render("cadastroPes", {
             pes: pes,
-            talhoes: talhoes,
+            talhao: talhao,
         });
     })
     .catch((error) => {
@@ -35,7 +37,7 @@ router.post("/pes/new/", Auth,(req, res) => {
 
     Pes.create({
         nome,
-        id_talhao,
+        id_talhao: id_talhao,
         situacao,
         deficiencia_cobre,
         deficiencia_manganes,
@@ -43,7 +45,7 @@ router.post("/pes/new/", Auth,(req, res) => {
         observacoes,
     })
     .then(() => {
-        res.redirect("/cadastroPes");
+        res.redirect(`/cadastroPes/${id_talhao}`    );
     })
     .catch((error) => {
         console.log(error);

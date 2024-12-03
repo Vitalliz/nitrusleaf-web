@@ -15,13 +15,11 @@
                         <label for="">
                         <div>
                             <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-                                <div class="options-container col-md-5">
-                                  <select id="prop" class="form-control" name="id_talhao">
-                                    <% talhoes.forEach(tal => {%>
-                                    <option value="<%= tal.id_talhao%>" class="form-control"><%= tal.nome%></option>
-                                  <%})%>
-                                  </select required>
-                                  <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                                <div class="form-group col-md-5 mt-4">
+                                    <label for="cep" class="form-label">Talhão</label>
+                                    <input type="hidden" id="id_talhao" name="id_talhao" value="<%= talhao.id_talhao %>">
+                                    <div class="form-control" readonly><%= talhao.nome %></div>
+
                                 </div>
                             </div>
                         </label>
@@ -56,7 +54,7 @@
                             <% pes.forEach(pe => { %>
                             <tr class="tb">
                             <td class="fonte" id="tabodyp"><%= pe.nome %></td>
-                            <td class="fonte" id="tabodyp"><%= pe.talhoes.nome %></td>
+                            <td class="fonte" id="tabodyp"><%= pe.talhao.nome %></td>
                             <td class="fonte" id="tabodyp"><textarea readonly><%= pe.observacoes%></textarea></td>
                             <td class="fonte" id="tabodyp">
                                 <a href="/pes/edit/<%= pe.id_pe %>"><img src="/imgs/btn-editar.svg" alt=""></a>

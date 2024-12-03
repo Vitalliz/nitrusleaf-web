@@ -18,7 +18,7 @@
     <div class="container pt-3">
     <div class="card px-5" id="tab">
         <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-            <h2 class="align-self-center m-0 px-2 fonte titulo">Talhão 1</h2>
+            <h2 class="align-self-center m-0 px-2 fonte titulo"><%= talhao.nome%></h2>
             <div class="d-flex align-items-center">
                 <div class="search me-3">
                     <!-- Mantém os campos de pesquisa agrupados -->
@@ -27,8 +27,18 @@
                     </label>
                     <input type="text" class="" placeholder="Buscar" id="pesq"/>
                 </div>
-                <a href="/cadastroPes/<%= pes.id_talhao%>"><img src="/imgs/adicionar.svg"  alt=""></a>
-                <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
+                <% if (talhao.id_talhao) { %>
+                    <a href="/cadastroPes/<%= talhao.id_talhao %>">
+                        <img src="/imgs/adicionar.svg" alt="">
+                    </a>
+                <% } else { %>
+                    <a href="/cadastroPes/">
+                        <img src="/imgs/adicionar.svg" al
+                        t="">
+                    </a>
+                <% } %>
+                
+                <a href="/talhoesEdit/<%= talhao.id_talhao%>"><img src="/imgs/btn-editar.svg" alt=""></a>
             </div>
         </div>
         <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
@@ -40,11 +50,11 @@
             <th class="fonte" id="thead"></th>
         </thead>
         <tbody>
-            <% histal.forEach(pes => { %>
+            <% pes.forEach(pe => { %>
             <tr class="tb">
-            <td class="fonte" id="tabody"><%= pes.nome%></td>
-            <td class="fonte" id="tabody"><%= pes.situacao%></td>
-            <td class="fonte" id="tabody"><%= pes.data_criacao%></td>
+            <td class="fonte" id="tabody"><%= pe.nome%></td>
+            <td class="fonte" id="tabody"><%= pe.situacao%></td>
+            <td class="fonte" id="tabody"><%= pe.createdAt.toLocaleDateString() %></td>
             <td class="fonte" id="tabody">
                 <a href="/HisTalEdit"><img src="/imgs/setinha.svg" alt="" /></a>
             </td>

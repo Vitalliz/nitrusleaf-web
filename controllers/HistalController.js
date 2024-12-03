@@ -9,10 +9,10 @@ const router = express.Router();
 router.get("/histal/:id", Auth,(req, res) => {
     const id_talhao = req.params.id; 
     Promise.all([
-    HisTal.findAll(), Pes.findAll({where: {id_talhao: id_talhao}}), Talhoes.findAll({where: {id_talhao: id_talhao}})]).then(([histal, pes, talhoes]) => {
+    HisTal.findAll(), Pes.findAll({where: {id_talhao: id_talhao}}), Talhoes.findOne({ where: { id_talhao } })]).then(([histal, pes, talhao]) => {
         // Ordena os dados pela data mais recente (aplica o quickSort)
-        const sortedHistal = quickSort(histal, 'data_criacao');
-        res.render("histal", { histal: sortedHistal, pes: pes, talhoes: talhoes });
+        const sortedHistal = quickSort(histal, 'createdAt');
+        res.render("histal", { histal: sortedHistal, pes: pes, talhao });
     })
 })
 
