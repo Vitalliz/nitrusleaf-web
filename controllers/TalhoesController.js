@@ -4,6 +4,7 @@ import Talhoes from "../models/Talhoes.js";
 import Auth from "../middleware/Auth.js";
 import Propriedades from "../models/Propriedades.js";
 
+
 // ROTA PARA LISTAR TALHÕES
 router.get("/talhoes", Auth, (req, res) => {
     // Usando Promise.all para buscar talhões e propriedades
@@ -39,23 +40,23 @@ router.get("/talhoes", Auth, (req, res) => {
     });
 });
 
-// ROTA PARA CRIAR NOVO TALHÃO
-router.post("/talhoes/new", Auth, (req, res) => {
-    const { nome, especie_fruta, id_propriedade } = req.body;
-    
-    Talhoes.create({
-        nome,
-        especie_fruta,
-        id_propriedade
-    })
-    .then(() => {
+router.post("/talhoes/new", async (req, res) => {
+    const { nome, total_pes,especie_fruta ,id_propriedade } = req.body;
+
+    try {
+        // Cria um novo talhão
+        await Talhoes.create({ nome, total_pes, especie_fruta,id_propriedade });
+
+        // Atualiza a contagem de talhões registrados na propriedade
+        await atualizarTalhoesRegistrados(id_propriedade);
+
         res.redirect("/talhoes");
-    })
-    .catch((error) => {
-        console.log(error);
+    } catch (error) {
+        console.error("Erro ao criar talhão:", error);
         res.status(500).send("Erro ao criar talhão.");
-    });
+    }
 });
+
 
 // ROTA PARA EXCLUIR TALHÃO
 router.get("/talhoes/delete/:id?", Auth, (req, res) => {
@@ -109,5 +110,24 @@ router.post("/talhoes/update", Auth, (req, res) => {
         res.status(500).send("Erro ao atualizar talhão.");
     });
 });
+
+async function atualizarTalhoesRegistrados(id_propriedade) {
+    try {
+        // Conta o total de talhões para a propriedade
+        const totalTalhoes = await Talhoes.count({
+            where: { id_propriedade },
+        });
+
+        // Atualiza o atributo `talhoes_registrados` na propriedade
+        await Propriedades.update(
+            { talhoes_registrados: totalTalhoes },
+            { where: { id_propriedade } }
+        );
+
+        console.log(`Propriedade ${id_propriedade} atualizada com ${totalTalhoes} talhões registrados.`);
+    } catch (error) {
+        console.error("Erro ao atualizar talhões registrados:", error);
+    }
+}
 
 export default router;

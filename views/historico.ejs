@@ -38,10 +38,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>3</td>
-                        <td>82</td>
-                        <td>42</td>
-                        <td>52/82</td>
+                        <td><%= propriedade.talhoes_registrados %></td>
+                        <td><%= propriedade.total_pes %></td>
+                        <td><%= propriedade.pes_diagnosticados %></td>
+                        <td><%= propriedade.pes_analisados %>/<%= propriedade.total_pes %></td>
                     </tr>
                 </tbody>
             </table>
@@ -120,6 +120,34 @@
     // Adiciona o evento para atualizar ao trocar a propriedade
     propriedadesSelect.addEventListener('change', (e) => {
         atualizarTabelaTalhoes(e.target.value);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const propriedadesSelect = document.getElementById("propriedades");
+
+    propriedadesSelect.addEventListener("change", async (e) => {
+        const idPropriedade = e.target.value;
+
+        try {
+            const response = await fetch("/historico/selecionar-propriedade", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id_propriedade: idPropriedade }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao atualizar a propriedade selecionada.");
+            }
+
+            // Recarrega a página para atualizar os dados
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao trocar a propriedade selecionada.");
+        }
     });
 });
 </script>

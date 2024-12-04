@@ -16,7 +16,7 @@ import RelatoriosController from './controllers/RelatoriosController.js';
 import PropriedadesController from './controllers/PropriedadesController.js';
 import HomeController from './controllers/HomeController.js';
 import HistalController from './controllers/HistalController.js';
-import DeficienciaController from './controllers/DeficienciaController.js';
+import ResultadoController from './controllers/ResultadoController.js';
 import HistoricoController from './controllers/HistoricoController.js';
 import MapaController from './controllers/MapaController.js';
 
@@ -140,7 +140,7 @@ app.use('/', RelatoriosController);
 app.use('/', PropriedadesController);
 app.use('/', HomeController);
 app.use('/', HistalController);
-app.use('/', DeficienciaController);
+app.use('/', ResultadoController);
 app.use('/', HistoricoController);
 app.use("/", MapaController);
 
