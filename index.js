@@ -2,10 +2,11 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';  // Usado para verificar e criar a pasta uploads
-import connection from './config/sequelize-config.js';
+import fs from 'fs';
+import mysql from 'mysql2/promise'; // usado para criar o banco automaticamente
 import session from 'express-session';
 import flash from 'express-flash';
+import connection from './config/sequelize-config.js'; // Sequelize configurado
 
 // Importando os Controllers
 import TalhoesController from './controllers/TalhoesController.js';
@@ -32,80 +33,80 @@ import Deficiencia from './models/Deficiencia.js';
 import Historico from './models/Historico.js';
 import configurarRelacionamentos from './config/relacionamentos-config.js';
 
-
-
-// Iniciando o Express
+// Configuração do servidor Express
 const app = express();
+const port = 8080;
 
-// Configure os relacionamentos
-configurarRelacionamentos();
+// Garantir que o banco existe antes de conectar com Sequelize
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = parseInt(process.env.DB_PORT || '3306', 10);
+const DB_USER = process.env.DB_USER || 'root';
+const DB_PASSWORD = process.env.DB_PASSWORD || '';
+const DB_NAME = process.env.DB_NAME || 'nitrusleaf_pi'; // Nome fixo em minúsculo
 
-// Função para criar as tabelas no banco de dados
+async function ensureDatabaseExists() {
+    try {
+        const conn = await mysql.createConnection({
+            host: DB_HOST,
+            port: DB_PORT,
+            user: DB_USER,
+            password: DB_PASSWORD
+        });
+
+        await conn.query(
+            `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`
+             CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+        );
+
+        await conn.end();
+        console.log(`Banco de dados '${DB_NAME}' verificado/criado com sucesso.`);
+    } catch (err) {
+        console.error('Erro ao garantir a existência do banco de dados:', err);
+        process.exit(1);
+    }
+}
+
+// Criação das tabelas com Sequelize
 async function createTables() {
     try {
-        // Sincroniza todas as tabelas e respeita os relacionamentos definidos
-        await connection.sync({ force: false });
-        console.log('Tabelas sincronizadas com sucesso!');
+        await connection.sync({ force: false }); // Cria tabelas se não existirem
+        console.log('sTabelas sincronizadas com sucesso!');
     } catch (error) {
         console.error('Erro ao sincronizar as tabelas:', error);
     }
 }
 
-
-
-// Criando a pasta 'uploads' se não existir
+// Configuração do Multer para upload de arquivos
 const uploadsDir = './uploads';
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
 
-// Configuração do Multer para o armazenamento de arquivos
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Diretório para onde os arquivos serão enviados
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Nome do arquivo com timestamp
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Configurações do express-session e express-flash
+// Configurações Express e Middlewares
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(session({
     secret: 'nitrusleafsecret',
-    cookie: { maxAge: 3600000 }, // Sessão expira em 1 hora
+    cookie: { maxAge: 3600000 },
     saveUninitialized: false,
     resave: false
 }));
-
 app.use(flash());
-
-// Configuração do express para capturar dados de formulários
-app.use(express.urlencoded({ extended: false }));
-
-// Permite capturar dados enviados como JSON
-app.use(express.json());
-
-// Conectando ao banco de dados
-connection.authenticate().then(() => {
-    console.log('Conexão com o banco de dados feita com sucesso!');
-    createTables();
-}).catch((error) => {
-    console.log(error);
-});
-
-// Criando o banco de dados se ele não existir
-connection.query('CREATE DATABASE IF NOT EXISTS NitrusLeaf_PI;').then(() => {
-    console.log('O banco de dados está criado.');
-}).catch((error) => {
-    console.log(error);
-});
-
-// Servindo arquivos estáticos (HTML, CSS, JS)
+app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-// Endpoint para o upload de arquivos
+// Endpoint para upload
 app.post('/uploads', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'Nenhum arquivo foi enviado.' });
@@ -113,23 +114,10 @@ app.post('/uploads', upload.single('file'), (req, res) => {
     res.status(200).json({ success: true, message: 'Arquivo enviado com sucesso!', file: req.file });
 });
 
-// ROTA PRINCIPAL
+// Rotas principais
 app.get('/', (req, res) => {
-    res.render('index', {
-        messages: req.flash() // Passando mensagens de flash para a view
-    });
+    res.render('index', { messages: req.flash() });
 });
-
-/*
-// Endpoint principal
-app.get('/home', (req, res) => {
-    // Defina o nome da imagem ou a lógica para pegar a imagem dinamicamente
-    const imageUrl = '/uploads/1732670720985.png';  // Aqui você pode colocar a lógica para pegar a imagem desejada
-    res.render('home', { imageUrl });
-});
-*/
-// Definindo o motor de templates EJS
-app.set('view engine', 'ejs');
 
 // Usando os Controllers
 app.use('/', TalhoesController);
@@ -142,14 +130,21 @@ app.use('/', HomeController);
 app.use('/', HistalController);
 app.use('/', ResultadoController);
 app.use('/', HistoricoController);
-app.use("/", MapaController);
+app.use('/', MapaController);
 
-// Inicializando o servidor na porta 8080
-const port = 8080;
-app.listen(port, (erro) => {
-    if (erro) {
-        console.log('Ocorreu um erro!');
-    } else {
-        console.log(`Servidor iniciado com sucesso em: http://localhost:${port}`);
-    }
-});
+// Inicialização do servidor
+(async () => {
+    await ensureDatabaseExists();       
+    configurarRelacionamentos();        
+    await connection.authenticate();    
+    console.log('Conexão com o banco estabelecida com sucesso!');
+    await createTables();               
+
+    app.listen(port, (erro) => {
+        if (erro) {
+            console.error('Ocorreu um erro ao iniciar o servidor:', erro);
+        } else {
+            console.log(`Servidor iniciado com sucesso em: http://localhost:${port}`);
+        }
+    });
+})();
