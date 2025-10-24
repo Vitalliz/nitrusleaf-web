@@ -1,41 +1,222 @@
 <%- include('partials/header.ejs') %>
 <%- include('partials/navbar-user.ejs') %>
-<%- include('partials/navbar-lateral-user.ejs') %>
+<%- include('partials/navbar-lateral.ejs') %>
 
-<div class="conteiner">
-    <div class="card mt-4">
-        <div class="card-header">
-            <h2>Cadastrar</h2>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" style="background-color: var(--cor-fundo-form); border: 2px solid var(--verde-escuro);">
+                <div class="card-header" style="background: var(--background-gradient); color: var(--texto-marrom); border-bottom: 2px solid var(--verde-escuro);">
+                    <h2 style="color: var(--texto-marrom); font-weight: bold;"><i class="fas fa-cog"></i> Configurações da Conta</h2>
+                </div>
+                <div class="card-body" style="background-color: var(--input-color);">
+                    <% if (typeof messages !== 'undefined' && messages.success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: var(--verde-bege); color: var(--texto-marrom); border: 2px solid var(--verde-escuro);">
+                            <%= messages.success %>
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                    <% } %>
+                    <% if (typeof messages !== 'undefined' && messages.error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background-color: #ff6b6b; color: white; border: 2px solid #d63031;">
+                            <%= messages.error %>
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                    <% } %>
+
+                    <!-- Abas -->
+                    <ul class="nav nav-tabs" id="configTabs" role="tablist" style="border-bottom: 2px solid var(--verde-escuro);">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="dados-tab" data-toggle="tab" href="#dados" role="tab" style="color: var(--texto-marrom); background-color: var(--cor-fundo-bege); border: 1px solid var(--verde-escuro);">
+                                <i class="fas fa-user"></i> Dados Pessoais
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="endereco-tab" data-toggle="tab" href="#endereco" role="tab" style="color: var(--texto-marrom); background-color: var(--cor-fundo-bege); border: 1px solid var(--verde-escuro);">
+                                <i class="fas fa-map-marker-alt"></i> Endereço
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="senha-tab" data-toggle="tab" href="#senha" role="tab" style="color: var(--texto-marrom); background-color: var(--cor-fundo-bege); border: 1px solid var(--verde-escuro);">
+                                <i class="fas fa-lock"></i> Alterar Senha
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-4" id="configTabsContent">
+                        <!-- Dados Pessoais -->
+                        <div class="tab-pane fade show active" id="dados" role="tabpanel">
+                            <form action="/configuracoes/update" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nome" style="color: var(--texto-marrom); font-weight: bold;">Nome:</label>
+                                            <input type="text" class="form-control" id="nome" name="nome" 
+                                                   value="<%= usuario ? usuario.nome : '' %>" required
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="sobrenome" style="color: var(--texto-marrom); font-weight: bold;">Sobrenome:</label>
+                                            <input type="text" class="form-control" id="sobrenome" name="sobrenome" 
+                                                   value="<%= usuario ? usuario.sobrenome : '' %>" required
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email" style="color: var(--texto-marrom); font-weight: bold;">Email:</label>
+                                            <input type="email" class="form-control" id="email" name="email" 
+                                                   value="<%= usuario ? usuario.email : '' %>" required
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="telefone" style="color: var(--texto-marrom); font-weight: bold;">Telefone:</label>
+                                            <input type="text" class="form-control" id="telefone" name="telefone" 
+                                                   value="<%= usuario ? usuario.telefone : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="celular" style="color: var(--texto-marrom); font-weight: bold;">Celular:</label>
+                                            <input type="text" class="form-control" id="celular" name="celular" 
+                                                   value="<%= usuario ? usuario.celular : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="tipo_pessoa" style="color: var(--texto-marrom); font-weight: bold;">Tipo de Pessoa:</label>
+                                            <select class="form-control" id="tipo_pessoa" name="tipo_pessoa" style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                                <option value="fisica" <%= usuario && usuario.tipo_pessoa === 'fisica' ? 'selected' : '' %>>Pessoa Física</option>
+                                                <option value="juridica" <%= usuario && usuario.tipo_pessoa === 'juridica' ? 'selected' : '' %>>Pessoa Jurídica</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="cpf" style="color: var(--texto-marrom); font-weight: bold;">CPF:</label>
+                                            <input type="text" class="form-control" id="cpf" name="cpf" 
+                                                   value="<%= usuario ? usuario.cpf : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="cnpj" style="color: var(--texto-marrom); font-weight: bold;">CNPJ:</label>
+                                            <input type="text" class="form-control" id="cnpj" name="cnpj" 
+                                                   value="<%= usuario ? usuario.cnpj : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nome_fantasia" style="color: var(--texto-marrom); font-weight: bold;">Nome Fantasia:</label>
+                                    <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" 
+                                           value="<%= usuario ? usuario.nome_fantasia : '' %>"
+                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                </div>
+                                <button type="submit" class="btn btn-lg" style="background: var(--background-gradient); color: var(--texto-marrom); border: 2px solid var(--verde-escuro); font-weight: bold;">
+                                    <i class="fas fa-save"></i> Salvar Dados Pessoais
+                                </button>
+                            </form>
         </div>
-        <div class="card-body">
-            <form action="/createUser" method="post">
-                <div class="card">
-                    <div class="card-body">
-                        <h2>Dados de usuário</h2>
-                        <label>Tipo de pessoa:</label>
-                        <input type="radio" id="html" name="pessoa" value="html">
-                        <label>CPF:</label>
-                        <input type="cpf"  name="cpf" placeholder="Insira seu cpf" required>
-                        <label>Logradouro:</label>
-                        <input type="logradouro"  name="logradouro" placeholder="Insira seu logradouro" required>
-                        <label>Número:</label>
-                        <input type="numero"  name="numero" placeholder="Insira o número da sua casa" required>
-                        <label>Bairro:</label>
-                        <input type="bairro"  name="bairro" placeholder="Insira seu bairro" required>
-                        <label>Cidade:</label>
- 
 
-                        <input type="cidade"  name="cidade" placeholder="Insira sua cidade" required>
-                        <input type="submit" value="Próximo" class="btn btn-success btn-block">
+                        <!-- Endereço -->
+                        <div class="tab-pane fade" id="endereco" role="tabpanel">
+                            <form action="/configuracoes/update" method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="cep" style="color: var(--texto-marrom); font-weight: bold;">CEP:</label>
+                                            <input type="text" class="form-control" id="cep" name="cep" 
+                                                   value="<%= usuario ? usuario.cep : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label for="logradouro" style="color: var(--texto-marrom); font-weight: bold;">Logradouro:</label>
+                                            <input type="text" class="form-control" id="logradouro" name="logradouro" 
+                                                   value="<%= usuario ? usuario.logradouro : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="numero" style="color: var(--texto-marrom); font-weight: bold;">Número:</label>
+                                            <input type="text" class="form-control" id="numero" name="numero" 
+                                                   value="<%= usuario ? usuario.numero : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="bairro" style="color: var(--texto-marrom); font-weight: bold;">Bairro:</label>
+                                            <input type="text" class="form-control" id="bairro" name="bairro" 
+                                                   value="<%= usuario ? usuario.bairro : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="cidade" style="color: var(--texto-marrom); font-weight: bold;">Cidade:</label>
+                                            <input type="text" class="form-control" id="cidade" name="cidade" 
+                                                   value="<%= usuario ? usuario.cidade : '' %>"
+                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-lg" style="background: var(--background-gradient); color: var(--texto-marrom); border: 2px solid var(--verde-escuro); font-weight: bold;">
+                                    <i class="fas fa-save"></i> Salvar Endereço
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Alterar Senha -->
+                        <div class="tab-pane fade" id="senha" role="tabpanel">
+                            <form action="/configuracoes/change-password" method="post">
+                                <div class="form-group">
+                                    <label for="senha_atual" style="color: var(--texto-marrom); font-weight: bold;">Senha Atual:</label>
+                                    <input type="password" class="form-control" id="senha_atual" name="senha_atual" required
+                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nova_senha" style="color: var(--texto-marrom); font-weight: bold;">Nova Senha:</label>
+                                    <input type="password" class="form-control" id="nova_senha" name="nova_senha" required
+                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmar_senha" style="color: var(--texto-marrom); font-weight: bold;">Confirmar Nova Senha:</label>
+                                    <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" required
+                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
+                                </div>
+                                <button type="submit" class="btn btn-lg" style="background: var(--cor-fundo-cor); color: var(--texto-marrom); border: 2px solid var(--verde-escuro); font-weight: bold;">
+                                    <i class="fas fa-key"></i> Alterar Senha
+                                </button>
+                            </form>
+                        </div>
                     </div>
                   </div>
-            </form>
-            <hr>
-            <h6>Já possui conta?<a href="/login">Faça o login</a></h6>
+            </div>
         </div>
     </div>
 </div>
-
 
 <%- include('partials/footer.ejs') %>
 

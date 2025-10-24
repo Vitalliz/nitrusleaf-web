@@ -78,18 +78,21 @@
             <h2 class="align-self-start m-4 px-2 fonte" id="titulo">Análises recentes</h2>
             <div class=" mx-4">
               <div id="legenda">
-                <div class="legenda-item">
-                    <div class="cor2" style="background-color:#3357FF;"></div>
-                    <p>+ 7 pés analisados</p>
-                </div>
-                <div class="legenda-item">
-                    <div class="cor2" style="background-color: #3357FF;"></div>
-                    <p>+ 24 pés tratados</p>
-                </div>
-                <div class="legenda-item">
-                    <div class="cor2" style="background-color: #3357FF;"></div>
-                    <p>+ 12 pés plantados</p>
-                </div>
+                <% if (mensagemStatus) { %>
+                    <div class="legenda-item">
+                        <div class="cor2" style="background-color: var(--verde-bege);"></div>
+                        <p style="color: var(--texto-marrom); font-weight: bold;"><%= mensagemStatus %></p>
+                    </div>
+                <% } else { %>
+                    <div class="legenda-item">
+                        <div class="cor2" style="background-color:#3357FF;"></div>
+                        <p>+ <%= totalPesAnalisados || 0 %> pés analisados</p>
+                    </div>
+                    <div class="legenda-item">
+                        <div class="cor2" style="background-color: #3357FF;"></div>
+                        <p>+ <%= totalOcorrencias || 0 %> ocorrências encontradas</p>
+                    </div>
+                <% } %>
             </div>
             </div>
           </div>

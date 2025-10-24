@@ -11,7 +11,7 @@ const Propriedades = connection.define('propriedades', {
     id_usuario: {
         type: sequelize.INTEGER,
         references: {
-            model: 'usuarios',
+            model: Usuarios,
             key: 'id_usuario'
         }
     },

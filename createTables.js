@@ -7,6 +7,7 @@ import Relatorios from './models/Relatorios.js';
 
 async function createTables() {
   try {
+    // Criar tabelas na ordem correta (pais antes dos filhos)
     await Usuarios.sync({ force: false });
     console.log('Tabela "Usuarios" criada.');
 
@@ -24,6 +25,8 @@ async function createTables() {
 
     await Relatorios.sync({ force: false });
     console.log('Tabela "Relatorios" criada.');
+    
+    console.log('Todas as tabelas foram criadas com sucesso!');
   } catch (error) {
     console.error('Erro ao criar as tabelas:', error);
   }

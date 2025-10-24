@@ -12,7 +12,7 @@ const Talhoes = connection.define('talhoes', {
     id_propriedade: {
         type: sequelize.INTEGER,
         references: {
-            model: Propriedades,
+            model: 'propriedades',
             key: 'id_propriedade'
         }
     },

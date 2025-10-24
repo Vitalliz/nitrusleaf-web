@@ -22,6 +22,10 @@ const Usuarios = connection.define('usuarios', {
         type: sequelize.STRING,
         allowNull: false,
     },
+    login: {
+        type: sequelize.STRING,
+        allowNull: true,
+    },
     senha: {
         type: sequelize.STRING,
         allowNull: false,

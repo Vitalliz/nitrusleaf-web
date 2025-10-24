@@ -11,7 +11,7 @@ const Pes = connection.define("pes", {
     id_talhao: {
         type: sequelize.INTEGER,
         references: {
-            model: Talhoes,
+            model: 'talhoes',
             key: "id_talhao",
         },
     },

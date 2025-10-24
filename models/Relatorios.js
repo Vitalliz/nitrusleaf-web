@@ -12,14 +12,14 @@ const Relatorios = connection.define('relatorios', {
     id_pe: {
         type: sequelize.INTEGER,
         references: {
-            model: Pes,
+            model: 'pes',
             key: 'id_pe'
         }
     },
     id_foto: {
         type: sequelize.INTEGER,
         references: {
-            model: Foto,
+            model: 'fotos',
             key: 'id_foto'
         }
     },

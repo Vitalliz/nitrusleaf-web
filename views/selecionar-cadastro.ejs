@@ -1,0 +1,61 @@
+<%- include ('partials/header.ejs') %>
+
+<main style="background-color: #FAF1E5; min-height: 100vh; position: relative;">
+  <!-- Logo no canto superior esquerdo -->
+  <div style="position: absolute; top: 20px; left: 20px; z-index: 10;">
+    <img src="/imgs/logo-nitrusleaf.png" alt="NitrusLeaf" style="height: 60px;">
+  </div>
+
+  <!-- Botão Voltar pequeno no cantinho -->
+  <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+    <button onclick="window.location.href='/'" 
+            style="padding: 8px 12px; background-color: #8BC34A; color: white; border: none; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+      <img src="/imgs/back.svg" alt="Voltar" style="width: 12px; height: 12px;">
+      Voltar
+    </button>
+  </div>
+
+  <!-- Conteúdo principal centralizado -->
+  <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; padding-top: 50px; position: relative; z-index: 10;">
+    <div style="max-width: 500px; width: 100%;">
+      <!-- Título principal -->
+      <h1 style="color: #333333; font-weight: bold; font-size: 2.5rem; margin-bottom: 10px; text-align: left;">Bem vindo!</h1>
+      <h2 style="color: #555555; font-weight: bold; font-size: 1.8rem; margin-bottom: 20px; text-align: left;">Cadastre-se</h2>
+      <p style="color: #555555; font-size: 1rem; margin-bottom: 40px; text-align: left;">Escolha uma opção:</p>
+      
+      <!-- Opções de cadastro -->
+      <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; position: relative; z-index: 10;">
+        <!-- Card Empresa -->
+        <div style="background-color: white; border: 2px solid #8BC34A; border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 10;" 
+             onmouseover="this.style.backgroundColor='#f8f9fa'" 
+             onmouseout="this.style.backgroundColor='white'"
+             onclick="window.location.href='/cadastroUsuarios?tipo=empresa'">
+          <h3 style="color: #333333; font-weight: bold; margin-bottom: 12px;">Empresa</h3>
+          <p style="color: #555555; font-size: 0.9rem; margin: 0;">Cadastre sua empresa para acessar recursos avançados de análise e relatórios detalhados.</p>
+        </div>
+        
+        <!-- Card Pessoal -->
+        <div style="background-color: white; border: 2px solid #8BC34A; border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 10;" 
+             onmouseover="this.style.backgroundColor='#f8f9fa'" 
+             onmouseout="this.style.backgroundColor='white'"
+             onclick="window.location.href='/cadastroUsuarios?tipo=pessoal'">
+          <h3 style="color: #333333; font-weight: bold; margin-bottom: 12px;">Pessoal</h3>
+          <p style="color: #555555; font-size: 0.9rem; margin: 0;">Cadastre-se como pessoa física para análise de suas plantas e acompanhamento individual.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <!-- Vector-BG.png como fundo da onda - baixado -->
+      <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background-image: url('/imgs/Vector-BG.png'); background-size: cover; background-position: top; background-repeat: no-repeat; z-index: 2;"></div>
+      
+      <!-- Mexerica atrás da onda - muito maior -->
+      <div style="position: absolute; bottom: 2%; left: 10%; z-index: 1;">
+        <img src="/imgs/bg-use.png" alt="Mexerica" style="height: 400px; opacity: 0.9;">
+      </div>
+
+  <!-- Copyright -->
+  <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #333333; font-size: 0.8rem; z-index: 3;">
+    ©2024 NitrusLeaf
+  </div>
+</main>

@@ -1,5 +1,4 @@
 <%- include('partials/header.ejs') %>
-<%- include('partials/navbar-user.ejs') %>
 
 <% if (messages.danger) { %>
     <div class="alert alert-danger">
@@ -7,151 +6,167 @@
     </div>
 <% } %>
 
-<div class="container mt-5 ">
-    <h1 id="titulo">Cadastrar</h1>
-    <div class="card mt-2" id="form-bg">
-        <div class="card-body p-5">
-            <h4 id="titulo">Dados da conta</h4>
-            <form action="/createUsuarios" method="POST">
-                <div class="row">
-                    <!-- Nome -->
-                    <div class="col m-3">
-                        <label for="nome" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira seu nome" required>
-                    </div>
+<main style="background-color: #FAF1E5; min-height: 100vh; position: relative;">
+  <!-- Logo no canto superior esquerdo -->
+  <div style="position: absolute; top: 20px; left: 20px; z-index: 10;">
+    <img src="/imgs/logo-nitrusleaf.png" alt="NitrusLeaf" style="height: 60px;">
+  </div>
 
-                    <!-- Sobrenome -->
-                    <div class="col m-3">
-                        <label for="sobrenome" class="form-label">Sobrenome</label>
-                        <input type="text" class="form-control" id="sobrenome" name="sobrenome" placeholder="Insira seu sobrenome" required>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Telefone -->
-                    <div class="col m-3">
-                        <label for="telefone" class="form-label">Telefone</label>
-                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Insira seu telefone">
-                    </div>
-
-                    <!-- Celular -->
-                    <div class="col m-3">
-                        <label for="celular" class="form-label">Celular</label>
-                        <input type="text" class="form-control" id="celular" name="celular" placeholder="Insira seu celular">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <!-- E-mail -->
-                    <div class="col m-3">
-                        <label for="email" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Insira seu e-mail" required>
-                    </div>
-                    <div class="col m-3"></div>
-                </div>
-                <div class="row">
-                    <!-- Senha -->
-                    <div class="col m-3">
-                        <label for="senha" class="form-label">Senha</label>
-                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Crie sua senha" required>
-                    </div>
-                    <div class="col m-3"></div>
-                </div>
-
-                <!-- Checkbox para exibir campos adicionais
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="mostrarCampos" name="mostrarCampos">
-                    <label class="form-check-label" for="mostrarCampos"></label>
-                </div> -->
-
-                
-                <!-- Campos adicionais (class="d-none")-->
-                <div id="camposAdicionais" class="mt-5">
-                    <h4 id="titulo">Dados do Usuário</h4>
-                    <!-- Seleção do Tipo de Pessoa (CPF ou CNPJ) -->
-                    <div class="mb-3">
-                        <label for="tipo_pessoa" class="form-label">Tipo de pessoa</label>
-                        <select name="tipo_pessoa" id="tipo_pessoa" class="form-control" required>
-                            <option value="" selected disabled>Selecione o tipo de pessoa</option>
-                            <option value="fisica">Pessoa Física</option>
-                            <option value="juridica">Pessoa Jurídica</option>
-                        </select>
-                    </div>
-                    
-                    <div class="row">
-                        <!-- Campo CPF ou CNPJ -->
-                        <div id="cpfContainer" class="col m-3">
-                            <label for="cpf" class="form-label">CPF</label>
-                            <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Insira seu CPF">
-                        </div>
-                        <div id="cnpjContainer" class="col m-3 d-none">
-                            <label for="cnpj" class="form-label">CNPJ</label>
-                            <input type="text" class="form-control" id="cnpj" name="cnpj" placeholder="Insira seu CNPJ">
-                        </div>
-                        <div class="col m-3"></div>
-                    </div>
-
-                    <!-- Endereço -->
-                    <div class="row">
-                        <div class="col m-3">
-                            <label for="logradouro" class="form-label">Logradouro</label>
-                            <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Insira seu logradouro">
-                        </div>
-                        <div class="col m-3">
-                            <label for="numero" class="form-label">Número</label>
-                            <input type="text" class="form-control" id="numero" name="numero" placeholder="Insira o número da residência">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col m-3">
-                            <label for="bairro" class="form-label">Bairro</label>
-                            <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Insira seu bairro">
-                        </div>
-                        <div class="col m-3">
-                            <label for="cidade" class="form-label">Cidade</label>
-                            <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Insira sua cidade">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botão para cadastrar -->
-                 <div class="container  my-2">
-                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar">Cadastrar</button>
-                </div>
-            </form>
-            <hr>
-            <div class="d-flex justify-content-center">
-                <h6>Já possui conta? <a href="/login">Faça o login</a></h6>
-            </div>
+  <!-- Conteúdo principal centralizado -->
+  <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; padding-top: 50px; position: relative; z-index: 10;">
+    <div style="max-width: 600px; width: 100%;">
+      <!-- Container do formulário -->
+      <div style="background-color: white; border: 2px solid #8BC34A; border-radius: 12px; padding: 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <!-- Cabeçalho do formulário -->
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h3 style="color: #8B4513; font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">CADASTRO</h3>
+          <h1 style="color: #333333; font-weight: bold; font-size: 2.2rem; margin-bottom: 10px;">Crie uma conta</h1>
+          <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+            <div style="width: 50px; height: 2px; background-color: #8BC34A; margin-right: 15px;"></div>
+            <h2 style="color: #333333; font-weight: bold; font-size: 1.1rem; margin: 0;">Bem vindo ao NitrusLeaf!</h2>
+            <div style="width: 50px; height: 2px; background-color: #8BC34A; margin-left: 15px;"></div>
+          </div>
         </div>
-    </div>
-</div>
-
-<%- include('partials/wavefooter.ejs') %>
-
-<script>
-    // // Mostra ou oculta os campos adicionais ao selecionar a checkbox
-    // document.getElementById('mostrarCampos').addEventListener('change', function () {
-    //     const camposAdicionais = document.getElementById('camposAdicionais');
-    //     camposAdicionais.classList.toggle('d-none', !this.checked);
-    // });
-
-    // Alterna entre CPF e CNPJ dependendo do tipo de pessoa selecionado
-    document.getElementById('tipo_pessoa').addEventListener('change', function () {
-        const tipoPessoa = this.value;
-        const cpfContainer = document.getElementById('cpfContainer');
-        const cnpjContainer = document.getElementById('cnpjContainer');
         
-        // Exibe o campo correto
-        if (tipoPessoa === 'fisica') {
-            cpfContainer.classList.remove('d-none');
-            cnpjContainer.classList.add('d-none');
-            document.getElementById('cpf').required = true;
-            document.getElementById('cnpj').required = false;
-        } else if (tipoPessoa === 'juridica') {
-            cpfContainer.classList.add('d-none');
-            cnpjContainer.classList.remove('d-none');
-            document.getElementById('cpf').required = false;
-            document.getElementById('cnpj').required = true;
+        <!-- Formulário de cadastro -->
+        <form action="/createUsuarios" method="POST" style="text-align: left;">
+        <!-- Tipo de pessoa (hidden input baseado na URL) -->
+        <input type="hidden" id="tipo_pessoa_hidden" name="tipo_pessoa" value="">
+        
+        <!-- Campos para Pessoa Física -->
+        <div id="camposPessoal" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+              <label for="nome" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Nome:</label>
+              <input type="text" id="nome" name="nome" placeholder="Insira seu nome" required
+                     style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+            </div>
+            
+            <div>
+              <label for="sobrenome" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Sobrenome:</label>
+              <input type="text" id="sobrenome" name="sobrenome" placeholder="Insira seu sobrenome" required
+                     style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label for="telefone" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Telefone:</label>
+            <input type="text" id="telefone" name="telefone" placeholder="Insira seu telefone" required
+                   style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label for="email" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="Insira seu e-mail" required
+                   style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label for="senha" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Senha:</label>
+            <input type="password" id="senha" name="senha" placeholder="Crie sua senha" required
+                   style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+          </div>
+        </div>
+
+        <!-- Campos para Empresa -->
+        <div id="camposEmpresa" style="display: none;">
+          <div style="margin-bottom: 20px;">
+            <label for="cnpj" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">CNPJ:</label>
+            <input type="text" id="cnpj" name="cnpj" placeholder="Insira seu CNPJ" required
+                   style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label for="nome_fantasia" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Nome Fantasia:</label>
+            <input type="text" id="nome_fantasia" name="nome_fantasia" placeholder="Insira o nome fantasia da empresa" required
+                   style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+              <label for="bairro" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Bairro:</label>
+              <input type="text" id="bairro" name="bairro" placeholder="Insira seu bairro" required
+                     style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+            </div>
+            
+            <div>
+              <label for="numero" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Número:</label>
+              <input type="text" id="numero" name="numero" placeholder="Insira o número" required
+                     style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+              <label for="logradouro" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Endereço:</label>
+              <input type="text" id="logradouro" name="logradouro" placeholder="Insira seu endereço" required
+                     style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+            </div>
+            
+            <div>
+              <label for="cidade" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Cidade:</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Insira sua cidade" required
+                     style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
+            </div>
+          </div>
+        </div>
+        
+            <!-- Botão Cadastrar -->
+            <button type="submit" style="width: 100%; padding: 12px 16px; background-color: #8BC34A; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; height: 48px;">
+              Continuar
+            </button>
+        </form>
+      </div>
+      
+      <!-- Link para login -->
+      <div style="text-align: center; margin-top: 20px;">
+        <span style="color: #555555; font-size: 0.9rem;">Já possui conta? </span>
+        <a href="/" style="color: #FF9800; text-decoration: underline; font-size: 0.9rem;">Entrar</a>
+      </div>
+    </div>
+  </div>
+
+      <!-- Vector-BG.png como fundo da onda - baixado -->
+      <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background-image: url('/imgs/Vector-BG.png'); background-size: cover; background-position: top; background-repeat: no-repeat; z-index: 2;"></div>
+      
+      <!-- Mexerica atrás da onda - muito maior -->
+      <div style="position: absolute; bottom: 2%; left: 10%; z-index: 1;">
+        <img src="/imgs/bg-use.png" alt="Mexerica" style="height: 400px; opacity: 0.9;">
+      </div>
+
+  <!-- Copyright -->
+  <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #333333; font-size: 0.8rem; z-index: 3;">
+    ©2024 NitrusLeaf
+  </div>
+</main>
+
+    <script>
+    // Detectar tipo de cadastro da URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tipo = urlParams.get('tipo');
+        
+        const tipoPessoaHidden = document.getElementById('tipo_pessoa_hidden');
+        const camposPessoal = document.getElementById('camposPessoal');
+        const camposEmpresa = document.getElementById('camposEmpresa');
+        
+        const camposPessoalInputs = camposPessoal.querySelectorAll('input');
+        const camposEmpresaInputs = camposEmpresa.querySelectorAll('input');
+        function atualizar(tipoSelecionado) {
+            if (tipoSelecionado === 'empresa') {
+                tipoPessoaHidden.value = 'juridica';
+                camposPessoal.style.display = 'none';
+                camposEmpresa.style.display = 'block';
+                camposPessoalInputs.forEach(input => input.removeAttribute('required'));
+                camposEmpresaInputs.forEach(input => input.setAttribute('required', 'true'));
+            } else {
+                tipoPessoaHidden.value = 'fisica';
+                camposPessoal.style.display = 'block';
+                camposEmpresa.style.display = 'none';
+                camposEmpresaInputs.forEach(input => input.removeAttribute('required'));
+                camposPessoalInputs.forEach(input => input.setAttribute('required', 'true'));
+            }
         }
+        atualizar(tipo === 'empresa' ? 'empresa' : 'pessoal');
     });
-</script>
+    </script>

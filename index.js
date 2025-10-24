@@ -20,6 +20,7 @@ import HistalController from './controllers/HistalController.js';
 import ResultadoController from './controllers/ResultadoController.js';
 import HistoricoController from './controllers/HistoricoController.js';
 import MapaController from './controllers/MapaController.js';
+import ConfiguracoesController from './controllers/ConfiguracoesController.js';
 
 // Importando os modelos
 import Usuarios from './models/Usuarios.js';
@@ -119,6 +120,26 @@ app.get('/', (req, res) => {
     res.render('index', { messages: req.flash() });
 });
 
+// Redirecionar /login para / (página inicial)
+app.get('/login', (req, res) => {
+    res.redirect('/');
+});
+
+// Rota para página de drone
+app.get('/drone', (req, res) => {
+    res.render('drone');
+});
+
+// Rota para seleção de tipo de cadastro
+app.get('/selecionar-cadastro', (req, res) => {
+    res.render('selecionar-cadastro');
+});
+
+// Rota para segunda etapa do cadastro (login/senha)
+app.get('/cadastroLogin', (req, res) => {
+    res.render('cadastroLogin');
+});
+
 // Usando os Controllers
 app.use('/', TalhoesController);
 app.use('/', UsuariosController);
@@ -131,6 +152,7 @@ app.use('/', HistalController);
 app.use('/', ResultadoController);
 app.use('/', HistoricoController);
 app.use('/', MapaController);
+app.use('/', ConfiguracoesController);
 
 // Inicialização do servidor
 (async () => {

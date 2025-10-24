@@ -12,14 +12,14 @@ const Foto = connection.define('foto', {
     id_pe: {
         type: sequelize.INTEGER,
         references: {
-            model: Pes,
+            model: 'pes',
             key: 'id_pe'
         }
     },
     id_talhao: {
         type: sequelize.INTEGER,
         references: {
-            model: Talhoes,
+            model: 'talhoes',
             key: 'id_talhao'
         }
     },

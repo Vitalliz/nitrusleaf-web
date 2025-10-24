@@ -19,7 +19,7 @@ router.get("/talhoes", Auth, (req, res) => {
                 id_propriedade: propriedadeSelecionada,
             }   
         }),
-        Propriedades.findAll({where: { id_usuario: req.session.user.id_usuario, id_propriedade: propriedadeSelecionada}})  // Buscando todas as propriedades para ordená-las
+        Propriedades.findAll({where: { id_usuario: req.session.user.id_usuario}})  // Buscando todas as propriedades do usuário
     ])
     .then(([talhoes, propriedades]) => {
         // Ordena as propriedades pelo nome
