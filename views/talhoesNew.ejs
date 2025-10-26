@@ -8,47 +8,55 @@
                 <a href="/talhoes" style="text-decoration: none; display: flex; align-items: center; margin-right: 8px;">
                     <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px;">
                 </a>
-                <h1 style="margin: 0; font-size: 24px;">Editar Talhão</h1>
+                <h1 style="margin: 0; font-size: 24px;">Adicionar Talhão</h1>
             </div>
         </header>
 
         <section class="analysis-section">
             <div class="analysis-card" style="margin-bottom: 24px;">
                 <div class="card-body">
-                    <form action="/talhoes/update" method="POST" style="background: #fff; border-radius: 12px; padding: 20px;">
-                        <input type="hidden" name="id_propriedade" value="<%= talhao.id_propriedade%>">
-                        <input type="hidden" name="id_talhao" value="<%= talhao.id_talhao%>">
+                    <form action="/talhoes/new" method="POST" style="background: #fff; border-radius: 12px; padding: 20px;">
+                        <input type="hidden" name="id_propriedade" value="<%= propriedadeSelecionada || '' %>">
                         
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Propriedade</label>
                             <div style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
-                                <%= talhao.propriedade.nome %>
+                                <% const propriedadeAtual = propriedades.find(prop => prop.id_propriedade == propriedadeSelecionada); %>
+                                <% if (propriedadeAtual) { %>
+                                    <%= propriedadeAtual.nome %>
+                                <% } else { %>
+                                    Propriedade não encontrada
+                                <% } %>
                             </div>
                         </div>
                         
                         <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Alqueire</label>
-                            <div style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
-                                <%= talhao.alqueire ? talhao.alqueire.nome : 'Sem alqueire' %>
-                            </div>
+                            <label for="id_alqueire" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Alqueire (opcional)</label>
+                            <select id="id_alqueire" name="id_alqueire" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                                <option value="">Selecione um alqueire (opcional)</option>
+                                <% if (alqueires && alqueires.length > 0) { %>
+                                    <% alqueires.forEach(alq => { %>
+                                        <option value="<%= alq.id_alqueire %>"><%= alq.nome %></option>
+                                    <% }) %>
+                                <% } %>
+                            </select>
                         </div>
                         
                         <div style="margin-bottom: 20px;">
                             <label for="nome" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Nome do Talhão</label>
-                            <input type="text" id="nome" name="nome" value="<%= talhao.nome %>" required 
+                            <input type="text" id="nome" name="nome" placeholder="Insira o nome do talhão" required 
                                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                         </div>
                         
                         <div style="margin-bottom: 20px;">
                             <label for="especie_fruta" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Espécie Plantada</label>
-                            <input type="text" id="especie_fruta" name="especie_fruta" value="<%= talhao.especie_fruta %>" required 
+                            <input type="text" id="especie_fruta" name="especie_fruta" placeholder="Insira a espécie de fruta" required 
                                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                         </div>
                         
                         <div style="text-align: center; margin-top: 20px;">
-                            <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 40px; border: none; cursor: pointer; font-size: 16px;" 
-                                    onclick="return confirm('Deseja realmente alterar o talhão <%= talhao.nome %>')">
-                                Salvar Alterações
+                            <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 40px; border: none; cursor: pointer; font-size: 16px;">
+                                Cadastrar
                             </button>
                         </div>
                     </form>

@@ -1,83 +1,117 @@
 <%- include('partials/header.ejs') %>
 <%- include('partials/navbar-user.ejs') %>
-<main class="main-content">
+<main class="main-content home-dashboard">
     <%- include ('partials/navbar-lateral.ejs') %>
-    <form action="/talhoes/new" method="POST">
-<div class="container mt-5">
-    <h1 id="titulo">Cadastrar Talhão</h1>
-    <div class="card mt-2" id="form-bg">
-        <div class="card-body p-5">        
-                <!-- Campos adicionais (class="d-none")-->
-                <div id="camposAdicionais" class="mt-5">
-                    <h4 id="titulo">Dados do Talhão</h4>
-                    <!-- Endereço -->  
-                    <input type="hidden" name="id_propriedade" value="<%= propriedadeSelecionada || '' %>">
-                    <div class="row">
-                        <label for="">
-                        <div>
-                            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-                                <div class="options-container col-md-5">
-                                  <label for="">Propriedade</label>
-                                  <div id="propriedades" class="form-control">
-                                    <% 
-                                    const propriedadeAtual = propriedades.find(prop => prop.id_propriedade == propriedadeSelecionada);
-                                %>
-                                <% if (propriedadeAtual) { %>
-                                    <div value="<%= propriedadeAtual.id_propriedade %>" selected>
-                                        <%= propriedadeAtual.nome %>
-                                    </div>
-                                <% } else { %>
-                                    <div disabled selected>Propriedade não encontrada</div>
-                                <% } %>
-                                </div>
-
-                                </div>
-                            </div>
-                        </label>
-                        <div class="form-group col-md-5 mt-4">
-                            <label for="cep" class="form-label">Nome talhão</label>
-                            <input type="text" class="form-control" id="nome" name="nome" placeholder="Insira o nome do talhão" required>
-                        </div>
-                    </div>
-                        <div class="form-group col-md-5 mt-4">
-                            <label for="cep" class="form-label">Espécie Plantada</label>
-                            <input type="text" class="form-control" id="especie_fruta" name="especie_fruta" placeholder="Insira a espécie de fruta que é plantada no talhão" required>
-                        </div>
-                <!-- Botão para cadastrar -->
-                 <div class="container  my-2">
-                    <button type="submit" class="btn pt-2 mt-3" style="padding-inline: 7rem;" id="btn-entrar">Cadastrar</button>
-                </div>
+    <section class="dashboard-container">
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center;">
+                <a href="/historico" style="text-decoration: none; color: #351102; margin-right: 8px;">Histórico</a>
+                <span style="margin: 0 8px; color: #351102;">></span>
+                <h1 style="margin: 0; font-size: 24px;">Talhões</h1>
             </div>
-            </form>
-
-            <!-- TABELA DE DADOS DAS PROPRIEDADES CADASTRADAS -->
-            <div class="card my-4" id="form-bg-claro">
-                <div class="card-body">
-                    <table class="tabe">
-                        <thead id="thead">
-                            <th class="fonte" id="thead">Nome Talhão</th>
-                            <th class="fonte" id="thead">Espécie Plantada</th>
-                            <th class="fonte" id="thead">Propriedade</th>
-                            <th class="fonte" id="thead">Editar</th>
-                        </thead>
-                        <tbody>
-                            <% talhoes.forEach(tal => { %>
-                            <tr class="tb">
-                            <td class="fonte" id="tabodyp"><%= tal.nome %></td>
-                            <td class="fonte" id="tabodyp"><%= tal.especie_fruta %></td>
-                            <td class="fonte" id="tabodyp"><%= tal.propriedade.nome %></td>
-                            <td class="fonte" id="tabodyp">
-                                <a href="/talhoes/edit/<%= tal.id_talhao %>"><img src="/imgs/btn-editar.svg" alt=""></a>
-                            </td>
-                            </tr>
+            <div class="property-select">
+                <div class="select-wrapper">
+                    <% if (propriedades && propriedades.length > 0) { %>
+                        <select id="propriedades" class="property-dropdown">
+                            <% propriedades.forEach(prop => { %>
+                                <option value="<%= prop.id_propriedade %>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome %></option>
                             <% }) %>
-                        </tbody>
-                        </table>
+                        </select>
+                    <% } else { %>
+                        <select id="propriedades" class="property-dropdown" disabled>
+                            <option>Nenhuma propriedade cadastrada</option>
+                        </select>
+                    <% } %>
                 </div>
             </div>
+        </header>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="flex-grow: 1;">
+                <div style="position: relative; max-width: 300px;">
+                    <input type="text" placeholder="Pesquisar registros" style="width: 100%; padding: 10px 40px 10px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%);">
+                        <img src="/imgs/search.svg" alt="Pesquisar" style="width: 18px; height: 18px;">
+                    </div>
+                </div>
+            </div>
+            <a href="/talhoes/new" class="btn-primary" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                <span style="font-size: 18px;">+</span> Adicionar Talhão
+            </a>
         </div>
-    </div>
-</div>
+
+        <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+            <thead>
+                <tr style="border-bottom: 1px solid #F2C48D;">
+                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Nome Talhão</th>
+                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Pés analisados</th>
+                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Data de Criação</th>
+                    <th style="width: 120px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (talhoes && talhoes.length > 0) { %>
+                    <% talhoes.forEach(tal => { %>
+                    <tr style="border-bottom: 1px solid #F2C48D;">
+                        <td style="font-size: 15px; color: #351102; padding: 12px 15px;"><%= tal.nome %></td>
+                        <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= tal.pes_analisados %>/<%= tal.total_pes %></td>
+                        <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= tal.createdAt.toLocaleDateString() %></td>
+                        <td style="text-align: right; padding: 12px 15px;">
+                            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                                <a href="/talhoes/edit/<%= tal.id_talhao %>" style="display: inline-flex; align-items: center; background: #f0f0f0; border-radius: 4px; padding: 4px 8px; text-decoration: none; color: #333; font-size: 14px;">
+                                    Editar <span style="margin-left: 4px;">▼</span>
+                                </a>
+                                <a href="/talhao/<%= tal.id_talhao %>" style="display: inline-block; background: none; border: none;">
+                                    <img src="/imgs/setinha.svg" style="width: 22px; height: 22px;" alt="Ir">
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 24px;">
+                            <p style="color: #888; margin: 0;">Nenhum talhão cadastrado nesta propriedade</p>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        
+        <div style="text-align: center; color: #666; font-size: 14px;">
+            1-<%= talhoes ? talhoes.length : 0 %>
+        </div>
+    </section>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const propriedadesSelect = document.getElementById("propriedades");
+
+    propriedadesSelect.addEventListener("change", async (e) => {
+        const idPropriedade = e.target.value;
+
+        try {
+            const response = await fetch("/talhoes/selecionar-propriedade", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id_propriedade: idPropriedade }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao atualizar a propriedade selecionada.");
+            }
+
+            // Recarrega a página para atualizar os dados
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao trocar a propriedade selecionada.");
+        }
+    });
+});
+</script>
 
 <%- include('partials/footer.ejs') %>

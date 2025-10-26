@@ -4,6 +4,7 @@ import Auth from "../middleware/Auth.js";
 import Pes from "../models/Pes.js";
 import Talhoes from "../models/Talhoes.js";
 import Propriedades from "../models/Propriedades.js";
+import Alqueires from "../models/Alqueires.js";
 
 const router = express.Router();
 
@@ -37,6 +38,12 @@ router.get("/histal", Auth, async (req, res) => {
             return res.status(403).send("Acesso negado."); // Retorna erro se o talhão não pertencer ao usuário
         }
 
+        // Busca o alqueire associado ao talhão, se existir
+        let alqueire = null;
+        if (talhao.id_alqueire) {
+            alqueire = await Alqueires.findByPk(talhao.id_alqueire);
+        }
+
         // Busca os pés e o histórico associados ao talhão
         const [histal, pes] = await Promise.all([
             HisTal.findAll({
@@ -45,16 +52,66 @@ router.get("/histal", Auth, async (req, res) => {
             }),
             Pes.findAll({
                 where: { id_talhao },
+                order: [['nome', 'ASC']], // Ordena os pés pelo nome
             }),
         ]);
 
-        res.render("histal", { histal, pes, talhao });
+        // Adiciona o alqueire ao objeto talhão para uso na view
+        const talhaoCompleto = {
+            ...talhao.get({ plain: true }),
+            alqueire: alqueire ? alqueire.get({ plain: true }) : null
+        };
+
+        res.render("histal", { 
+            histal, 
+            pes, 
+            talhao: talhaoCompleto 
+        });
     } catch (error) {
         console.error("Erro ao listar histórico:", error);
         res.status(500).send("Erro ao listar histórico.");
     }
 });
 
+// Rota para visualizar um pé específico
+router.get("/histal/:id_talhao/:id_pe", Auth, async (req, res) => {
+    const { id_talhao, id_pe } = req.params;
+    const userId = req.session.user.id_usuario;
+
+    try {
+        // Verifica se o talhão pertence ao usuário logado
+        const talhao = await Talhoes.findOne({
+            where: { id_talhao },
+            include: {
+                model: Propriedades,
+                as: 'propriedade',
+                where: { id_usuario: userId },
+            },
+        });
+
+        if (!talhao) {
+            return res.status(403).send("Acesso negado.");
+        }
+
+        // Busca o pé específico
+        const pe = await Pes.findOne({
+            where: { 
+                id_pe,
+                id_talhao
+            }
+        });
+
+        if (!pe) {
+            return res.status(404).send("Pé não encontrado.");
+        }
+
+        // Redireciona para a página de resultados do pé
+        res.redirect(`/resultados/${id_pe}`);
+    } catch (error) {
+        console.error("Erro ao buscar pé:", error);
+        res.status(500).send("Erro ao buscar pé.");
+    }
+});
 
 // Função para criar novo registro
 router.post("/histal/new", Auth, async (req, res) => {

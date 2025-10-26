@@ -1,11 +1,5 @@
 <%- include('partials/header.ejs') %>
 
-<% if (messages.danger) { %>
-    <div class="alert alert-danger">
-        <%= messages.danger %>
-    </div>
-<% } %>
-
 <main style="background-color: #FAF1E5; min-height: 100vh; position: relative;">
   <!-- Logo no canto superior esquerdo -->
   <div style="position: absolute; top: 20px; left: 20px; z-index: 10;">
@@ -77,8 +71,8 @@
           </div>
           
           <div style="margin-bottom: 20px;">
-            <label for="nome_fantasia" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Nome Fantasia:</label>
-            <input type="text" id="nome_fantasia" name="nome_fantasia" placeholder="Insira o nome fantasia da empresa" required
+            <label for="nome_fantasia" style="color: #333333; font-weight: bold; display: block; margin-bottom: 8px;">Rua:</label>
+            <input type="text" id="nome_fantasia" name="nome_fantasia" placeholder="Insira a rua da empresa" required
                    style="width: 100%; padding: 12px 16px; border: 2px solid #8BC34A; border-radius: 8px; background-color: #FAF1E5; font-size: 1rem; height: 48px;">
           </div>
           

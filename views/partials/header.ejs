@@ -9,4 +9,42 @@
     <title>NitrusLeaf</title>
 </head>
 <body>
-  
+<%
+    const flashSource = typeof getFlashMessages === 'function'
+        ? getFlashMessages()
+        : (typeof messages !== 'undefined' && messages ? messages : {});
+    const flashTypes = [
+        { key: 'success', className: 'flash-message success' },
+        { key: 'danger', className: 'flash-message danger' },
+        { key: 'error', className: 'flash-message error' },
+        { key: 'warning', className: 'flash-message warning' },
+        { key: 'info', className: 'flash-message info' }
+    ];
+    const hasFlash = flashSource && Object.keys(flashSource).length > 0;
+%>
+<% if (hasFlash) { %>
+    <div class="flash-container">
+        <% flashTypes.forEach(({ key, className }) => {
+            const rawMessages = flashSource[key];
+            if (!rawMessages) { return; }
+            const normalized = Array.isArray(rawMessages) ? rawMessages : [rawMessages];
+            normalized.forEach((msg) => { %>
+                <div class="<%= className %>">
+                    <span><%= msg %></span>
+                    <button type="button" class="flash-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+        <% });
+        }); %>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.flash-message').forEach((element) => {
+                setTimeout(() => {
+                    if (element && element.parentElement) {
+                        element.remove();
+                    }
+                }, 5000);
+            });
+        });
+    </script>
+<% } %>

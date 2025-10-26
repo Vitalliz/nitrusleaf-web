@@ -1,128 +1,121 @@
 <%- include ('partials/header.ejs') %>
 <%- include ('partials/navbar-user.ejs') %>
 
-
-<main class="main-content">
+<main class="main-content home-dashboard">
     <%- include ('partials/navbar-lateral.ejs') %>
-    <div class="container cont">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-                <h2 class="align-self-end m-0 p-0 fonte titulo1">Histórico</h2>
-                <div id="options-container">
-                  <select id="propriedades" class="options">
-                    <% propriedades.forEach(prop => {%>
-                        <option 
-                        value="<%= prop.id_propriedade %>" 
-                        <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>>
-                        <%= prop.nome %>
-                    </option>
-                    <%})%>
-                  </select>
-                  <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+    <section class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Histórico</h1>
+            <div class="property-select">
+                <label for="propriedades">Propriedade</label>
+                <div class="select-wrapper">
+                    <% if (propriedades && propriedades.length > 0) { %>
+                        <select id="propriedades" class="property-dropdown">
+                            <% propriedades.forEach(prop => { %>
+                                <option value="<%= prop.id_propriedade %>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome %></option>
+                            <% }) %>
+                        </select>
+                    <% } else { %>
+                        <select id="propriedades" class="property-dropdown" disabled>
+                            <option>Nenhuma propriedade cadastrada</option>
+                        </select>
+                    <% } %>
                 </div>
             </div>
-          </div>
-   <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
-    <div class="container pt-3">
-        <div class="card p-5" id="tab">
-            <h2 id="titulo">Registros</h2>
-            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-1" />
-            <table class="mt-2">
-                <thead>
-                    <tr>
-                        <th>Talhões Registrados</th>
-                        <th>Total de pés</th>
-                        <th>Pés Diagnosticados</th>
-                        <th>Pés analisados</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><%= propriedade.talhoes_registrados %></td>
-                        <td><%= propriedade.total_pes %></td>
-                        <td><%= propriedade.pes_diagnosticados %></td>
-                        <td><%= propriedade.pes_analisados %>/<%= propriedade.total_pes %></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        </header>
 
-    <div class="container pt-3">
-        <div class="card px-5 pb-5 pt-4" id="tab">
-            <div class="d-flex align-items-center justify-content-between" >
-                <h2 id="titulo">Talhões</h2>
-                <a href="/talhoes">Adicionar Talhão<img class="ms-3" src="/imgs/adicionar.svg"  alt=""></a>
+        <section class="analysis-section">
+            <h2>Resumo da Propriedade</h2>
+            <div class="analysis-card" style="margin-bottom: 24px;">
+                <div class="card-body" style="padding: 20px;">
+                    <div style="border-bottom: 1px dashed #ddd; margin-bottom: 16px; padding-bottom: 16px; display: flex; justify-content: space-between; text-align: center;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Talhões registrados</div>
+                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.talhoes_registrados %></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Total de pés</div>
+                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.total_pes %></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; text-align: center;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Pés Diagnosticados</div>
+                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.pes_diagnosticados %></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Pés analisados</div>
+                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.pes_analisados %></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-1" />
-            <table class="tabe">
-                <thead id="thead">
-                    <th class="fonte" id="thead">Nome Talhão</th>
-                    <th class="fonte" id="thead">Pés analisados</th>
-                    <th class="fonte" id="thead">Data de Criação</th>
-                    <th class="fonte" id="thead"></th>
-                </thead>
-                <tbody id="tabel">
-                    <% talhoes.forEach(tal => { %>
-                    <tr class="tb">
-                    <td class="fonte" id="tabody"><%= tal.nome%></td>
-                    <td class="fonte" id="tabody"><%= tal.pes_analisados%>/<%= tal.total_pes %></td>
-                    <td class="fonte" id="tabody"><%= tal.createdAt.toLocaleDateString() %></td>
-                    <td class="fonte" id="tabody">
-                        <a href="/histal/<%= tal.id_talhao%>"><img src="/imgs/setinha.svg" alt="" /></a>
-                    </td>
-                    </tr>
+        </section>
+
+        <section class="analysis-section">
+            <h2>Alqueires</h2>
+            <% if (alqueires && alqueires.length > 0) { %>
+                <div class="analysis-grid" style="display: block;">
+                    <% alqueires.forEach(alqueire => { %>
+                        <article class="analysis-card" style="margin-bottom: 24px;">
+                            <header class="card-header">
+                                <h3><%= alqueire.nome %></h3>
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <span style="font-size: 14px; color: #351102;">
+                                        <strong><%= alqueire.total_talhoes %></strong> talhões | 
+                                        <strong><%= alqueire.total_pes %></strong> pés | 
+                                        <strong><%= alqueire.pes_analisados %></strong> analisados
+                                    </span>
+                                    <a href="/talhoes?alqueire=<%= alqueire.id_alqueire %>" class="btn-primary" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 8px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                                        <img src="/imgs/arrow-down.svg" style="width: 18px; height: 18px; transform: rotate(-90deg);" alt=""> Ver Detalhes
+                                    </a>
+                                </div>
+                            </header>
+                            <div class="card-body">
+                                <% if (alqueire.talhoes && alqueire.talhoes.length > 0) { %>
+                                    <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;">
+                                        <thead>
+                                            <tr style="background: #fff;">
+                                                <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Nome Talhão</th>
+                                                <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Pés analisados</th>
+                                                <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Data de Criação</th>
+                                                <th style="width: 60px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% alqueire.talhoes.forEach(tal => { %>
+                                                <tr style="border-bottom: 1px solid #F2C48D;">
+                                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px;"><%= tal.nome %></td>
+                                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= tal.pes_analisados %>/<%= tal.total_pes %></td>
+                                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= tal.createdAt.toLocaleDateString() %></td>
+                                                    <td style="text-align: right; padding: 12px 15px;">
+                                                        <a href="/histal/<%= tal.id_talhao %>" style="display: inline-block; background: none; border: none;">
+                                                            <img src="/imgs/setinha.svg" style="width: 22px; height: 22px;" alt="Ir">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+                                <% } else { %>
+                                    <div class="empty-state" style="text-align: center; padding: 24px; background: #fff; border-radius: 12px;">
+                                        <p style="color: #888; margin: 0;">Nenhum talhão cadastrado neste alqueire</p>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </article>
                     <% }) %>
-                </tbody>
-                </table>
-        </div>
-    </div>
-    </div>
+                </div>
+            <% } else { %>
+                <div class="empty-state" style="text-align: center; padding: 24px; background: #FAF0D7; border-radius: 14px; margin-bottom: 24px;">
+                    <p style="color: #888; margin: 0;">Nenhum alqueire cadastrado nesta propriedade</p>
+                </div>
+            <% } %>
+        </section>
+    </section>
 </main>
+
 <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-    const propriedadesSelect = document.getElementById('propriedades');
-    const idPropriedade = propriedadesSelect.value; // Captura o ID da propriedade selecionada inicialmente
-
-    // Função para atualizar a tabela de talhões
-    const atualizarTabelaTalhoes = async (idPropriedade) => {
-        try {
-            const response = await fetch(`/historico/talhoes/${idPropriedade}`);
-            if (!response.ok) throw new Error('Erro ao buscar talhões.');
-
-            const talhoes = await response.json(); // Recebe os talhões do servidor
-            const tbody = document.getElementById('tabel'); // Seleciona o corpo da tabela
-
-            // Atualiza a tabela de talhões
-            tbody.innerHTML = talhoes
-                .map(
-                    (tal) => `
-                    <tr class="tb">
-                        <td class="fonte" id="tabody">${tal.nome}</td>
-                        <td class="fonte" id="tabody">${tal.pes_analisados}/${tal.total_pes}</td>
-                        <td class="fonte" id="tabody">${new Date(tal.createdAt).toLocaleDateString()}</td>
-                        <td class="fonte" id="tabody">
-                            <a href="/histal/${tal.id_talhao}"><img src="/imgs/setinha.svg" alt="" /></a>
-                        </td>
-                    </tr>`
-                )
-                .join('');
-        } catch (error) {
-            console.error(error);
-            alert('Erro ao atualizar os talhões.');
-        }
-    };
-
-    // Atualiza a tabela ao carregar a página
-    atualizarTabelaTalhoes(idPropriedade);
-
-    // Adiciona o evento para atualizar ao trocar a propriedade
-    propriedadesSelect.addEventListener('change', (e) => {
-        atualizarTabelaTalhoes(e.target.value);
-    });
-});
-
 document.addEventListener("DOMContentLoaded", () => {
     const propriedadesSelect = document.getElementById("propriedades");
 

@@ -1,75 +1,83 @@
 import express from 'express';
 import Propriedades from "../models/Propriedades.js";
 import Talhoes from "../models/Talhoes.js";
+import Alqueires from "../models/Alqueires.js";
+import Pes from "../models/Pes.js";
 import Auth from "../middleware/Auth.js";
 
 const router = express.Router();
 
 // ROTA PARA EXIBIR O HISTÓRICO
 router.get("/historico", Auth, async (req, res) => {
-    const propriedadeSelecionada = req.session.propriedadeSelecionada || null;
-
     try {
         // Busca propriedades associadas ao usuário
         const propriedades = await Propriedades.findAll({
             where: { id_usuario: req.session.user.id_usuario },
+            order: [['nome', 'ASC']]
         });
 
-        let propriedade = null;
-        let talhoes = [];
+        let propriedadeSelecionada = req.session.propriedadeSelecionada || (propriedades.length > 0 ? propriedades[0].id_propriedade.toString() : null);
+        if (!propriedadeSelecionada && propriedades.length > 0) {
+            propriedadeSelecionada = propriedades[0].id_propriedade.toString();
+        }
         if (propriedadeSelecionada) {
-            // Busca a propriedade selecionada
-            propriedade = await Propriedades.findOne({
-                where: { id_propriedade: propriedadeSelecionada },
-            });
+            req.session.propriedadeSelecionada = propriedadeSelecionada;
+        }
 
+        // Resumo da propriedade
+        let resumo = {
+            talhoes_registrados: 0,
+            total_pes: 0,
+            pes_diagnosticados: 0,
+            pes_analisados: 0
+        };
+
+        if (propriedadeSelecionada) {
+            const propriedade = await Propriedades.findByPk(propriedadeSelecionada);
             if (propriedade) {
-                // Calcula os talhões registrados e total de pés
-                propriedade.talhoes_registrados = await Talhoes.count({
-                    where: { id_propriedade: propriedadeSelecionada },
-                });
-
-                propriedade.total_pes = await Talhoes.sum("total_pes", {
-                    where: { id_propriedade: propriedadeSelecionada },
-                }) || 0;
-
-                // Busca os talhões da propriedade
-                talhoes = await Talhoes.findAll({
-                    where: { id_propriedade: propriedadeSelecionada },
-                });
+                resumo.talhoes_registrados = propriedade.talhoes_registrados;
+                resumo.total_pes = propriedade.total_pes;
+                resumo.pes_diagnosticados = propriedade.pes_diagnosticados;
+                resumo.pes_analisados = propriedade.pes_analisados;
             }
         }
 
-        // Ordena as propriedades pelo nome
-        const NomepOrdenado = propriedades.sort((a, b) => a.nome.localeCompare(b.nome));
+        // Busca os alqueires da propriedade selecionada
+        let alqueires = [];
+        if (propriedadeSelecionada) {
+            alqueires = await Alqueires.findAll({
+                where: { id_propriedade: propriedadeSelecionada },
+                order: [['nome', 'ASC']]
+            });
+        }
 
-        // Renderiza a página com os dados recuperados
-        res.render("historico", {
-            talhoes,
-            propriedade: propriedade || { talhoes_registrados: 0, total_pes: 0 },
-            propriedades: NomepOrdenado,
+        // Busca os talhoes de cada alqueire
+        for (let alqueire of alqueires) {
+            const talhoes = await Talhoes.findAll({
+                where: { id_alqueire: alqueire.id_alqueire },
+                order: [['createdAt', 'DESC']]
+            });
+            // Adiciona dados agregados para cada talhão
+            alqueire.dataValues.talhoes = talhoes.map(talhao => ({
+                ...talhao.dataValues,
+                total_pes: talhao.total_pes || 0,
+                pes_analisados: talhao.pes_analisados || 0,
+                createdAt: talhao.createdAt
+            }));
+            alqueire.dataValues.total_talhoes = talhoes.length;
+            alqueire.dataValues.total_pes = talhoes.reduce((acc, t) => acc + (t.total_pes || 0), 0);
+            alqueire.dataValues.pes_analisados = talhoes.reduce((acc, t) => acc + (t.pes_analisados || 0), 0);
+        }
+
+        res.render('historico', {
+            propriedades,
             propriedadeSelecionada,
+            resumo,
+            alqueires
         });
     } catch (error) {
-        console.error("Erro ao listar talhões e propriedades:", error);
-        res.status(500).send("Erro ao listar talhões.");
-    }
-});
-
-
-// ROTA PARA BUSCAR TALHÕES DE UMA PROPRIEDADE ESPECÍFICA
-router.get("/historico/talhoes/:id_propriedade", Auth, async (req, res) => {
-    const { id_propriedade } = req.params;
-
-    try {
-        const talhoes = await Talhoes.findAll({
-            where: { id_propriedade },
-        });
-
-        res.json(talhoes); // Retorna os talhões em formato JSON
-    } catch (error) {
-        console.error("Erro ao buscar talhões:", error);
-        res.status(500).json({ error: "Erro ao buscar talhões." });
+        console.error('Erro ao carregar histórico:', error);
+        res.status(500).send('Erro ao carregar histórico.');
     }
 });
 
@@ -151,6 +159,5 @@ router.post("/historico/selecionar-propriedade", Auth, async (req, res) => {
         res.status(500).send("Erro ao selecionar propriedade.");
     }
 });
-
 
 export default router;
