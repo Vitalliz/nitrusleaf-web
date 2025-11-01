@@ -1,5 +1,5 @@
 import express from 'express';
-import HisTal from "../models/HisTal.js"; 
+import HisTal from "../models/Histal.js"; 
 import Auth from "../middleware/Auth.js";
 import Pes from "../models/Pes.js";
 import Talhoes from "../models/Talhoes.js";
