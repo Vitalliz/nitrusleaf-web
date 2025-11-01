@@ -1,10 +1,9 @@
 function Auth(req, res, next){
     if (req.session.user != undefined){
-        next()
+        next();
     } else {
-        res.render("login",{
-            loggedOut: true
-        });
+        // Redireciona para a raiz, onde está o login principal
+        res.redirect("/");
     }
 }
 export default Auth;

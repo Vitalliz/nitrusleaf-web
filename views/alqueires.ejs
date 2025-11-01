@@ -1,0 +1,171 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar-user.ejs') %>
+
+<main class="main-content">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <section class="dashboard-container" style="width: 100%; padding: 32px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+            <h2 style="font-size: 28px; font-weight: 700; color: #351102; margin: 0;">Alqueires</h2>
+            <div>
+                <select id="propriedades" class="property-dropdown" style="min-width: 160px;">
+                    <% propriedades.forEach(prop => {%>
+                        <option value="<%= prop.id_propriedade %>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome %></option>
+                    <%})%>
+                </select>
+            </div>
+        </div>
+        <div style="background: #FAF0D7; border-radius: 14px; padding: 24px 18px; margin-bottom: 24px; width: 100%;">
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; text-align: center;">
+                <div>
+                    <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Alqueires</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #351102;"><%= resumo.totalAlqueires %></div>
+                </div>
+                <div>
+                    <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Talhões</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #351102;"><%= resumo.totalTalhoes %></div>
+                </div>
+                <div>
+                    <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Total de pés</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #351102;"><%= resumo.totalPes %></div>
+                </div>
+                <div>
+                    <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Pés Diagnosticados</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #351102;"><%= resumo.totalPesDiagnosticados %></div>
+                </div>
+                <div>
+                    <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Pés analisados</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #351102;"><%= resumo.totalPesAnalisados %></div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin: 0;">Alqueires Cadastrados</h3>
+            <button id="btn-novo-alqueire" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 22px; border: none; display: flex; align-items: center; gap: 8px; font-size: 15px; cursor: pointer;">
+                <span style="font-size: 18px; font-weight: bold;">+</span> Novo Alqueire
+            </button>
+        </div>
+        
+        <% if (alqueires && alqueires.length > 0) { %>
+            <div style="background: #FAF0D7; border-radius: 14px; padding: 24px 18px; margin-bottom: 24px; width: 100%;">
+                <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;">
+                    <thead>
+                        <tr style="background: #fff;">
+                            <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: left; padding-left: 15px;">Nome</th>
+                            <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: center;">Área Total</th>
+                            <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: center;">Talhões</th>
+                            <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: center;">Pés</th>
+                            <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: center;">Analisados</th>
+                            <th style="width: 80px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% alqueires.forEach(alqueire => { %>
+                            <tr style="border-bottom: 1px solid #F2C48D;">
+                                <td style="font-size: 15px; color: #351102; padding: 10px 0; padding-left: 15px;"><%= alqueire.nome %></td>
+                                <td style="font-size: 15px; color: #351102; padding: 10px 0; text-align: center;"><%= alqueire.area_total || '-' %> ha</td>
+                                <td style="font-size: 15px; color: #351102; padding: 10px 0; text-align: center;"><%= alqueire.totalTalhoes %></td>
+                                <td style="font-size: 15px; color: #351102; padding: 10px 0; text-align: center;"><%= alqueire.totalPes %></td>
+                                <td style="font-size: 15px; color: #351102; padding: 10px 0; text-align: center;"><%= alqueire.totalPesAnalisados %></td>
+                                <td style="text-align: right; padding: 10px 0; padding-right: 15px;">
+                                    <a href="/talhoes?alqueire=<%= alqueire.id_alqueire %>" style="display: inline-block; background: none; border: none;">
+                                        <img src="/imgs/setinha.svg" style="width: 22px; height: 22px;" alt="Ir">
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div style="background: #FAF0D7; border-radius: 14px; padding: 24px 18px; margin-bottom: 24px; width: 100%; text-align: center;">
+                <p style="color: #351102; margin: 0;">Nenhum alqueire cadastrado para esta propriedade.</p>
+            </div>
+        <% } %>
+    </section>
+    
+    <!-- Modal para criar novo alqueire -->
+    <div id="modal-alqueire" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 12px; padding: 24px; width: 400px; max-width: 90%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin: 0;">Novo Alqueire</h3>
+                <button id="btn-fechar-modal" style="background: none; border: none; font-size: 20px; cursor: pointer;">×</button>
+            </div>
+            <form action="/alqueires/new" method="POST">
+                <input type="hidden" name="id_propriedade" id="id_propriedade" value="<%= propriedadeSelecionada %>">
+                <div style="margin-bottom: 15px;">
+                    <label for="nome" style="display: block; margin-bottom: 5px; font-weight: 600; color: #351102;">Nome do Alqueire</label>
+                    <input type="text" id="nome" name="nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label for="area_total" style="display: block; margin-bottom: 5px; font-weight: 600; color: #351102;">Área Total (hectares)</label>
+                    <input type="number" id="area_total" name="area_total" step="0.01" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancelar" style="background: #f0f0f0; color: #333; font-weight: 600; border-radius: 8px; padding: 10px 20px; border: none; cursor: pointer;">Cancelar</button>
+                    <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 20px; border: none; cursor: pointer;">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const propriedadesSelect = document.getElementById("propriedades");
+    const idPropriedadeInput = document.getElementById("id_propriedade");
+    const btnNovoAlqueire = document.getElementById("btn-novo-alqueire");
+    const modalAlqueire = document.getElementById("modal-alqueire");
+    const btnFecharModal = document.getElementById("btn-fechar-modal");
+    const btnCancelar = document.getElementById("btn-cancelar");
+
+    // Atualiza o valor do input hidden quando a propriedade é alterada
+    propriedadesSelect.addEventListener("change", async (e) => {
+        const idPropriedade = e.target.value;
+        idPropriedadeInput.value = idPropriedade;
+
+        try {
+            const response = await fetch("/alqueires/selecionar-propriedade", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id_propriedade: idPropriedade }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao atualizar a propriedade selecionada.");
+            }
+
+            // Recarrega a página para atualizar os dados
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao trocar a propriedade selecionada.");
+        }
+    });
+
+    // Abre o modal
+    btnNovoAlqueire.addEventListener("click", () => {
+        modalAlqueire.style.display = "flex";
+    });
+
+    // Fecha o modal
+    btnFecharModal.addEventListener("click", () => {
+        modalAlqueire.style.display = "none";
+    });
+
+    btnCancelar.addEventListener("click", () => {
+        modalAlqueire.style.display = "none";
+    });
+
+    // Fecha o modal ao clicar fora dele
+    modalAlqueire.addEventListener("click", (e) => {
+        if (e.target === modalAlqueire) {
+            modalAlqueire.style.display = "none";
+        }
+    });
+});
+</script>
+
+<%- include ('partials/footer.ejs') %>

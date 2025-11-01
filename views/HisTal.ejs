@@ -3,68 +3,114 @@
 
 <main class="main-content">
     <%- include ('partials/navbar-lateral.ejs') %>
-    <div class="container cont">
-    <div class="container mt-5">
-        <div class="d-flex align-items-center justify-content-between mt-2" >
-            <h1 class="align-self-end m-0 p-0 fonte" id="titulo">Histórico</h1>
-            <a href="/historico" id="btn-voltar" class="py-2 px-5 align-self-end" id="titulo">
-                <img src="/imgs/back.svg" alt="" style="max-height: 50px; object-fit: contain;" id="img-voltar">
-                Voltar        
+    <section class="dashboard-container" style="width: 100%; padding: 32px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="/historico" style="text-decoration: none; display: flex; align-items: center;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px;">
+                </a>
+                <h2 style="font-size: 22px; font-weight: 700; color: #351102; margin: 0;">Histórico > Talhões > <%= talhao.nome %></h2>
+            </div>
+            <a href="/talhoesEdit/<%= talhao.id_talhao %>" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 8px 16px; text-decoration: none; font-size: 14px;">
+                Editar Talhão
             </a>
         </div>
-        <img src="/imgs/linha.png" alt="" id="voltar-linha" style="max-height: 50px; object-fit: contain;"  class="p-0 mt-0" />
-    </div>
-
-    <div class="container pt-3">
-    <div class="card px-5" id="tab">
-        <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-            <h2 class="align-self-center m-0 px-2 fonte titulo"><%= talhao.nome%></h2>
-            <div class="d-flex align-items-center">
-                <div class="search me-3">
-                    <!-- Mantém os campos de pesquisa agrupados -->
-                    <label>
-                    <span class=" border-0" id="search-addon"><i class="fas fa-search" id="pesqb"></i></span>
-                    </label>
-                    <input type="text" class="" placeholder="Buscar" id="pesq"/>
+        
+        <div style="background: #FAF0D7; border-radius: 14px; padding: 24px 18px; margin-bottom: 24px; width: 100%;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="text" placeholder="Pesquisar registros" style="border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; width: 200px;">
+                    <button style="background: none; border: none; padding: 0;">
+                        <img src="/imgs/search-icon.svg" alt="Buscar" style="width: 20px; height: 20px;">
+                    </button>
                 </div>
-                <% if (talhao.id_talhao) { %>
-                    <a href="/cadastroPes/<%= talhao.id_talhao %>">
-                        <img src="/imgs/adicionar.svg" alt="">
-                    </a>
-                <% } else { %>
-                    <a href="/cadastroPes/">
-                        <img src="/imgs/adicionar.svg" al
-                        t="">
-                    </a>
-                <% } %>
-                
-                <a href="/talhoesEdit/<%= talhao.id_talhao%>"><img src="/imgs/btn-editar.svg" alt=""></a>
+                <a href="/cadastroPes/<%= talhao.id_talhao %>" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 8px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                    <span style="font-size: 18px; font-weight: bold;">+</span> Adicionar Pé
+                </a>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;">
+                <thead>
+                    <tr style="background: #fff;">
+                        <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: left; padding-left: 15px;">Nome Pé</th>
+                        <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: left;">Status</th>
+                        <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 10px 0; text-align: left;">Data de Criação</th>
+                        <th style="width: 120px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% pes.forEach(pe => { %>
+                        <tr style="border-bottom: 1px solid #F2C48D;">
+                            <td style="font-size: 15px; color: #351102; padding: 10px 0; padding-left: 15px;"><%= pe.nome %></td>
+                            <td style="font-size: 15px; padding: 10px 0;">
+                                <% if (pe.situacao === 'Tratado') { %>
+                                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                        <span style="display: inline-block; width: 12px; height: 12px; background-color: #6C5CE7; border-radius: 50%;"></span>
+                                        Tratado
+                                    </span>
+                                <% } else if (pe.situacao === 'Não-Tratado') { %>
+                                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                        <span style="display: inline-block; width: 12px; height: 12px; background-color: #FDCB6E; border-radius: 50%;"></span>
+                                        Não Tratado
+                                    </span>
+                                <% } else { %>
+                                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                        <span style="display: inline-block; width: 12px; height: 12px; background-color: #ACACAC; border-radius: 50%;"></span>
+                                        Sem informações
+                                    </span>
+                                <% } %>
+                            </td>
+                            <td style="font-size: 15px; color: #351102; padding: 10px 0;"><%= pe.createdAt.toLocaleDateString() %></td>
+                            <td style="padding: 10px 0; text-align: right; padding-right: 15px;">
+                                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                    <div class="dropdown">
+                                        <button style="background: #F0F0F0; border: none; border-radius: 4px; padding: 5px 10px; font-size: 14px;">
+                                            Editar <span style="margin-left: 5px;">▼</span>
+                                        </button>
+                                    </div>
+                                    <a href="/resultados/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; justify-content: center; background: #D84A0F; color: white; border: none; border-radius: 4px; width: 30px; height: 30px; text-decoration: none;">
+                                        <img src="/imgs/eye-icon.svg" alt="Ver" style="width: 16px; height: 16px;">
+                                    </a>
+                                    <a href="/histal/<%= talhao.id_talhao %>/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; justify-content: center; background: none; border: none;">
+                                        <img src="/imgs/setinha.svg" alt="Ir" style="width: 22px; height: 22px;">
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #351102; font-size: 14px;">1-5</span>
+                </div>
             </div>
         </div>
-        <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
-        <table class="tabe">
-        <thead id="thead">
-            <th class="fonte" id="thead">Nome Pé</th>
-            <th class="fonte" id="thead">Status</th>
-            <th class="fonte" id="thead">Data de Criação</th>
-            <th class="fonte" id="thead"></th>
-        </thead>
-        <tbody>
-            <% pes.forEach(pe => { %>
-            <tr class="tb">
-            <td class="fonte" id="tabody"><%= pe.nome%></td>
-            <td class="fonte" id="tabody"><%= pe.situacao%></td>
-            <td class="fonte" id="tabody"><%= pe.createdAt.toLocaleDateString() %></td>
-            <td class="fonte" id="tabody">
-                <a href="/HisTalEdit"><img src="/imgs/setinha.svg" alt="" /></a>
-            </td>
-            </tr>
-            <% }) %>
-        </tbody>
-        </table>
-    </div>
-    </div>
-    </div>
+    </section>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Função para filtrar os pés pela busca
+    const searchInput = document.querySelector('input[placeholder="Pesquisar registros"]');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const nomePe = row.querySelector('td:first-child').textContent.toLowerCase();
+            const status = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            
+            if (nomePe.includes(searchTerm) || status.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 
 <%- include ('partials/footer.ejs') %>

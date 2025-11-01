@@ -21,10 +21,12 @@ import ResultadoController from './controllers/ResultadoController.js';
 import HistoricoController from './controllers/HistoricoController.js';
 import MapaController from './controllers/MapaController.js';
 import ConfiguracoesController from './controllers/ConfiguracoesController.js';
+import AlqueiresController from './controllers/AlqueiresController.js';
 
 // Importando os modelos
 import Usuarios from './models/Usuarios.js';
 import Propriedades from './models/Propriedades.js';
+import Alqueires from './models/Alqueires.js';
 import Talhoes from './models/Talhoes.js';
 import Pes from './models/Pes.js';
 import Foto from './models/Foto.js';
@@ -104,8 +106,35 @@ app.use(session({
     resave: false
 }));
 app.use(flash());
+app.use((req, res, next) => {
+    let cachedMessages;
+    res.locals.getFlashMessages = () => {
+        if (!cachedMessages) {
+            cachedMessages = req.flash();
+        }
+        return cachedMessages;
+    };
+    next();
+});
+app.use(async (req, res, next) => {
+    try {
+        if (req.session.user && req.session.user.id_usuario) {
+            const usuarioLogado = await Usuarios.findByPk(req.session.user.id_usuario);
+            res.locals.usuarioLogado = usuarioLogado ? usuarioLogado.get({ plain: true }) : null;
+            if (res.locals.usuarioLogado) {
+                req.session.user.foto_perfil = res.locals.usuarioLogado.foto_perfil || null;
+            }
+        } else {
+            res.locals.usuarioLogado = null;
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
 // Endpoint para upload
 app.post('/uploads', upload.single('file'), (req, res) => {
@@ -117,7 +146,7 @@ app.post('/uploads', upload.single('file'), (req, res) => {
 
 // Rotas principais
 app.get('/', (req, res) => {
-    res.render('index', { messages: req.flash() });
+    res.render('index');
 });
 
 // Redirecionar /login para / (página inicial)
@@ -153,6 +182,7 @@ app.use('/', ResultadoController);
 app.use('/', HistoricoController);
 app.use('/', MapaController);
 app.use('/', ConfiguracoesController);
+app.use('/', AlqueiresController);
 
 // Inicialização do servidor
 (async () => {

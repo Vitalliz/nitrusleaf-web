@@ -3,51 +3,138 @@ const router = express.Router();
 import Talhoes from "../models/Talhoes.js";
 import Auth from "../middleware/Auth.js";
 import Propriedades from "../models/Propriedades.js";
-
+import Alqueires from "../models/Alqueires.js";
+import Pes from "../models/Pes.js";
 
 // ROTA PARA LISTAR TALHÕES
-router.get("/talhoes", Auth, (req, res) => {
-    // Usando Promise.all para buscar talhões e propriedades
-    const propriedadeSelecionada = req.session.propriedadeSelecionada || null;
-    Promise.all([
-        Talhoes.findAll({
-            include: {
-                model: Propriedades,
-                as: 'propriedade', // Alias definido no relacionamento
-            },
-            where:{
-                id_propriedade: propriedadeSelecionada,
-            }   
-        }),
-        Propriedades.findAll({where: { id_usuario: req.session.user.id_usuario}})  // Buscando todas as propriedades do usuário
-    ])
-    .then(([talhoes, propriedades]) => {
-        // Ordena as propriedades pelo nome
-        const NomepOrdenado = propriedades.sort((a, b) => {
-            return a.nome.localeCompare(b.nome);
+router.get("/talhoes", Auth, async (req, res) => {
+    try {
+        const propriedades = await Propriedades.findAll({
+            where: { id_usuario: req.session.user.id_usuario },
+            order: [['nome', 'ASC']]
         });
 
-        // Renderiza a página com os talhões e propriedades ordenadas
+        let propriedadeSelecionada = req.query.propriedade || req.session.propriedadeSelecionada || null;
+        if (!propriedadeSelecionada && propriedades.length > 0) {
+            propriedadeSelecionada = propriedades[0].id_propriedade.toString();
+        }
+        if (propriedadeSelecionada) {
+            req.session.propriedadeSelecionada = propriedadeSelecionada;
+        }
+
+        const alqueireSelecionado = req.query.alqueire || null;
+        const whereTalhao = {};
+        if (propriedadeSelecionada) {
+            whereTalhao.id_propriedade = propriedadeSelecionada;
+        }
+        if (alqueireSelecionado) {
+            whereTalhao.id_alqueire = alqueireSelecionado;
+        }
+
+        const talhoes = propriedadeSelecionada ? await Talhoes.findAll({
+            include: [
+                {
+                    model: Propriedades,
+                    as: 'propriedade'
+                },
+                {
+                    model: Alqueires,
+                    as: 'alqueire'
+                }
+            ],
+            where: whereTalhao,
+            order: [['createdAt', 'DESC']]
+        }) : [];
+
+        const alqueires = propriedadeSelecionada ? await Alqueires.findAll({
+            where: { id_propriedade: propriedadeSelecionada },
+            order: [['nome', 'ASC']]
+        }) : [];
+
         res.render("talhoes", {
-            talhoes: talhoes,
-            propriedades: NomepOrdenado,
-            propriedadeSelecionada
+            talhoes,
+            propriedades,
+            propriedadeSelecionada,
+            alqueires,
+            alqueireSelecionado
         });
-    })
-    .catch((error) => {
+    } catch (error) {
         console.error("Erro ao listar talhões e propriedades:", error);
         res.status(500).send("Erro ao listar talhões.");
-    });
+    }
 });
 
-router.post("/talhoes/new", async (req, res) => {
-    const { nome, total_pes,especie_fruta ,id_propriedade } = req.body;
+// ROTA PARA FORMULÁRIO DE NOVO TALHÃO
+router.get("/talhoes/new", Auth, async (req, res) => {
+    try {
+        const propriedades = await Propriedades.findAll({
+            where: { id_usuario: req.session.user.id_usuario },
+            order: [['nome', 'ASC']]
+        });
+
+        let propriedadeSelecionada = req.query.propriedade || req.session.propriedadeSelecionada || null;
+        if (!propriedadeSelecionada && propriedades.length > 0) {
+            propriedadeSelecionada = propriedades[0].id_propriedade.toString();
+        }
+
+        const alqueires = propriedadeSelecionada ? await Alqueires.findAll({
+            where: { id_propriedade: propriedadeSelecionada },
+            order: [['nome', 'ASC']]
+        }) : [];
+
+        res.render("talhoesNew", {
+            propriedades,
+            propriedadeSelecionada,
+            alqueires
+        });
+    } catch (error) {
+        console.error("Erro ao carregar formulário de novo talhão:", error);
+        res.status(500).send("Erro ao carregar formulário.");
+    }
+});
+
+router.post("/talhoes/new", Auth, async (req, res) => {
+    const { nome, especie_fruta, id_propriedade, id_alqueire } = req.body;
 
     try {
-        // Cria um novo talhão
-        await Talhoes.create({ nome, total_pes, especie_fruta,id_propriedade });
+        if (!id_propriedade) {
+            req.flash('warning', 'Selecione uma propriedade.');
+            return res.redirect('/talhoes');
+        }
 
-        // Atualiza a contagem de talhões registrados na propriedade
+        const propriedade = await Propriedades.findOne({
+            where: {
+                id_propriedade,
+                id_usuario: req.session.user.id_usuario
+            }
+        });
+
+        if (!propriedade) {
+            req.flash('warning', 'Propriedade inválida.');
+            return res.redirect('/talhoes');
+        }
+
+        let alqueireAssociado = null;
+        if (id_alqueire) {
+            alqueireAssociado = await Alqueires.findOne({
+                where: {
+                    id_alqueire,
+                    id_propriedade
+                }
+            });
+            if (!alqueireAssociado) {
+                req.flash('warning', 'Alqueire inválido para a propriedade selecionada.');
+                return res.redirect('/talhoes');
+            }
+        }
+
+        await Talhoes.create({
+            nome,
+            especie_fruta,
+            id_propriedade,
+            id_alqueire: alqueireAssociado ? alqueireAssociado.id_alqueire : null
+        });
+
         await atualizarTalhoesRegistrados(id_propriedade);
 
         res.redirect("/talhoes");
@@ -59,56 +146,92 @@ router.post("/talhoes/new", async (req, res) => {
 
 
 // ROTA PARA EXCLUIR TALHÃO
-router.get("/talhoes/delete/:id?", Auth, (req, res) => {
+router.get("/talhoes/delete/:id?", Auth, async (req, res) => {
     const id = req.params.id;
-
-    Talhoes.destroy({
-        where: { id_talhao: id }
-    })
-    .then(() => {
+    
+    try {
+        // Primeiro, encontre o talhão para obter o id_propriedade
+        const talhao = await Talhoes.findByPk(id);
+        
+        if (!talhao) {
+            return res.status(404).send("Talhão não encontrado.");
+        }
+        
+        const id_propriedade = talhao.id_propriedade;
+        
+        // Exclui o talhão
+        await Talhoes.destroy({
+            where: { id_talhao: id }
+        });
+        
+        // Atualiza o contador de talhões registrados
+        await atualizarTalhoesRegistrados(id_propriedade);
+        
         res.redirect("/talhoes");
-    })
-    .catch((error) => {
-        console.log(error);
+    } catch (error) {
+        console.error("Erro ao excluir talhão:", error);
         res.status(500).send("Erro ao excluir talhão.");
-    });
+    }
 });
 
 // ROTA DE EDIÇÃO DE TALHÃO
-router.get("/talhoes/edit/:id", Auth, (req, res) => {
-    const id = req.params.id;
-    Talhoes.findByPk(id, {
-            include: {
-                model: Propriedades,
-                as: 'propriedade', // Alias definido no relacionamento
-            }
-    })
-        .then((talhao) => {
-            res.render("talhoesEdit", {
-                talhao: talhao,
-            });
-        })
-        .catch((error) => {
-            console.log(error);
-            res.status(500).send("Erro ao buscar talhão.");
+router.get("/talhoes/edit/:id", Auth, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const talhao = await Talhoes.findByPk(id, {
+            include: [
+                {
+                    model: Propriedades,
+                    as: 'propriedade'
+                },
+                {
+                    model: Alqueires,
+                    as: 'alqueire'
+                }
+            ]
         });
+        res.render("talhoesEdit", {
+            talhao
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Erro ao buscar talhão.");
+    }
 });
 
 // ROTA PARA ALTERAÇÃO DE TALHÃO
-router.post("/talhoes/update", Auth, (req, res) => {
-    const { id_talhao, nome, especie_fruta, id_propriedade } = req.body;
+router.post("/talhoes/update", Auth, async (req, res) => {
+    const { id_talhao, nome, especie_fruta, id_propriedade, id_alqueire } = req.body;
 
-    Talhoes.update(
-        { nome, especie_fruta },
-        { where: { id_talhao } }
-    )
-    .then(() => {
+    try {
+        let alqueireAssociado = null;
+        if (id_alqueire) {
+            alqueireAssociado = await Alqueires.findOne({
+                where: {
+                    id_alqueire,
+                    id_propriedade
+                }
+            });
+            if (!alqueireAssociado) {
+                req.flash('warning', 'Alqueire inválido para a propriedade selecionada.');
+                return res.redirect('/talhoes');
+            }
+        }
+
+        await Talhoes.update(
+            {
+                nome,
+                especie_fruta,
+                id_alqueire: alqueireAssociado ? alqueireAssociado.id_alqueire : null
+            },
+            { where: { id_talhao } }
+        );
+
         res.redirect("/talhoes");
-    })
-    .catch((error) => {
+    } catch (error) {
         console.log(error);
         res.status(500).send("Erro ao atualizar talhão.");
-    });
+    }
 });
 
 async function atualizarTalhoesRegistrados(id_propriedade) {
@@ -129,5 +252,78 @@ async function atualizarTalhoesRegistrados(id_propriedade) {
         console.error("Erro ao atualizar talhões registrados:", error);
     }
 }
+
+// ROTA PARA PÁGINA ESPECÍFICA DO TALHÃO
+router.get("/talhao/:id_talhao", Auth, async (req, res) => {
+    const id_talhao = req.params.id_talhao;
+    const userId = req.session.user.id_usuario;
+
+    try {
+        // Verifica se o talhão pertence ao usuário logado
+        const talhao = await Talhoes.findOne({
+            where: { id_talhao },
+            include: [
+                {
+                    model: Propriedades,
+                    as: 'propriedade',
+                    where: { id_usuario: userId },
+                },
+                {
+                    model: Alqueires,
+                    as: 'alqueire'
+                }
+            ]
+        });
+
+        if (!talhao) {
+            return res.status(403).send("Acesso negado ou talhão não encontrado.");
+        }
+
+        // Busca os pés associados ao talhão
+        const pes = await Pes.findAll({
+            where: { id_talhao },
+            order: [['nome', 'ASC']]
+        });
+
+        res.render("talhao", {
+            talhao,
+            pes
+        });
+    } catch (error) {
+        console.error("Erro ao carregar página do talhão:", error);
+        res.status(500).send("Erro ao carregar página do talhão.");
+    }
+});
+
+// ROTA PARA SELECIONAR PROPRIEDADE
+router.post("/talhoes/selecionar-propriedade", Auth, async (req, res) => {
+    try {
+        const { id_propriedade } = req.body;
+        
+        if (!id_propriedade) {
+            return res.status(400).json({ error: "ID da propriedade não fornecido" });
+        }
+
+        // Verifica se a propriedade pertence ao usuário
+        const propriedade = await Propriedades.findOne({
+            where: {
+                id_propriedade,
+                id_usuario: req.session.user.id_usuario
+            }
+        });
+
+        if (!propriedade) {
+            return res.status(403).json({ error: "Propriedade não encontrada ou não pertence ao usuário" });
+        }
+
+        // Salva a propriedade selecionada na sessão
+        req.session.propriedadeSelecionada = id_propriedade;
+        
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Erro ao selecionar propriedade:", error);
+        res.status(500).json({ error: "Erro ao selecionar propriedade" });
+    }
+});
 
 export default router;

@@ -1,222 +1,195 @@
 <%- include('partials/header.ejs') %>
 <%- include('partials/navbar-user.ejs') %>
-<%- include('partials/navbar-lateral.ejs') %>
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card" style="background-color: var(--cor-fundo-form); border: 2px solid var(--verde-escuro);">
-                <div class="card-header" style="background: var(--background-gradient); color: var(--texto-marrom); border-bottom: 2px solid var(--verde-escuro);">
-                    <h2 style="color: var(--texto-marrom); font-weight: bold;"><i class="fas fa-cog"></i> Configurações da Conta</h2>
-                </div>
-                <div class="card-body" style="background-color: var(--input-color);">
-                    <% if (typeof messages !== 'undefined' && messages.success) { %>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: var(--verde-bege); color: var(--texto-marrom); border: 2px solid var(--verde-escuro);">
-                            <%= messages.success %>
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                    <% } %>
-                    <% if (typeof messages !== 'undefined' && messages.error) { %>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background-color: #ff6b6b; color: white; border: 2px solid #d63031;">
-                            <%= messages.error %>
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                    <% } %>
+<main class="main-content settings-page">
+  <%- include('partials/navbar-lateral.ejs') %>
+  <section class="settings-container">
+    <header class="settings-header">
+      <h1>Configurações da Conta</h1>
+      <p>Gerencie seus dados pessoais, propriedades e preferências de segurança.</p>
+    </header>
 
-                    <!-- Abas -->
-                    <ul class="nav nav-tabs" id="configTabs" role="tablist" style="border-bottom: 2px solid var(--verde-escuro);">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="dados-tab" data-toggle="tab" href="#dados" role="tab" style="color: var(--texto-marrom); background-color: var(--cor-fundo-bege); border: 1px solid var(--verde-escuro);">
-                                <i class="fas fa-user"></i> Dados Pessoais
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="endereco-tab" data-toggle="tab" href="#endereco" role="tab" style="color: var(--texto-marrom); background-color: var(--cor-fundo-bege); border: 1px solid var(--verde-escuro);">
-                                <i class="fas fa-map-marker-alt"></i> Endereço
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="senha-tab" data-toggle="tab" href="#senha" role="tab" style="color: var(--texto-marrom); background-color: var(--cor-fundo-bege); border: 1px solid var(--verde-escuro);">
-                                <i class="fas fa-lock"></i> Alterar Senha
-                            </a>
-                        </li>
-                    </ul>
+    <% const temPropriedade = !!propriedade; %>
+    <% const caminhoFoto = usuario && usuario.foto_perfil ? usuario.foto_perfil : null; %>
 
-                    <div class="tab-content mt-4" id="configTabsContent">
-                        <!-- Dados Pessoais -->
-                        <div class="tab-pane fade show active" id="dados" role="tabpanel">
-                            <form action="/configuracoes/update" method="post">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="nome" style="color: var(--texto-marrom); font-weight: bold;">Nome:</label>
-                                            <input type="text" class="form-control" id="nome" name="nome" 
-                                                   value="<%= usuario ? usuario.nome : '' %>" required
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="sobrenome" style="color: var(--texto-marrom); font-weight: bold;">Sobrenome:</label>
-                                            <input type="text" class="form-control" id="sobrenome" name="sobrenome" 
-                                                   value="<%= usuario ? usuario.sobrenome : '' %>" required
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="email" style="color: var(--texto-marrom); font-weight: bold;">Email:</label>
-                                            <input type="email" class="form-control" id="email" name="email" 
-                                                   value="<%= usuario ? usuario.email : '' %>" required
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="telefone" style="color: var(--texto-marrom); font-weight: bold;">Telefone:</label>
-                                            <input type="text" class="form-control" id="telefone" name="telefone" 
-                                                   value="<%= usuario ? usuario.telefone : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="celular" style="color: var(--texto-marrom); font-weight: bold;">Celular:</label>
-                                            <input type="text" class="form-control" id="celular" name="celular" 
-                                                   value="<%= usuario ? usuario.celular : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="tipo_pessoa" style="color: var(--texto-marrom); font-weight: bold;">Tipo de Pessoa:</label>
-                                            <select class="form-control" id="tipo_pessoa" name="tipo_pessoa" style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                                <option value="fisica" <%= usuario && usuario.tipo_pessoa === 'fisica' ? 'selected' : '' %>>Pessoa Física</option>
-                                                <option value="juridica" <%= usuario && usuario.tipo_pessoa === 'juridica' ? 'selected' : '' %>>Pessoa Jurídica</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="cpf" style="color: var(--texto-marrom); font-weight: bold;">CPF:</label>
-                                            <input type="text" class="form-control" id="cpf" name="cpf" 
-                                                   value="<%= usuario ? usuario.cpf : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="cnpj" style="color: var(--texto-marrom); font-weight: bold;">CNPJ:</label>
-                                            <input type="text" class="form-control" id="cnpj" name="cnpj" 
-                                                   value="<%= usuario ? usuario.cnpj : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nome_fantasia" style="color: var(--texto-marrom); font-weight: bold;">Nome Fantasia:</label>
-                                    <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" 
-                                           value="<%= usuario ? usuario.nome_fantasia : '' %>"
-                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                </div>
-                                <button type="submit" class="btn btn-lg" style="background: var(--background-gradient); color: var(--texto-marrom); border: 2px solid var(--verde-escuro); font-weight: bold;">
-                                    <i class="fas fa-save"></i> Salvar Dados Pessoais
-                                </button>
-                            </form>
-        </div>
-
-                        <!-- Endereço -->
-                        <div class="tab-pane fade" id="endereco" role="tabpanel">
-                            <form action="/configuracoes/update" method="post">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="cep" style="color: var(--texto-marrom); font-weight: bold;">CEP:</label>
-                                            <input type="text" class="form-control" id="cep" name="cep" 
-                                                   value="<%= usuario ? usuario.cep : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-group">
-                                            <label for="logradouro" style="color: var(--texto-marrom); font-weight: bold;">Logradouro:</label>
-                                            <input type="text" class="form-control" id="logradouro" name="logradouro" 
-                                                   value="<%= usuario ? usuario.logradouro : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="numero" style="color: var(--texto-marrom); font-weight: bold;">Número:</label>
-                                            <input type="text" class="form-control" id="numero" name="numero" 
-                                                   value="<%= usuario ? usuario.numero : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="bairro" style="color: var(--texto-marrom); font-weight: bold;">Bairro:</label>
-                                            <input type="text" class="form-control" id="bairro" name="bairro" 
-                                                   value="<%= usuario ? usuario.bairro : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="cidade" style="color: var(--texto-marrom); font-weight: bold;">Cidade:</label>
-                                            <input type="text" class="form-control" id="cidade" name="cidade" 
-                                                   value="<%= usuario ? usuario.cidade : '' %>"
-                                                   style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-lg" style="background: var(--background-gradient); color: var(--texto-marrom); border: 2px solid var(--verde-escuro); font-weight: bold;">
-                                    <i class="fas fa-save"></i> Salvar Endereço
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Alterar Senha -->
-                        <div class="tab-pane fade" id="senha" role="tabpanel">
-                            <form action="/configuracoes/change-password" method="post">
-                                <div class="form-group">
-                                    <label for="senha_atual" style="color: var(--texto-marrom); font-weight: bold;">Senha Atual:</label>
-                                    <input type="password" class="form-control" id="senha_atual" name="senha_atual" required
-                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                </div>
-                                <div class="form-group">
-                                    <label for="nova_senha" style="color: var(--texto-marrom); font-weight: bold;">Nova Senha:</label>
-                                    <input type="password" class="form-control" id="nova_senha" name="nova_senha" required
-                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                </div>
-                                <div class="form-group">
-                                    <label for="confirmar_senha" style="color: var(--texto-marrom); font-weight: bold;">Confirmar Nova Senha:</label>
-                                    <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" required
-                                           style="background-color: var(--input-color); border: 2px solid var(--border-input-color); color: var(--texto-marrom);">
-                                </div>
-                                <button type="submit" class="btn btn-lg" style="background: var(--cor-fundo-cor); color: var(--texto-marrom); border: 2px solid var(--verde-escuro); font-weight: bold;">
-                                    <i class="fas fa-key"></i> Alterar Senha
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                  </div>
+    <div class="settings-card">
+      <details class="settings-section">
+        <summary class="settings-summary">
+          <span>Dados Pessoais</span>
+          <span class="summary-icon"></span>
+        </summary>
+        <div class="settings-content">
+          <form action="/configuracoes/update" method="post" enctype="multipart/form-data" class="settings-form">
+            <div class="avatar-field">
+              <div class="avatar-preview">
+                <% if (caminhoFoto) { %>
+                  <img src="<%= caminhoFoto %>" alt="Foto de perfil" />
+                <% } else { %>
+                  <span class="avatar-placeholder">+</span>
+                <% } %>
+              </div>
+              <label class="button-outlined" for="foto_perfil">Escolher imagem</label>
+              <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
             </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" value="<%= usuario ? usuario.nome : '' %>" required>
+              </div>
+              <div class="form-group">
+                <label for="sobrenome">Sobrenome</label>
+                <input type="text" id="sobrenome" name="sobrenome" value="<%= usuario ? usuario.sobrenome : '' %>" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="<%= usuario ? usuario.email : '' %>" required>
+              </div>
+              <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="text" id="telefone" name="telefone" value="<%= usuario ? usuario.telefone || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="celular">Celular</label>
+                <input type="text" id="celular" name="celular" value="<%= usuario ? usuario.celular || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="tipo_pessoa">Tipo de pessoa</label>
+                <select id="tipo_pessoa" name="tipo_pessoa">
+                  <option value="fisica" <%= usuario && usuario.tipo_pessoa === 'fisica' ? 'selected' : '' %>>Pessoa Física</option>
+                  <option value="juridica" <%= usuario && usuario.tipo_pessoa === 'juridica' ? 'selected' : '' %>>Pessoa Jurídica</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cpf">CPF</label>
+                <input type="text" id="cpf" name="cpf" value="<%= usuario ? usuario.cpf || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="cnpj">CNPJ</label>
+                <input type="text" id="cnpj" name="cnpj" value="<%= usuario ? usuario.cnpj || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="nome_fantasia">Rua</label>
+                <input type="text" id="nome_fantasia" name="nome_fantasia" value="<%= usuario ? usuario.nome_fantasia || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="cep">CEP</label>
+                <input type="text" id="cep" name="cep" value="<%= usuario ? usuario.cep || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="logradouro">Logradouro</label>
+                <input type="text" id="logradouro" name="logradouro" value="<%= usuario ? usuario.logradouro || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="numero">Número</label>
+                <input type="text" id="numero" name="numero" value="<%= usuario ? usuario.numero || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="bairro">Bairro</label>
+                <input type="text" id="bairro" name="bairro" value="<%= usuario ? usuario.bairro || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="cidade">Cidade</label>
+                <input type="text" id="cidade" name="cidade" value="<%= usuario ? usuario.cidade || '' : '' %>">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="button-primary">Salvar alterações</button>
+            </div>
+          </form>
         </div>
+      </details>
+
+      <details class="settings-section">
+        <summary class="settings-summary">
+          <span><%= temPropriedade ? 'Dados da Propriedade' : 'Cadastrar Propriedade' %></span>
+          <span class="summary-icon"></span>
+        </summary>
+        <div class="settings-content">
+          <form action="/configuracoes/propriedade" method="post" class="settings-form">
+            <% if (temPropriedade) { %>
+              <input type="hidden" name="id_propriedade" value="<%= propriedade.id_propriedade %>">
+            <% } %>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nome_propriedade">Nome da propriedade</label>
+                <input type="text" id="nome_propriedade" name="nome" value="<%= temPropriedade ? propriedade.nome : '' %>" required>
+              </div>
+              <div class="form-group">
+                <label for="cep_propriedade">CEP</label>
+                <input type="text" id="cep_propriedade" name="cep" value="<%= temPropriedade ? propriedade.cep || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="logradouro_propriedade">Logradouro</label>
+                <input type="text" id="logradouro_propriedade" name="logradouro" value="<%= temPropriedade ? propriedade.logradouro || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="numero_propriedade">Número</label>
+                <input type="text" id="numero_propriedade" name="numero" value="<%= temPropriedade ? propriedade.numero || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="bairro_propriedade">Bairro</label>
+                <input type="text" id="bairro_propriedade" name="bairro" value="<%= temPropriedade ? propriedade.bairro || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="cidade_propriedade">Cidade</label>
+                <input type="text" id="cidade_propriedade" name="cidade" value="<%= temPropriedade ? propriedade.cidade || '' : '' %>">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="button-primary"><%= temPropriedade ? 'Atualizar propriedade' : 'Cadastrar propriedade' %></button>
+            </div>
+            <% if (!temPropriedade) { %>
+              <p class="section-hint">Você ainda não possui uma propriedade cadastrada. Preencha os dados para iniciar o acompanhamento.</p>
+            <% } %>
+          </form>
+        </div>
+      </details>
+
+      <details class="settings-section">
+        <summary class="settings-summary">
+          <span>Segurança</span>
+          <span class="summary-icon"></span>
+        </summary>
+        <div class="settings-content">
+          <div class="settings-stack">
+            <form action="/configuracoes/change-password" method="post" class="settings-form stack-item">
+              <h3>Trocar senha</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="senha_atual">Senha atual</label>
+                  <input type="password" id="senha_atual" name="senha_atual" required>
+                </div>
+                <div class="form-group">
+                  <label for="nova_senha">Nova senha</label>
+                  <input type="password" id="nova_senha" name="nova_senha" required>
+                </div>
+                <div class="form-group">
+                  <label for="confirmar_senha">Confirmar nova senha</label>
+                  <input type="password" id="confirmar_senha" name="confirmar_senha" required>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="button-primary">Atualizar senha</button>
+              </div>
+            </form>
+
+            <form action="/configuracoes/delete-account" method="post" class="settings-form stack-item">
+              <h3>Apagar conta</h3>
+              <p class="section-hint">Ao excluir sua conta, todos os dados vinculados serão removidos permanentemente.</p>
+              <div class="form-group">
+                <label for="senha_confirmacao">Confirme digitando sua senha</label>
+                <input type="password" id="senha_confirmacao" name="senha_confirmacao" required>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="button-danger">Apagar conta</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </details>
     </div>
-</div>
+  </section>
+</main>
 
 <%- include('partials/footer.ejs') %>
-

@@ -16,6 +16,14 @@ const Talhoes = connection.define('talhoes', {
             key: 'id_propriedade'
         }
     },
+    id_alqueire: {
+        type: sequelize.INTEGER,
+        references: {
+            model: 'alqueires',
+            key: 'id_alqueire'
+        },
+        allowNull: true
+    },
     nome: {
         type: sequelize.STRING,
         allowNull: false,
@@ -39,7 +47,7 @@ const Talhoes = connection.define('talhoes', {
 });
 
 // Sincronização com o banco de dados
-Talhoes.sync({ force: false });
+Talhoes.sync({ alter: true });
 
 // Função para atualizar talhoes_registrados em Propriedades
 async function atualizarTalhoesRegistrados(id_propriedade) {

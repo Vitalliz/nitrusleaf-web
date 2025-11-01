@@ -13,7 +13,6 @@ router.use(flash());
 router.get("/login", (req, res) => {
     res.render("login", {
         loggedOut: true,
-        messages: req.flash(),
     });
 });
 
@@ -52,7 +51,11 @@ router.post("/authenticate", async (req, res) => {
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
         if (senhaValida) {
-            req.session.user = { id_usuario: usuario.id_usuario, email: usuario.email };
+            req.session.user = {
+                id_usuario: usuario.id_usuario,
+                email: usuario.email,
+                foto_perfil: usuario.foto_perfil || null
+            };
             req.flash("success", "Login efetuado com sucesso!");
             return res.redirect("/home");
         } else {
@@ -69,7 +72,6 @@ router.post("/authenticate", async (req, res) => {
 router.get("/cadastroUsuarios", (req, res) => {
     res.render("cadastroUsuarios", {
         loggedOut: true,
-        messages: req.flash(),
     });
 });
 
@@ -126,7 +128,11 @@ router.post("/createUsuarios", async (req, res) => {
                 cpf: null
             });
 
-            req.session.user = { id_usuario: novoUsuario.id_usuario, email: novoUsuario.email };
+            req.session.user = {
+                id_usuario: novoUsuario.id_usuario,
+                email: novoUsuario.email,
+                foto_perfil: novoUsuario.foto_perfil || null
+            };
             req.flash("success", "Cadastro realizado com sucesso! Bem-vindo ao NitrusLeaf!");
             return req.session.save((err) => {
                 if (err) {
@@ -164,7 +170,6 @@ router.post("/createUsuarios", async (req, res) => {
                 numero,
                 logradouro,
                 cidade,
-                messages: req.flash()
             });
         }
 
@@ -201,7 +206,6 @@ router.post("/createLogin", async (req, res) => {
                 numero: dadosCadastro.numero || '',
                 logradouro: dadosCadastro.logradouro || '',
                 cidade: dadosCadastro.cidade || '',
-                messages: req.flash()
             });
         }
 
@@ -219,7 +223,6 @@ router.post("/createLogin", async (req, res) => {
                 numero: dadosCadastro.numero || '',
                 logradouro: dadosCadastro.logradouro || '',
                 cidade: dadosCadastro.cidade || '',
-                messages: req.flash()
             });
         }
 
@@ -246,7 +249,6 @@ router.post("/createLogin", async (req, res) => {
                 numero: dadosCadastro.numero || '',
                 logradouro: dadosCadastro.logradouro || '',
                 cidade: dadosCadastro.cidade || '',
-                messages: req.flash()
             });
         }
 
@@ -275,7 +277,11 @@ router.post("/createLogin", async (req, res) => {
         console.log("Usuário criado com sucesso:", novoUsuario.id_usuario);
         delete req.session.dadosCadastro;
 
-        req.session.user = { id_usuario: novoUsuario.id_usuario, email: novoUsuario.email };
+        req.session.user = {
+            id_usuario: novoUsuario.id_usuario,
+            email: novoUsuario.email,
+            foto_perfil: novoUsuario.foto_perfil || null
+        };
         req.flash("success", "Cadastro realizado com sucesso! Bem-vindo ao NitrusLeaf!");
         return req.session.save((err) => {
             if (err) {
@@ -301,7 +307,6 @@ router.post("/createLogin", async (req, res) => {
             numero: dadosCadastro ? dadosCadastro.numero || '' : '',
             logradouro: dadosCadastro ? dadosCadastro.logradouro || '' : '',
             cidade: dadosCadastro ? dadosCadastro.cidade || '' : '',
-            messages: req.flash()
         });
     }
 });
