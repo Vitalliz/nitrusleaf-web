@@ -30,23 +30,30 @@ router.get("/logout", (req, res) => {
 router.post("/authenticate", async (req, res) => {
     const { email, senha } = req.body;
 
+    if (!email || !senha) {
+        req.flash("danger", "Por favor, preencha todos os campos.");
+        return res.redirect("/");
+    }
+
     try {
         const usuario = await Usuarios.findOne({ 
             where: { 
                 [Op.or]: [
-                    { email: email },
-                    { login: email }
+                    { email: email.trim() },
+                    { login: email.trim() }
                 ]
             } 
         });
 
         if (!usuario) {
-            req.flash("danger", "Usuário não encontrado.");
+            req.flash("danger", "Usuário não encontrado. Verifique o e-mail ou faça um cadastro.");
             return res.redirect("/");
         }
 
-        console.log("Senha fornecida:", senha);
-        console.log("Hash armazenado no banco:", usuario.senha);
+        if (!usuario.senha) {
+            req.flash("danger", "Erro: conta sem senha cadastrada. Entre em contato com o suporte.");
+            return res.redirect("/");
+        }
 
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
@@ -56,10 +63,19 @@ router.post("/authenticate", async (req, res) => {
                 email: usuario.email,
                 foto_perfil: usuario.foto_perfil || null
             };
-            req.flash("success", "Login efetuado com sucesso!");
-            return res.redirect("/home");
+            req.flash("success", "Login efetuado com sucesso! Bem-vindo ao NitrusLeaf!");
+            
+            // Garantir que a sessão seja salva antes de redirecionar
+            return req.session.save((err) => {
+                if (err) {
+                    console.error("Erro ao salvar sessão:", err);
+                    req.flash("danger", "Erro ao iniciar sessão. Tente novamente.");
+                    return res.redirect("/");
+                }
+                res.redirect("/home");
+            });
         } else {
-            req.flash("danger", "Senha incorreta.");
+            req.flash("danger", "Senha incorreta. Tente novamente.");
             return res.redirect("/");
         }
     } catch (error) {
@@ -70,8 +86,16 @@ router.post("/authenticate", async (req, res) => {
 });
 
 router.get("/cadastroUsuarios", (req, res) => {
+    const messages = {
+        success: req.flash('success'),
+        danger: req.flash('danger'),
+        error: req.flash('error'),
+        warning: req.flash('warning'),
+        info: req.flash('info')
+    };
     res.render("cadastroUsuarios", {
         loggedOut: true,
+        messages
     });
 });
 
@@ -158,6 +182,13 @@ router.post("/createUsuarios", async (req, res) => {
                 cidade
             };
 
+            const messages = {
+                success: req.flash('success'),
+                danger: req.flash('danger'),
+                error: req.flash('error'),
+                warning: req.flash('warning'),
+                info: req.flash('info')
+            };
             res.render("cadastroLogin", {
                 tipo_pessoa,
                 nome,
@@ -170,6 +201,7 @@ router.post("/createUsuarios", async (req, res) => {
                 numero,
                 logradouro,
                 cidade,
+                messages
             });
         }
 
@@ -194,6 +226,13 @@ router.post("/createLogin", async (req, res) => {
 
         if (!emailFinal) {
             req.flash("danger", "Informe um e-mail válido.");
+            const messages = {
+                success: req.flash('success'),
+                danger: req.flash('danger'),
+                error: req.flash('error'),
+                warning: req.flash('warning'),
+                info: req.flash('info')
+            };
             return res.render("cadastroLogin", {
                 tipo_pessoa: dadosCadastro.tipo_pessoa,
                 nome: dadosCadastro.nome || '',
@@ -206,11 +245,19 @@ router.post("/createLogin", async (req, res) => {
                 numero: dadosCadastro.numero || '',
                 logradouro: dadosCadastro.logradouro || '',
                 cidade: dadosCadastro.cidade || '',
+                messages
             });
         }
 
         if (senha !== confirmar_senha) {
             req.flash("danger", "As senhas não coincidem.");
+            const messages = {
+                success: req.flash('success'),
+                danger: req.flash('danger'),
+                error: req.flash('error'),
+                warning: req.flash('warning'),
+                info: req.flash('info')
+            };
             return res.render("cadastroLogin", {
                 tipo_pessoa: dadosCadastro.tipo_pessoa,
                 nome: dadosCadastro.nome || '',
@@ -223,6 +270,7 @@ router.post("/createLogin", async (req, res) => {
                 numero: dadosCadastro.numero || '',
                 logradouro: dadosCadastro.logradouro || '',
                 cidade: dadosCadastro.cidade || '',
+                messages
             });
         }
 
@@ -237,6 +285,13 @@ router.post("/createLogin", async (req, res) => {
 
         if (usuarioExistente) {
             req.flash("danger", "Este e-mail já está em uso.");
+            const messages = {
+                success: req.flash('success'),
+                danger: req.flash('danger'),
+                error: req.flash('error'),
+                warning: req.flash('warning'),
+                info: req.flash('info')
+            };
             return res.render("cadastroLogin", {
                 tipo_pessoa: dadosCadastro.tipo_pessoa,
                 nome: dadosCadastro.nome || '',
@@ -249,6 +304,7 @@ router.post("/createLogin", async (req, res) => {
                 numero: dadosCadastro.numero || '',
                 logradouro: dadosCadastro.logradouro || '',
                 cidade: dadosCadastro.cidade || '',
+                messages
             });
         }
 
@@ -295,6 +351,13 @@ router.post("/createLogin", async (req, res) => {
     } catch (error) {
         console.error("Erro no cadastro final:", error);
         req.flash("danger", "Erro interno do servidor.");
+        const messages = {
+            success: req.flash('success'),
+            danger: req.flash('danger'),
+            error: req.flash('error'),
+            warning: req.flash('warning'),
+            info: req.flash('info')
+        };
         res.render("cadastroLogin", {
             tipo_pessoa: dadosCadastro ? dadosCadastro.tipo_pessoa : '',
             nome: dadosCadastro ? dadosCadastro.nome || '' : '',
@@ -307,6 +370,7 @@ router.post("/createLogin", async (req, res) => {
             numero: dadosCadastro ? dadosCadastro.numero || '' : '',
             logradouro: dadosCadastro ? dadosCadastro.logradouro || '' : '',
             cidade: dadosCadastro ? dadosCadastro.cidade || '' : '',
+            messages
         });
     }
 });

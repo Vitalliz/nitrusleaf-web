@@ -23,52 +23,62 @@
                     <div >
                         <div class="card-body">
                             <img src="/imgs/linha.png" alt=""  id="voltar-linha"  class="p-0 mt-0" />
-                            <table>
-                                <thead>
-                                    <tr id="tabela-dados">
-                                        <th><!-- Nome do talhão --></th>
-                                        <th><!-- Nome do pé --></th>
-                                        <th colspan="1"><!-- Editar --></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- INSERIR FOREACH TABELA DE DADOS DO DIAGNOSTICO CADASTRADAS -->
-                                    <div class="row">
-                                        <div class="col-4 m-3">
-                                            <div id="options-container">
-                                                <select id="propriedades" class="options">
-                                                  <% talhoes.forEach(tal => {%>
-                                                      <option 
-                                                      value="<%= tal.id_propriedade %>" 
-                                                      <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>>
-                                                      <%= tal.nome %>
-                                                  </option>
-                                                  <%})%>
-                                                </select>
-                                        </div>
-                                        <div class="col m-3">
-                                            <input type="text" class="form-control p-2" id="" name="" placeholder="Pé 1">
-                                        </div>
-                                        <div class="col mt-3">
-                                            <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
-                                        </div>
-                                    </div>  
-                                    <div class="row">
-                                        <div class="col-8 mt-3 mx-3">
-                                            <input type="text" class="form-control p-3" id="" name="" placeholder="Escrever Relatório">
-                                        </div>
-                                        
-                                        <div class="col mt-3">
-                                            <a href="/fazeredit"><img src="/imgs/btn-editar.svg" alt=""></a>
-                                        </div>
-                                    </div>  
-                                    <!-- Botão para cadastrar -->
-                                    <div class="container my-4">
-                                        <button type="submit" class="btn pt-2 ms-5" style="padding-inline: 10rem;" id="btn-entrar">Finalizar</button>
-                                    </div>
+                            <div>
+                                <div class="mb-3">
+                                    <strong>Talhão:</strong>
+                                    <span><%= talhao ? talhao.nome : '—' %></span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Pé:</strong>
+                                    <span><%= pe ? pe.nome : '—' %></span>
+                                </div>
 
-                                </tbody>
-                            </table>
+                                <div class="mb-3">
+                                    <strong>Resumo de ocorrências:</strong>
+                                    <div>Cobre: <%= counts.cobre %> | Manganês: <%= counts.manganes %> | Outros: <%= counts.outros %></div>
+                                </div>
+
+                                <h4 class="mt-4">Relatórios</h4>
+                                <% if (relatorios && relatorios.length > 0) { %>
+                                    <ul>
+                                        <% relatorios.forEach(r => { %>
+                                            <li style="margin-bottom:8px;">
+                                                <strong><%= new Intl.DateTimeFormat('pt-BR').format(new Date(r.data_analise)) %>:</strong>
+                                                <% if (r.deficiencia_cobre) { %>
+                                                    <span>Deficiência de Cobre</span>
+                                                <% } %>
+                                                <% if (r.deficiencia_manganes) { %>
+                                                    <span> Deficiência de Manganês</span>
+                                                <% } %>
+                                                <% if (r.outros) { %>
+                                                    <span> Outros</span>
+                                                <% } %>
+                                                <% if (r.observacoes) { %>
+                                                    <div><em><%= r.observacoes %></em></div>
+                                                <% } %>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                                <% } else { %>
+                                    <p>Nenhum relatório encontrado para este pé.</p>
+                                <% } %>
+
+                                <h4 class="mt-4">Fotos</h4>
+                                <% if (fotos && fotos.length > 0) { %>
+                                    <div class="d-flex flex-wrap" style="gap:12px;">
+                                        <% fotos.forEach(f => { %>
+                                            <div style="width:120px;">
+                                                <img src="<%= f.url %>" alt="foto" style="width:100%; border-radius:8px;" />
+                                                <% if (f.resultado_analise) { %>
+                                                    <div style="font-size:12px; color:#444;"><%= f.resultado_analise %></div>
+                                                <% } %>
+                                            </div>
+                                        <% }) %>
+                                    </div>
+                                <% } else { %>
+                                    <p>Nenhuma foto enviada para este pé.</p>
+                                <% } %>
+                            </div>
                         </div>
                     </div>
                 </div>

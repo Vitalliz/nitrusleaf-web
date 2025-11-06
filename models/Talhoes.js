@@ -43,11 +43,24 @@ const Talhoes = connection.define('talhoes', {
     pes_diagnosticados: {
         type: sequelize.INTEGER,
         defaultValue: 0,
+    },
+    latitude: {
+        type: sequelize.DECIMAL(10, 8),
+        allowNull: true,
+    },
+    longitude: {
+        type: sequelize.DECIMAL(11, 8),
+        allowNull: true,
+    },
+    coordenadas_poligono: {
+        type: sequelize.TEXT,
+        allowNull: true,
+        comment: 'JSON array de coordenadas para desenhar o polígono do talhão'
     }
 });
 
-// Sincronização com o banco de dados
-Talhoes.sync({ alter: true });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Talhoes.sync({ alter: true });
 
 // Função para atualizar talhoes_registrados em Propriedades
 async function atualizarTalhoesRegistrados(id_propriedade) {

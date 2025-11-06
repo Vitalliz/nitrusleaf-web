@@ -18,8 +18,8 @@ const Historico = connection.define('historico', {
         allowNull: false
     }
 });
-//Não força a criação da tabela caso já exista
-Historico.sync({ force: false })
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Historico.sync({ force: false })
 export default Historico;
 
 

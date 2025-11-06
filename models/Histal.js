@@ -34,6 +34,6 @@ const Histal = connection.define('histal', {
         allowNull: false,
     }
 });
-//Não força a criação da tabela caso já exista
-Histal.sync({ force: false })
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Histal.sync({ force: false })
 export default Histal;

@@ -84,12 +84,42 @@ router.get('/alqueires', Auth, async (req, res) => {
     }
 });
 
+router.get('/alqueires/cadastrar', Auth, async (req, res) => {
+    try {
+        const propriedades = await Propriedades.findAll({
+            where: { id_usuario: req.session.user.id_usuario },
+            order: [['nome', 'ASC']]
+        });
+
+        let propriedadeSelecionada = req.query.propriedade || req.session.propriedadeSelecionada || null;
+        if (!propriedadeSelecionada && propriedades.length > 0) {
+            propriedadeSelecionada = propriedades[0].id_propriedade.toString();
+        }
+
+        let propriedade = null;
+        if (propriedadeSelecionada) {
+            propriedade = await Propriedades.findByPk(propriedadeSelecionada);
+        }
+
+        res.render('cadastrar-alqueire', {
+            propriedades,
+            propriedadeSelecionada,
+            propriedade,
+            googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY'
+        });
+    } catch (error) {
+        console.error('Erro ao carregar formulário de cadastro:', error);
+        req.flash('error', 'Erro ao carregar formulário.');
+        res.redirect('/historico');
+    }
+});
+
 router.post('/alqueires/new', Auth, async (req, res) => {
     try {
-        const { nome, area_total, id_propriedade } = req.body;
+        const { nome, area_total, id_propriedade, latitude, longitude, coordenadas_poligono } = req.body;
         if (!id_propriedade) {
             req.flash('warning', 'Selecione uma propriedade.');
-            return res.redirect('/alqueires');
+            return res.redirect('/alqueires/cadastrar');
         }
         const propriedade = await Propriedades.findOne({
             where: {
@@ -99,19 +129,22 @@ router.post('/alqueires/new', Auth, async (req, res) => {
         });
         if (!propriedade) {
             req.flash('warning', 'Propriedade inválida.');
-            return res.redirect('/alqueires');
+            return res.redirect('/alqueires/cadastrar');
         }
         await Alqueires.create({
             nome,
             area_total: area_total || null,
-            id_propriedade
+            id_propriedade,
+            latitude: latitude ? parseFloat(latitude) : null,
+            longitude: longitude ? parseFloat(longitude) : null,
+            coordenadas_poligono: coordenadas_poligono || null
         });
         req.flash('success', 'Alqueire criado com sucesso!');
-        res.redirect('/alqueires');
+        res.redirect('/historico');
     } catch (error) {
         console.error('Erro ao criar alqueire:', error);
         req.flash('error', 'Não foi possível criar o alqueire.');
-        res.redirect('/alqueires');
+        res.redirect('/alqueires/cadastrar');
     }
 });
 

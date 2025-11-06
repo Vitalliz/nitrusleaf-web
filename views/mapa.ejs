@@ -1,110 +1,647 @@
 <%- include ('partials/header.ejs') %>
 <%- include('partials/navbar-user.ejs') %>
 <main class="main-content">
-<%- include ('partials/navbar-lateral.ejs') %>  
-<div class="container cont">     
-<div class="container">
-  <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-    <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
-    <div id="options-container">
-      <select id="propriedades" class="options">
-        <% Propriedades.forEach(prop => {%>
-        <option value="<%= prop.id_propriedade%>"><%= prop.nome%></option>
-      <%})%>
-      </select>
-      <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+    <%- include ('partials/navbar-lateral.ejs') %>  
+    <div class="container cont">     
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
+                <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
+                <div id="options-container">
+                    <select id="propriedades" class="options">
+                        <% Propriedades.forEach(prop => {%>
+                            <option value="<%= prop.id_propriedade%>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome%></option>
+                        <%})%>
+                    </select>
+                    <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                </div>
+            </div>
+            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
+        </div>
+        
+        <div class="container pt-3">
+            <div class="map-container-wrapper" style="background: #FAF0D7; border-radius: 14px; padding: 24px; margin-bottom: 24px;">
+                <div class="custom-menu" tabindex="0" style="margin-bottom: 20px;">
+                    <div class="menu-header">
+                        <span class="menu-selected">Mapa Imagem de Satélite</span>
+                        <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrow" />
+                    </div>
+                    <ul class="menu-options">
+                        <li class="menu-option" data-value="satellite">Mapa Imagem de Satélite</li>
+                        <li class="menu-option" data-value="roadmap">Mapa Localização Pés (Apex)</li>
+                        <li class="menu-option" data-value="heatmap">Mapa de Calor (Apex)</li>
+                        <li class="menu-option" data-value="ndvi">Mapa Infravermelho (NDVI)</li>
+                    </ul>
+                </div>
+                
+                <div class="map-and-info-container">
+                    <div class="map-wrapper" style="background: white; border-radius: 14px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div id="map" style="width: 100%; height: 600px; border-radius: 12px; border: 2px solid var(--verde-escuro);"></div>
+                        <div id="info-box" class="map-info-box" style="display: none;">
+                            <div class="info-box-header">
+                                <strong id="info-box-title"></strong>
+                            </div>
+                            <div class="info-box-body">
+                                <div id="info-box-address"></div>
+                                <div class="info-box-actions">
+                                    <a href="#" id="info-box-link" target="_blank">Ver mapa ampliado</a>
+                                    <button id="info-box-routes" class="btn-routes">Rotas</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="property-info-panel" class="property-info-panel" style="display: none;">
+                        <div class="panel-header">
+                            <h3 id="panel-title">Mapa de Satélite</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="info-item">
+                                <label>Região:</label>
+                                <span id="panel-regiao">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Endereço:</label>
+                                <span id="panel-endereco">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>CEP:</label>
+                                <span id="panel-cep">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Data:</label>
+                                <select id="panel-data" class="date-selector">
+                                    <option>25 de Maio de 2024 (25/05/2024)</option>
+                                </select>
+                            </div>
+                            <button id="panel-expand" class="btn-expand">
+                                <span>Expandir</span>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 2L2 6M2 6L6 10M2 6H14M10 14L14 10M14 10L10 6M14 10H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-  <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
-</div>
-<div class="container pt-3">
-  <div class="custom-menu" tabindex="0">
-    <div class="menu-header">
-      <span class="menu-selected">Mapa Infravermelho (NDVI)</span>
-      <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrow" />
-    </div>
-    <ul class="menu-options">
-      <li class="menu-option" data-value="Mapa Imagem Satelite">Mapa Imagem Satélite</li>
-      <li class="menu-option" data-value="Mapa Localização Pes (Apex)">Mapa Localização Pés </li>
-      <li class="menu-option" data-value="Mapa de Calor (Apex)">Mapa de Calor</li>
-    </ul>
-  </div>
-  <div class="infrared-map">
-    <iframe id="mapaFrame" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v1732678760574!5m2!1spt-BR!2sbr" width="600px" height="450px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="mapama"></iframe>
-
-  </div>
-</div>
-</div>
 </main>
+
+<style>
+.map-container-wrapper {
+    margin-top: 20px;
+    background: #FAF0D7;
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.map-container-wrapper .custom-menu .menu-header {
+    background-color: white;
+    border: 2px solid #F2C48D;
+    border-radius: 12px;
+}
+
+.map-container-wrapper .custom-menu.open .menu-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+}
+
+.map-container-wrapper .custom-menu .menu-options {
+    background-color: white;
+    border: 2px solid #F2C48D;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+}
+
+.map-and-info-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.map-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.map-info-box {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.info-box-header {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #351102;
+}
+
+.info-box-body {
+    font-size: 14px;
+    color: #666;
+}
+
+.info-box-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.info-box-actions a {
+    color: #0284E1;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.info-box-actions a:hover {
+    text-decoration: underline;
+}
+
+.btn-routes {
+    background: #65B741;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.property-info-panel {
+    width: 350px;
+    background: white;
+    border-radius: 14px;
+    border: 2px solid #F2C48D;
+    padding: 24px;
+    height: fit-content;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.panel-header h3 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #351102;
+}
+
+.panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-item label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-item span {
+    font-size: 15px;
+    color: #351102;
+    font-weight: 600;
+}
+
+.date-selector {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #351102;
+}
+
+.btn-expand {
+    margin-top: 10px;
+    background: #65B741;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    align-self: flex-end;
+}
+
+.btn-expand:hover {
+    background: #5aa338;
+}
+
+@media (max-width: 1024px) {
+    .map-and-info-container {
+        flex-direction: column;
+    }
+    
+    .property-info-panel {
+        width: 100%;
+    }
+}
+</style>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=drawing,geometry"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-  const customMenu = document.querySelector(".custom-menu");
-  const selectedElement = customMenu.querySelector(".menu-selected");
-  const arrow = customMenu.querySelector(".menu-arrow");
-  const optionsContainer = customMenu.querySelector(".menu-options");
-  const options = Array.from(customMenu.querySelectorAll(".menu-option"));
-  const mapaFrame = document.getElementById("mapaFrame");
-
-  // Mapeia os nomes das opções para URLs do mapa
-  const mapas = {
-    "Mapa Imagem Satelite": "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!5e0!3m2!1spt-BR!2sbr!4v1732678760574",
-    "Mapa Localização Pes": "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!5e0!3m2!1spt-BR!2sbr!4v1732678760575",
-    "Mapa de Calor": "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!5e0!3m2!1spt-BR!2sbr!4v1732678760576",
-    "Mapa Infravermelho (NDVI)": "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2155.0494781834955!2d-47.92813313180629!3d-24.715003701623697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v1732678760574",
-  };
-
-  // Abrir e fechar o menu ao clicar no cabeçalho
-  customMenu.addEventListener("click", (e) => {
-    if (e.target.closest(".menu-header")) {
-      const isOpen = customMenu.classList.contains("open");
-      closeAllMenus();
-      if (!isOpen) {
-        customMenu.classList.add("open");
-      }
+document.addEventListener("DOMContentLoaded", function () {
+    const customMenu = document.querySelector(".custom-menu");
+    const selectedElement = customMenu.querySelector(".menu-selected");
+    const options = Array.from(customMenu.querySelectorAll(".menu-option"));
+    const propriedadesSelect = document.getElementById("propriedades");
+    
+    let map;
+    let marker;
+    let drawingManager;
+    let propriedadeAtual = null;
+    let polygonsAlqueires = [];
+    let polygonsTalhoes = [];
+    let markersPes = [];
+    
+    // Inicializar o mapa
+    function initMap() {
+        const defaultCenter = { lat: -24.715003701623697, lng: -47.92813313180629 };
+        
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: defaultCenter,
+            zoom: 15,
+            mapTypeId: 'satellite',
+            mapTypeControl: false,
+            streetViewControl: true,
+            fullscreenControl: true
+        });
+        
+        // Configurar Drawing Manager para permitir desenhar polígonos
+        drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: null,
+            drawingControl: false,
+            markerOptions: {
+                draggable: true
+            },
+            polygonOptions: {
+                fillColor: '#65B741',
+                fillOpacity: 0.35,
+                strokeWeight: 2,
+                strokeColor: '#65B741',
+                clickable: false,
+                editable: true,
+                zIndex: 1
+            }
+        });
+        
+        drawingManager.setMap(map);
+        
+        // Carregar dados da propriedade selecionada
+        loadPropriedadeData();
     }
-  });
-
-  // Atualizar o item selecionado e o mapa ao clicar em uma opção
-  options.forEach((option) => {
-    option.addEventListener("click", () => {
-      const selectedValue = option.textContent;
-
-      // Atualiza o cabeçalho com o valor selecionado
-      const previousSelectedValue = selectedElement.textContent;
-      selectedElement.textContent = selectedValue;
-
-      // Atualiza o `iframe` com o mapa correspondente
-      if (mapas[selectedValue]) {
-        mapaFrame.src = mapas[selectedValue];
-      } else {
-        console.error("Mapa não encontrado:", selectedValue);
-        alert("Mapa não encontrado. Por favor, selecione outro mapa.");
-      }
-
-      // Atualiza as opções: troca o item selecionado atual com o cabeçalho
-      option.textContent = previousSelectedValue;
-
-      // Fecha o menu
-      customMenu.classList.remove("open");
-    });
-  });
-
-  // Fechar o menu ao clicar fora dele
-  document.addEventListener("click", (e) => {
-    if (!customMenu.contains(e.target)) {
-      customMenu.classList.remove("open");
+    
+    // Carregar dados da propriedade
+    async function loadPropriedadeData() {
+        const idPropriedade = propriedadesSelect.value;
+        
+        try {
+            const response = await fetch(`/mapa/dados-propriedade/${idPropriedade}`);
+            const data = await response.json();
+            
+            propriedadeAtual = data.propriedade;
+            
+            if (propriedadeAtual) {
+                if (propriedadeAtual.latitude && propriedadeAtual.longitude) {
+                    const position = {
+                        lat: parseFloat(propriedadeAtual.latitude),
+                        lng: parseFloat(propriedadeAtual.longitude)
+                    };
+                    
+                    map.setCenter(position);
+                    map.setZoom(17);
+                    
+                    if (marker) {
+                        marker.setPosition(position);
+                    } else {
+                        marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            draggable: true,
+                            title: propriedadeAtual.nome
+                        });
+                        
+                        marker.addListener('dragend', function(e) {
+                            saveLocation(e.latLng.lat(), e.latLng.lng());
+                        });
+                    }
+                    
+                    updateInfoBox(propriedadeAtual);
+                    updatePropertyPanel(propriedadeAtual);
+                    document.getElementById('property-info-panel').style.display = 'block';
+                    
+                    // Carregar alqueires, talhões e pés no mapa
+                    loadAlqueiresTalhoesPes(data.alqueires, data.talhoes, data.pes);
+                } else {
+                    // Propriedade sem localização - permitir marcar
+                    updatePropertyPanel(propriedadeAtual);
+                    document.getElementById('property-info-panel').style.display = 'block';
+                    enableMarkingMode();
+                }
+            } else {
+                // Nenhuma propriedade selecionada
+                document.getElementById('property-info-panel').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+        }
     }
-  });
-
-  // Função para fechar todos os menus
-  function closeAllMenus() {
-    document.querySelectorAll(".custom-menu").forEach((menu) => {
-      menu.classList.remove("open");
+    
+    // Habilitar modo de marcação
+    function enableMarkingMode() {
+        if (marker) {
+            marker.setMap(null);
+            marker = null;
+        }
+        
+        document.getElementById('property-info-panel').style.display = 'none';
+        
+        // Adicionar listener para clicar no mapa e marcar
+        const clickListener = map.addListener('click', function(e) {
+            if (!marker) {
+                marker = new google.maps.Marker({
+                    position: e.latLng,
+                    map: map,
+                    draggable: true,
+                    title: 'Localização da Propriedade'
+                });
+                
+                marker.addListener('dragend', function(e) {
+                    saveLocation(e.latLng.lat(), e.latLng.lng());
+                });
+                
+                saveLocation(e.latLng.lat(), e.latLng.lng());
+                google.maps.event.removeListener(clickListener);
+            }
+        });
+    }
+    
+    // Salvar localização
+    async function saveLocation(lat, lng) {
+        const idPropriedade = propriedadesSelect.value;
+        
+        try {
+            // Buscar região baseado nas coordenadas (pode usar API de geocodificação reversa)
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: { lat, lng } }, async (results, status) => {
+                let regiao = 'Vale do Ribeira'; // Padrão
+                
+                if (status === 'OK' && results[0]) {
+                    // Tentar extrair região do endereço
+                    const address = results[0].formatted_address;
+                    if (address.includes('Vale do Ribeira') || address.includes('Ribeira')) {
+                        regiao = 'Vale do Ribeira';
+                    }
+                }
+                
+                const response = await fetch('/mapa/salvar-localizacao', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id_propriedade: idPropriedade,
+                        latitude: lat,
+                        longitude: lng,
+                        regiao: regiao
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    await loadPropriedadeData();
+                }
+            });
+        } catch (error) {
+            console.error('Erro ao salvar localização:', error);
+        }
+    }
+    
+    // Atualizar info box
+    function updateInfoBox(propriedade) {
+        const infoBox = document.getElementById('info-box');
+        const title = document.getElementById('info-box-title');
+        const address = document.getElementById('info-box-address');
+        const link = document.getElementById('info-box-link');
+        
+        title.textContent = propriedade.nome;
+        address.textContent = `${propriedade.logradouro}, ${propriedade.cidade} - ${propriedade.cep}`;
+        link.href = `https://www.google.com/maps?q=${propriedade.latitude},${propriedade.longitude}`;
+        
+        infoBox.style.display = 'block';
+    }
+    
+    // Atualizar painel lateral
+    function updatePropertyPanel(propriedade) {
+        document.getElementById('panel-regiao').textContent = propriedade.regiao || 'Vale do Ribeira';
+        document.getElementById('panel-endereco').textContent = `${propriedade.logradouro}, ${propriedade.cidade} - SP`;
+        document.getElementById('panel-cep').textContent = propriedade.cep;
+    }
+    
+    // Carregar alqueires, talhões e pés no mapa
+    function loadAlqueiresTalhoesPes(alqueiresData, talhoesData, pesData) {
+        // Limpar polígonos e marcadores existentes
+        polygonsAlqueires.forEach(poly => poly.setMap(null));
+        polygonsTalhoes.forEach(poly => poly.setMap(null));
+        markersPes.forEach(m => m.setMap(null));
+        polygonsAlqueires = [];
+        polygonsTalhoes = [];
+        markersPes = [];
+        
+        // Carregar alqueires como polígonos
+        alqueiresData.forEach(alqueire => {
+            if (alqueire.coordenadas_poligono) {
+                try {
+                    const coords = JSON.parse(alqueire.coordenadas_poligono);
+                    const polygon = new google.maps.Polygon({
+                        paths: coords,
+                        strokeColor: '#FF9800',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#FF9800',
+                        fillOpacity: 0.35,
+                        map: map
+                    });
+                    
+                    polygonsAlqueires.push(polygon);
+                    
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<strong>${alqueire.nome}</strong><br>Área: ${alqueire.area_total || 'N/A'} ha`
+                    });
+                    
+                    polygon.addListener('click', function() {
+                        infoWindow.setPosition(polygon.getPath().getAt(0));
+                        infoWindow.open(map);
+                    });
+                } catch (e) {
+                    console.error('Erro ao carregar polígono do alqueire:', e);
+                }
+            }
+        });
+        
+        // Carregar talhões como polígonos
+        talhoesData.forEach(talhao => {
+            if (talhao.coordenadas_poligono) {
+                try {
+                    const coords = JSON.parse(talhao.coordenadas_poligono);
+                    const polygon = new google.maps.Polygon({
+                        paths: coords,
+                        strokeColor: '#2196F3',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#2196F3',
+                        fillOpacity: 0.35,
+                        map: map
+                    });
+                    
+                    polygonsTalhoes.push(polygon);
+                    
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<strong>${talhao.nome}</strong><br>Espécie: ${talhao.especie_fruta}`
+                    });
+                    
+                    polygon.addListener('click', function() {
+                        infoWindow.setPosition(polygon.getPath().getAt(0));
+                        infoWindow.open(map);
+                    });
+                } catch (e) {
+                    console.error('Erro ao carregar polígono do talhão:', e);
+                }
+            }
+        });
+        
+        // Carregar pés como marcadores
+        pesData.forEach(pe => {
+            if (pe.latitude && pe.longitude) {
+                const peMarker = new google.maps.Marker({
+                    position: { lat: parseFloat(pe.latitude), lng: parseFloat(pe.longitude) },
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 6,
+                        fillColor: pe.situacao === 'Tratado' ? '#4CAF50' : pe.situacao === 'Não-Tratado' ? '#F44336' : '#FFC107',
+                        fillOpacity: 1,
+                        strokeColor: '#fff',
+                        strokeWeight: 2
+                    },
+                    title: `Pé: ${pe.nome}`
+                });
+                
+                markersPes.push(peMarker);
+                
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${pe.nome}</strong><br>Situação: ${pe.situacao}`
+                });
+                
+                peMarker.addListener('click', function() {
+                    infoWindow.open(map, peMarker);
+                });
+            }
+        });
+    }
+    
+    // Menu de seleção de tipo de mapa
+    customMenu.addEventListener("click", (e) => {
+        if (e.target.closest(".menu-header")) {
+            const isOpen = customMenu.classList.contains("open");
+            closeAllMenus();
+            if (!isOpen) {
+                customMenu.classList.add("open");
+            }
+        }
     });
-  }
+    
+    options.forEach((option) => {
+        option.addEventListener("click", () => {
+            const selectedValue = option.textContent;
+            const previousSelectedValue = selectedElement.textContent;
+            selectedElement.textContent = selectedValue;
+            
+            // Atualizar tipo de mapa
+            const mapTypeValue = option.getAttribute('data-value');
+            if (mapTypeValue === 'satellite') {
+                map.setMapTypeId('satellite');
+                document.getElementById('panel-title').textContent = 'Mapa de Satélite';
+            } else if (mapTypeValue === 'roadmap') {
+                map.setMapTypeId('roadmap');
+                document.getElementById('panel-title').textContent = 'Mapa Localização Pés';
+            } else {
+                // Para heatmap e ndvi, manter satellite mas pode adicionar overlays depois
+                map.setMapTypeId('satellite');
+                document.getElementById('panel-title').textContent = selectedValue;
+            }
+            
+            option.textContent = previousSelectedValue;
+            customMenu.classList.remove("open");
+        });
+    });
+    
+    // Seleção de propriedade
+    propriedadesSelect.addEventListener('change', async function() {
+        const idPropriedade = this.value;
+        
+        try {
+            const response = await fetch('/mapa/selecionar-propriedade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id_propriedade: idPropriedade })
+            });
+            
+            if (response.ok) {
+                await loadPropriedadeData();
+            }
+        } catch (error) {
+            console.error('Erro ao selecionar propriedade:', error);
+        }
+    });
+    
+    // Botão expandir
+    document.getElementById('panel-expand').addEventListener('click', function() {
+        window.open(`https://www.google.com/maps?q=${propriedadeAtual.latitude},${propriedadeAtual.longitude}`, '_blank');
+    });
+    
+    // Função para fechar todos os menus
+    function closeAllMenus() {
+        document.querySelectorAll(".custom-menu").forEach((menu) => {
+            menu.classList.remove("open");
+        });
+    }
+    
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener("click", (e) => {
+        if (!customMenu.contains(e.target)) {
+            customMenu.classList.remove("open");
+        }
+    });
+    
+    // Inicializar o mapa
+    initMap();
 });
-
 </script>
 
 <%- include ('partials/footer.ejs') %>

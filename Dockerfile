@@ -2,15 +2,15 @@ FROM node:18
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && apt-get install -y netcat-openbsd
+RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci --only=production
 
 COPY . .
 
-EXPOSE 3000
-
 RUN chmod +x wait-for-it.sh
 
-CMD ["./wait-for-it.sh", "db", "3306", "node", "index.js"]
+EXPOSE 8080
+
+CMD ["./wait-for-it.sh", "db", "3306", "--", "node", "index.js"]

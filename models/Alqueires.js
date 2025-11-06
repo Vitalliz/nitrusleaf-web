@@ -23,9 +23,23 @@ const Alqueires = connection.define("alqueires", {
     area_total: {
         type: sequelize.DECIMAL(10, 2),
         allowNull: true
+    },
+    latitude: {
+        type: sequelize.DECIMAL(10, 8),
+        allowNull: true,
+    },
+    longitude: {
+        type: sequelize.DECIMAL(11, 8),
+        allowNull: true,
+    },
+    coordenadas_poligono: {
+        type: sequelize.TEXT,
+        allowNull: true,
+        comment: 'JSON array de coordenadas para desenhar o polígono do alqueire'
     }
 });
 
-Alqueires.sync({ alter: true });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Alqueires.sync({ alter: true });
 
 export default Alqueires;

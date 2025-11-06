@@ -11,6 +11,7 @@ const Foto = connection.define('foto', {
     },
     id_pe: {
         type: sequelize.INTEGER,
+        allowNull: true,
         references: {
             model: 'pes',
             key: 'id_pe'
@@ -18,6 +19,7 @@ const Foto = connection.define('foto', {
     },
     id_talhao: {
         type: sequelize.INTEGER,
+        allowNull: true,
         references: {
             model: 'talhoes',
             key: 'id_talhao'
@@ -36,6 +38,7 @@ const Foto = connection.define('foto', {
 });
 
 
-Foto.sync({ force: false });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Foto.sync({ force: false });
 
 export default Foto;

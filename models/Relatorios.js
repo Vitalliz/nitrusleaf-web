@@ -11,6 +11,7 @@ const Relatorios = connection.define('relatorios', {
     },
     id_pe: {
         type: sequelize.INTEGER,
+        allowNull: true,
         references: {
             model: 'pes',
             key: 'id_pe'
@@ -18,8 +19,9 @@ const Relatorios = connection.define('relatorios', {
     },
     id_foto: {
         type: sequelize.INTEGER,
+        allowNull: true,
         references: {
-            model: 'fotos',
+            model: 'foto',
             key: 'id_foto'
         }
     },
@@ -44,6 +46,7 @@ const Relatorios = connection.define('relatorios', {
     }
 });
 
-Relatorios.sync({ force: false });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Relatorios.sync({ force: false });
 
 export default Relatorios;

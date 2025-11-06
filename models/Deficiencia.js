@@ -18,6 +18,6 @@ const Deficiencia = connection.define('deficiencia', {
         allowNull: false
     }
 });
-//Não força a criação da tabela caso já exista
-Deficiencia.sync({ force: false })
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Deficiencia.sync({ force: false })
 export default Deficiencia;

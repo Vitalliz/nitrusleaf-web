@@ -15,6 +15,6 @@ const Home = connection.define('home', {
 
     }
 });
-//Não força a criação da tabela caso já exista
-Home.sync({ force: false })
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Home.sync({ force: false })
 export default Home;

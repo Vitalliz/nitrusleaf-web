@@ -54,9 +54,22 @@ const Propriedades = connection.define('propriedades', {
     pes_diagnosticados: {
         type: sequelize.INTEGER,
         defaultValue: 0,
+    },
+    latitude: {
+        type: sequelize.DECIMAL(10, 8),
+        allowNull: true,
+    },
+    longitude: {
+        type: sequelize.DECIMAL(11, 8),
+        allowNull: true,
+    },
+    regiao: {
+        type: sequelize.STRING,
+        allowNull: true,
     }
 });
 
-Propriedades.sync({ force: false });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Propriedades.sync({ force: false });
 
 export default Propriedades;

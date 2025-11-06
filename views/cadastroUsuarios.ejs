@@ -22,6 +22,25 @@
           </div>
         </div>
         
+        <!-- Mensagens Flash -->
+        <% if (typeof messages !== 'undefined' && messages) { %>
+          <% if (messages.success && messages.success.length > 0) { %>
+            <div style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+              <%= messages.success[0] %>
+            </div>
+          <% } %>
+          <% if (messages.danger && messages.danger.length > 0) { %>
+            <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+              <%= messages.danger[0] %>
+            </div>
+          <% } %>
+          <% if (messages.error && messages.error.length > 0) { %>
+            <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+              <%= messages.error[0] %>
+            </div>
+          <% } %>
+        <% } %>
+        
         <!-- Formulário de cadastro -->
         <form action="/createUsuarios" method="POST" style="text-align: left;">
         <!-- Tipo de pessoa (hidden input baseado na URL) -->

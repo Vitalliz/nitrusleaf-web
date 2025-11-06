@@ -67,6 +67,7 @@ const Usuarios = connection.define('usuarios', {
     }
 });
 
-Usuarios.sync({ force: false });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Usuarios.sync({ force: false });
 
 export default Usuarios;

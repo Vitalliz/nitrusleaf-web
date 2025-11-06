@@ -7,7 +7,62 @@
     <li><a href="/historico"><img src="/imgs/btn-historico.svg" alt=""></a></li>
     <li><a href="/mapa"><img src="/imgs/btn-mapas.svg" alt=""></a></li>
     <li><a href="/configuracoes"><img src="/imgs/btn-config.svg" alt=""></a></li>
-    <li><a href="/logout"><img src="/imgs/btn-sair.svg" alt=""></a></li>
+    <li><a href="#" id="btn-logout" onclick="event.preventDefault(); window.showLogoutModal(); return false;"><img src="/imgs/btn-sair.svg" alt=""></a></li>
   </ul>
 </div>
 </nav>
+
+<!-- Modal de Confirmação de Logout -->
+<div id="logoutModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+  <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+    <h3 style="color: #351102; font-size: 20px; font-weight: 700; margin-bottom: 15px;">Confirmar Logout</h3>
+    <p style="color: #666; font-size: 15px; margin-bottom: 25px;">Tem certeza que deseja sair da sua conta?</p>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button onclick="window.closeLogoutModal()" style="padding: 10px 20px; border: 2px solid #ddd; background: white; color: #666; border-radius: 8px; cursor: pointer; font-weight: 600;">
+        Cancelar
+      </button>
+      <a href="/logout" onclick="window.closeLogoutModal()" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block;">
+        Sair
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Funções do modal de logout
+window.showLogoutModal = function() {
+  const modal = document.getElementById('logoutModal');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+};
+
+window.closeLogoutModal = function() {
+  const modal = document.getElementById('logoutModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+
+// Fechar modal ao clicar fora
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('logoutModal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        window.closeLogoutModal();
+      }
+    });
+  }
+  
+  // Fechar modal com ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('logoutModal');
+      if (modal && modal.style.display === 'flex') {
+        window.closeLogoutModal();
+      }
+    }
+  });
+});
+</script>

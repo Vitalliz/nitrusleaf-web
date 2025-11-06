@@ -22,6 +22,7 @@ const Resultados = connection.define('resultados', {
     }
 });
 
-Relatorios.sync({ force: false });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Relatorios.sync({ force: false });
 
 export default Resultados;

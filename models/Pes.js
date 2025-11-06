@@ -39,6 +39,14 @@ const Pes = connection.define("pes", {
         type: sequelize.STRING,
         allowNull: true,
     },
+    latitude: {
+        type: sequelize.DECIMAL(10, 8),
+        allowNull: true,
+    },
+    longitude: {
+        type: sequelize.DECIMAL(11, 8),
+        allowNull: true,
+    },
 });
 
 // Função para atualizar o campo `total_pes` no modelo Talhoes
@@ -70,7 +78,7 @@ Pes.afterDestroy(async (pe, options) => {
     await atualizarTotalPes(pe.id_talhao);
 });
 
-// Sincronização do modelo
-Pes.sync({ force: false });
+// Sync removido - será feito centralmente no index.js após o banco estar pronto
+// Pes.sync({ force: false });
 
 export default Pes;
