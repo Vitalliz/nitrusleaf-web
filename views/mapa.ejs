@@ -261,386 +261,84 @@
 }
 </style>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=drawing,geometry"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Plugin para desenho de polígonos/edição -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
+<script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const customMenu = document.querySelector(".custom-menu");
-    const selectedElement = customMenu.querySelector(".menu-selected");
-    const options = Array.from(customMenu.querySelectorAll(".menu-option"));
-    const propriedadesSelect = document.getElementById("propriedades");
-    
-    let map;
+
+    // ===== 1. Inicializa mapa =====
+    const map = L.map('map').setView([-24.7150037, -47.9281331], 15);
+
+    // ===== 2. Adiciona layer Satelite da ESRI (grátis) =====
+    const satelite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: 'Tiles © Esri' }
+    );
+
+    // ===== 3. Adiciona layer OpenStreetMap (mapa comum) =====
+    const osm = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap' }
+    );
+
+    satelite.addTo(map);
+
+    // Controle para alternar mapa/satelite
+    L.control.layers({
+        "Satelite": satelite,
+        "Mapa": osm
+    }).addTo(map);
+
+    // ===== 4. Marcador arrastável =====
     let marker;
-    let drawingManager;
-    let propriedadeAtual = null;
-    let polygonsAlqueires = [];
-    let polygonsTalhoes = [];
-    let markersPes = [];
-    
-    // Inicializar o mapa
-    function initMap() {
-        const defaultCenter = { lat: -24.715003701623697, lng: -47.92813313180629 };
-        
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: defaultCenter,
-            zoom: 15,
-            mapTypeId: 'satellite',
-            mapTypeControl: false,
-            streetViewControl: true,
-            fullscreenControl: true
-        });
-        
-        // Configurar Drawing Manager para permitir desenhar polígonos
-        drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: null,
-            drawingControl: false,
-            markerOptions: {
-                draggable: true
-            },
-            polygonOptions: {
-                fillColor: '#65B741',
-                fillOpacity: 0.35,
-                strokeWeight: 2,
-                strokeColor: '#65B741',
-                clickable: false,
-                editable: true,
-                zIndex: 1
-            }
-        });
-        
-        drawingManager.setMap(map);
-        
-        // Carregar dados da propriedade selecionada
-        loadPropriedadeData();
-    }
-    
-    // Carregar dados da propriedade
-    async function loadPropriedadeData() {
-        const idPropriedade = propriedadesSelect.value;
-        
-        try {
-            const response = await fetch(`/mapa/dados-propriedade/${idPropriedade}`);
-            const data = await response.json();
-            
-            propriedadeAtual = data.propriedade;
-            
-            if (propriedadeAtual) {
-                if (propriedadeAtual.latitude && propriedadeAtual.longitude) {
-                    const position = {
-                        lat: parseFloat(propriedadeAtual.latitude),
-                        lng: parseFloat(propriedadeAtual.longitude)
-                    };
-                    
-                    map.setCenter(position);
-                    map.setZoom(17);
-                    
-                    if (marker) {
-                        marker.setPosition(position);
-                    } else {
-                        marker = new google.maps.Marker({
-                            position: position,
-                            map: map,
-                            draggable: true,
-                            title: propriedadeAtual.nome
-                        });
-                        
-                        marker.addListener('dragend', function(e) {
-                            saveLocation(e.latLng.lat(), e.latLng.lng());
-                        });
-                    }
-                    
-                    updateInfoBox(propriedadeAtual);
-                    updatePropertyPanel(propriedadeAtual);
-                    document.getElementById('property-info-panel').style.display = 'block';
-                    
-                    // Carregar alqueires, talhões e pés no mapa
-                    loadAlqueiresTalhoesPes(data.alqueires, data.talhoes, data.pes);
-                } else {
-                    // Propriedade sem localização - permitir marcar
-                    updatePropertyPanel(propriedadeAtual);
-                    document.getElementById('property-info-panel').style.display = 'block';
-                    enableMarkingMode();
-                }
-            } else {
-                // Nenhuma propriedade selecionada
-                document.getElementById('property-info-panel').style.display = 'none';
-            }
-        } catch (error) {
-            console.error('Erro ao carregar dados:', error);
+    map.on('click', function (e) {
+        if (!marker) {
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            console.log("Nova localizacao:", e.latlng.lat, e.latlng.lng);
+        } else {
+            marker.setLatLng(e.latlng);
         }
-    }
-    
-    // Habilitar modo de marcação
-    function enableMarkingMode() {
-        if (marker) {
-            marker.setMap(null);
-            marker = null;
-        }
-        
-        document.getElementById('property-info-panel').style.display = 'none';
-        
-        // Adicionar listener para clicar no mapa e marcar
-        const clickListener = map.addListener('click', function(e) {
-            if (!marker) {
-                marker = new google.maps.Marker({
-                    position: e.latLng,
-                    map: map,
-                    draggable: true,
-                    title: 'Localização da Propriedade'
-                });
-                
-                marker.addListener('dragend', function(e) {
-                    saveLocation(e.latLng.lat(), e.latLng.lng());
-                });
-                
-                saveLocation(e.latLng.lat(), e.latLng.lng());
-                google.maps.event.removeListener(clickListener);
-            }
-        });
-    }
-    
-    // Salvar localização
-    async function saveLocation(lat, lng) {
-        const idPropriedade = propriedadesSelect.value;
-        
-        try {
-            // Buscar região baseado nas coordenadas (pode usar API de geocodificação reversa)
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ location: { lat, lng } }, async (results, status) => {
-                let regiao = 'Vale do Ribeira'; // Padrão
-                
-                if (status === 'OK' && results[0]) {
-                    // Tentar extrair região do endereço
-                    const address = results[0].formatted_address;
-                    if (address.includes('Vale do Ribeira') || address.includes('Ribeira')) {
-                        regiao = 'Vale do Ribeira';
-                    }
-                }
-                
-                const response = await fetch('/mapa/salvar-localizacao', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id_propriedade: idPropriedade,
-                        latitude: lat,
-                        longitude: lng,
-                        regiao: regiao
-                    })
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    await loadPropriedadeData();
-                }
-            });
-        } catch (error) {
-            console.error('Erro ao salvar localização:', error);
-        }
-    }
-    
-    // Atualizar info box
-    function updateInfoBox(propriedade) {
-        const infoBox = document.getElementById('info-box');
-        const title = document.getElementById('info-box-title');
-        const address = document.getElementById('info-box-address');
-        const link = document.getElementById('info-box-link');
-        
-        title.textContent = propriedade.nome;
-        address.textContent = `${propriedade.logradouro}, ${propriedade.cidade} - ${propriedade.cep}`;
-        link.href = `https://www.google.com/maps?q=${propriedade.latitude},${propriedade.longitude}`;
-        
-        infoBox.style.display = 'block';
-    }
-    
-    // Atualizar painel lateral
-    function updatePropertyPanel(propriedade) {
-        document.getElementById('panel-regiao').textContent = propriedade.regiao || 'Vale do Ribeira';
-        document.getElementById('panel-endereco').textContent = `${propriedade.logradouro}, ${propriedade.cidade} - SP`;
-        document.getElementById('panel-cep').textContent = propriedade.cep;
-    }
-    
-    // Carregar alqueires, talhões e pés no mapa
-    function loadAlqueiresTalhoesPes(alqueiresData, talhoesData, pesData) {
-        // Limpar polígonos e marcadores existentes
-        polygonsAlqueires.forEach(poly => poly.setMap(null));
-        polygonsTalhoes.forEach(poly => poly.setMap(null));
-        markersPes.forEach(m => m.setMap(null));
-        polygonsAlqueires = [];
-        polygonsTalhoes = [];
-        markersPes = [];
-        
-        // Carregar alqueires como polígonos
-        alqueiresData.forEach(alqueire => {
-            if (alqueire.coordenadas_poligono) {
-                try {
-                    const coords = JSON.parse(alqueire.coordenadas_poligono);
-                    const polygon = new google.maps.Polygon({
-                        paths: coords,
-                        strokeColor: '#FF9800',
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: '#FF9800',
-                        fillOpacity: 0.35,
-                        map: map
-                    });
-                    
-                    polygonsAlqueires.push(polygon);
-                    
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `<strong>${alqueire.nome}</strong><br>Área: ${alqueire.area_total || 'N/A'} ha`
-                    });
-                    
-                    polygon.addListener('click', function() {
-                        infoWindow.setPosition(polygon.getPath().getAt(0));
-                        infoWindow.open(map);
-                    });
-                } catch (e) {
-                    console.error('Erro ao carregar polígono do alqueire:', e);
-                }
-            }
-        });
-        
-        // Carregar talhões como polígonos
-        talhoesData.forEach(talhao => {
-            if (talhao.coordenadas_poligono) {
-                try {
-                    const coords = JSON.parse(talhao.coordenadas_poligono);
-                    const polygon = new google.maps.Polygon({
-                        paths: coords,
-                        strokeColor: '#2196F3',
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: '#2196F3',
-                        fillOpacity: 0.35,
-                        map: map
-                    });
-                    
-                    polygonsTalhoes.push(polygon);
-                    
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `<strong>${talhao.nome}</strong><br>Espécie: ${talhao.especie_fruta}`
-                    });
-                    
-                    polygon.addListener('click', function() {
-                        infoWindow.setPosition(polygon.getPath().getAt(0));
-                        infoWindow.open(map);
-                    });
-                } catch (e) {
-                    console.error('Erro ao carregar polígono do talhão:', e);
-                }
-            }
-        });
-        
-        // Carregar pés como marcadores
-        pesData.forEach(pe => {
-            if (pe.latitude && pe.longitude) {
-                const peMarker = new google.maps.Marker({
-                    position: { lat: parseFloat(pe.latitude), lng: parseFloat(pe.longitude) },
-                    map: map,
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 6,
-                        fillColor: pe.situacao === 'Tratado' ? '#4CAF50' : pe.situacao === 'Não-Tratado' ? '#F44336' : '#FFC107',
-                        fillOpacity: 1,
-                        strokeColor: '#fff',
-                        strokeWeight: 2
-                    },
-                    title: `Pé: ${pe.nome}`
-                });
-                
-                markersPes.push(peMarker);
-                
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `<strong>${pe.nome}</strong><br>Situação: ${pe.situacao}`
-                });
-                
-                peMarker.addListener('click', function() {
-                    infoWindow.open(map, peMarker);
-                });
-            }
-        });
-    }
-    
-    // Menu de seleção de tipo de mapa
-    customMenu.addEventListener("click", (e) => {
-        if (e.target.closest(".menu-header")) {
-            const isOpen = customMenu.classList.contains("open");
-            closeAllMenus();
-            if (!isOpen) {
-                customMenu.classList.add("open");
-            }
-        }
-    });
-    
-    options.forEach((option) => {
-        option.addEventListener("click", () => {
-            const selectedValue = option.textContent;
-            const previousSelectedValue = selectedElement.textContent;
-            selectedElement.textContent = selectedValue;
-            
-            // Atualizar tipo de mapa
-            const mapTypeValue = option.getAttribute('data-value');
-            if (mapTypeValue === 'satellite') {
-                map.setMapTypeId('satellite');
-                document.getElementById('panel-title').textContent = 'Mapa de Satélite';
-            } else if (mapTypeValue === 'roadmap') {
-                map.setMapTypeId('roadmap');
-                document.getElementById('panel-title').textContent = 'Mapa Localização Pés';
-            } else {
-                // Para heatmap e ndvi, manter satellite mas pode adicionar overlays depois
-                map.setMapTypeId('satellite');
-                document.getElementById('panel-title').textContent = selectedValue;
-            }
-            
-            option.textContent = previousSelectedValue;
-            customMenu.classList.remove("open");
+
+        marker.on('dragend', function (ev) {
+            console.log("Posicao movida:", ev.target.getLatLng());
         });
     });
-    
-    // Seleção de propriedade
-    propriedadesSelect.addEventListener('change', async function() {
-        const idPropriedade = this.value;
-        
-        try {
-            const response = await fetch('/mapa/selecionar-propriedade', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id_propriedade: idPropriedade })
-            });
-            
-            if (response.ok) {
-                await loadPropriedadeData();
-            }
-        } catch (error) {
-            console.error('Erro ao selecionar propriedade:', error);
+
+    // ===== 5. Ativar ferramenta de desenho (polígonos) =====
+    const drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    const drawControl = new L.Control.Draw({
+        edit: { featureGroup: drawnItems },
+        draw: {
+            polygon: true,
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: false
         }
     });
-    
-    // Botão expandir
-    document.getElementById('panel-expand').addEventListener('click', function() {
-        window.open(`https://www.google.com/maps?q=${propriedadeAtual.latitude},${propriedadeAtual.longitude}`, '_blank');
+
+    map.addControl(drawControl);
+
+    // Quando o polígono for criado:
+    map.on(L.Draw.Event.CREATED, function (event) {
+        const layer = event.layer;
+        drawnItems.addLayer(layer);
+
+        const coords = layer.getLatLngs()[0].map(p => ({
+            lat: p.lat,
+            lng: p.lng
+        }));
+
+        console.log("Poligono desenhado:", coords);
+        alert("Poligono criado! Veja no console as coordenadas.");
     });
-    
-    // Função para fechar todos os menus
-    function closeAllMenus() {
-        document.querySelectorAll(".custom-menu").forEach((menu) => {
-            menu.classList.remove("open");
-        });
-    }
-    
-    // Fechar o menu ao clicar fora dele
-    document.addEventListener("click", (e) => {
-        if (!customMenu.contains(e.target)) {
-            customMenu.classList.remove("open");
-        }
-    });
-    
-    // Inicializar o mapa
-    initMap();
+
 });
 </script>
 
