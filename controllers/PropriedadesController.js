@@ -26,7 +26,7 @@ router.get("/cadastroPropriedade", Auth,(req, res) => {
 
 // ROTA PARA CRIAR NOVA PROPRIEDADE
 router.post("/propriedades/new", Auth,(req, res) => {
-    const { nome, cep, logradouro, numero, bairro, cidade, talhoes_registrados, total_pes, pes_analisados, pes_diagnosticados } = req.body;
+    const { nome, cep, logradouro, numero, bairro, cidade, talhoes_registrados, total_pes, pes_analisados, pes_diagnosticados, latitude, longitude } = req.body;
     const id_usuario = req.session.user.id_usuario; // Garante que o ID seja da sessão
     Propriedades.create({
         nome,
@@ -39,7 +39,9 @@ router.post("/propriedades/new", Auth,(req, res) => {
         talhoes_registrados,
         total_pes,
         pes_analisados,
-        pes_diagnosticados
+        pes_diagnosticados,
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null
     })
     .then(() => {
         res.redirect("/cadastroPropriedade");

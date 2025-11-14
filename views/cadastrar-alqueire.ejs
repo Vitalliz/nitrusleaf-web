@@ -73,152 +73,219 @@
     </div>
 </main>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=drawing,geometry"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Plugin para desenho de polígonos/edição -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
+<script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    let map;
-    let marker = null;
-    let polygon = null;
-    let drawingManager;
     const propriedadesSelect = document.getElementById('propriedades');
     
-    // Inicializar o mapa
-    function initMap() {
-        const defaultCenter = { lat: -24.715003701623697, lng: -47.92813313180629 };
-        
-        <% if (propriedade && propriedade.latitude && propriedade.longitude) { %>
-        const propriedadeCenter = {
-            lat: parseFloat(<%= propriedade.latitude %>),
-            lng: parseFloat(<%= propriedade.longitude %>)
-        };
-        <% } %>
-        
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: <% if (propriedade && propriedade.latitude && propriedade.longitude) { %>propriedadeCenter<% } else { %>defaultCenter<% } %>,
-            zoom: 15,
-            mapTypeId: 'satellite',
-            mapTypeControl: true,
-            streetViewControl: true,
-            fullscreenControl: true
-        });
-        
-        // Configurar Drawing Manager
-        drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: null,
-            drawingControl: false,
-            markerOptions: {
-                draggable: true
-            },
-            polygonOptions: {
-                fillColor: '#65B741',
-                fillOpacity: 0.35,
-                strokeWeight: 2,
-                strokeColor: '#65B741',
-                clickable: false,
-                editable: true,
-                zIndex: 1
+    // Determinar centro inicial do mapa
+    let mapCenter = [-24.7150037, -47.9281331];
+    let mapZoom = 15;
+    
+    <% if (propriedade && propriedade.latitude && propriedade.longitude) { %>
+    mapCenter = [parseFloat(<%= propriedade.latitude %>), parseFloat(<%= propriedade.longitude %>)];
+    mapZoom = 15;
+    <% } %>
+    
+    // Dados do servidor
+    const propriedadeData = <%- JSON.stringify(propriedade || {}) %>;
+    const alqueiresData = <%- JSON.stringify(alqueires || []) %>;
+    
+    // Inicializar mapa
+    const map = L.map('map').setView(mapCenter, mapZoom);
+    
+    // Adiciona layer Satelite da ESRI
+    const satelite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: 'Tiles © Esri' }
+    );
+    
+    // Adiciona layer OpenStreetMap
+    const osm = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap' }
+    );
+    
+    satelite.addTo(map);
+    
+    // Controle para alternar mapa/satelite
+    L.control.layers({
+        "Satelite": satelite,
+        "Mapa": osm
+    }).addTo(map);
+    
+    // Mostrar propriedade no mapa
+    if (propriedadeData && propriedadeData.latitude && propriedadeData.longitude) {
+        L.marker([parseFloat(propriedadeData.latitude), parseFloat(propriedadeData.longitude)], {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34]
+            })
+        }).addTo(map).bindPopup(`<strong>Propriedade: ${propriedadeData.nome}</strong>`);
+    }
+    
+    // Mostrar alqueires já cadastrados
+    if (Array.isArray(alqueiresData)) {
+        alqueiresData.forEach(alq => {
+            if (alq.latitude && alq.longitude) {
+                L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], {
+                    icon: L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34]
+                    })
+                }).addTo(map).bindPopup(`<strong>Alqueire: ${alq.nome}</strong>`);
             }
-        });
-        
-        drawingManager.setMap(map);
-        
-        // Listener para quando um polígono é criado
-        google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-            if (event.type === 'polygon') {
-                if (polygon) {
-                    polygon.setMap(null);
+            if (alq.coordenadas_poligono) {
+                try {
+                    const coords = JSON.parse(alq.coordenadas_poligono);
+                    if (Array.isArray(coords) && coords.length > 0) {
+                        const latlngs = coords.map(c => [c.lat, c.lng]);
+                        L.polygon(latlngs, {
+                            color: '#0284E1',
+                            fillColor: '#0284E1',
+                            fillOpacity: 0.2,
+                            weight: 2
+                        }).addTo(map).bindPopup(`<strong>Alqueire: ${alq.nome}</strong>`);
+                    }
+                } catch (e) {
+                    console.error('Erro ao parsear coordenadas do alqueire:', e);
                 }
-                polygon = event.overlay;
-                const paths = polygon.getPath();
-                const coordinates = [];
-                
-                paths.forEach(function(latLng) {
-                    coordinates.push({
-                        lat: latLng.lat(),
-                        lng: latLng.lng()
-                    });
-                });
-                
-                // Calcular centro do polígono para latitude/longitude
-                const bounds = new google.maps.LatLngBounds();
-                paths.forEach(function(latLng) {
-                    bounds.extend(latLng);
-                });
-                const center = bounds.getCenter();
-                
-                document.getElementById('latitude').value = center.lat();
-                document.getElementById('longitude').value = center.lng();
-                document.getElementById('coordenadas_poligono').value = JSON.stringify(coordinates);
-                
-                drawingManager.setDrawingMode(null);
-            } else if (event.type === 'marker') {
-                if (marker) {
-                    marker.setMap(null);
-                }
-                if (polygon) {
-                    polygon.setMap(null);
-                    polygon = null;
-                }
-                
-                marker = event.overlay;
-                const position = marker.getPosition();
-                
-                document.getElementById('latitude').value = position.lat();
-                document.getElementById('longitude').value = position.lng();
-                document.getElementById('coordenadas_poligono').value = '';
-                
-                marker.addListener('dragend', function() {
-                    const pos = marker.getPosition();
-                    document.getElementById('latitude').value = pos.lat();
-                    document.getElementById('longitude').value = pos.lng();
-                });
-                
-                drawingManager.setDrawingMode(null);
             }
         });
     }
     
+    let marker = null;
+    let polygon = null;
+    const drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+    
+    // Configurar ferramenta de desenho
+    const drawControl = new L.Control.Draw({
+        edit: { featureGroup: drawnItems },
+        draw: {
+            polygon: true,
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: true
+        }
+    });
+    
+    // Quando um polígono é criado
+    map.on(L.Draw.Event.CREATED, function (event) {
+        const layer = event.layer;
+        drawnItems.addLayer(layer);
+        
+        if (event.layerType === 'polygon') {
+            if (polygon) {
+                drawnItems.removeLayer(polygon);
+            }
+            polygon = layer;
+            const coords = layer.getLatLngs()[0].map(p => ({
+                lat: p.lat,
+                lng: p.lng
+            }));
+            
+            // Calcular centro do polígono
+            const bounds = layer.getBounds();
+            const center = bounds.getCenter();
+            
+            document.getElementById('latitude').value = center.lat;
+            document.getElementById('longitude').value = center.lng;
+            document.getElementById('coordenadas_poligono').value = JSON.stringify(coords);
+        } else if (event.layerType === 'marker') {
+            if (marker) {
+                drawnItems.removeLayer(marker);
+            }
+            if (polygon) {
+                drawnItems.removeLayer(polygon);
+                polygon = null;
+                document.getElementById('coordenadas_poligono').value = '';
+            }
+            marker = layer;
+            const position = layer.getLatLng();
+            document.getElementById('latitude').value = position.lat;
+            document.getElementById('longitude').value = position.lng;
+            document.getElementById('coordenadas_poligono').value = '';
+            
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat;
+                document.getElementById('longitude').value = pos.lng;
+            });
+        }
+    });
+    
     // Botão marcar ponto
     document.getElementById('btn-marcar-ponto').addEventListener('click', function() {
         if (polygon) {
-            polygon.setMap(null);
+            drawnItems.removeLayer(polygon);
             polygon = null;
             document.getElementById('coordenadas_poligono').value = '';
         }
-        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.MARKER);
+        // Ativar modo de desenho de marcador
+        if (drawControl._toolbars && drawControl._toolbars.draw && drawControl._toolbars.draw._modes && drawControl._toolbars.draw._modes.marker) {
+            drawControl._toolbars.draw._modes.marker.handler.enable();
+        } else {
+            // Fallback: criar marcador ao clicar no mapa
+            map.once('click', function(e) {
+                if (marker) {
+                    drawnItems.removeLayer(marker);
+                }
+                marker = L.marker(e.latlng, { draggable: true });
+                drawnItems.addLayer(marker);
+                document.getElementById('latitude').value = e.latlng.lat;
+                document.getElementById('longitude').value = e.latlng.lng;
+                document.getElementById('coordenadas_poligono').value = '';
+                
+                marker.on('dragend', function(ev) {
+                    const pos = ev.target.getLatLng();
+                    document.getElementById('latitude').value = pos.lat;
+                    document.getElementById('longitude').value = pos.lng;
+                });
+            });
+        }
     });
     
     // Botão desenhar polígono
     document.getElementById('btn-desenhar-poligono').addEventListener('click', function() {
         if (marker) {
-            marker.setMap(null);
+            drawnItems.removeLayer(marker);
             marker = null;
             document.getElementById('latitude').value = '';
             document.getElementById('longitude').value = '';
         }
-        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+        // Ativar modo de desenho de polígono
+        if (drawControl._toolbars && drawControl._toolbars.draw && drawControl._toolbars.draw._modes && drawControl._toolbars.draw._modes.polygon) {
+            drawControl._toolbars.draw._modes.polygon.handler.enable();
+        }
     });
     
     // Botão limpar
     document.getElementById('btn-limpar').addEventListener('click', function() {
-        if (marker) {
-            marker.setMap(null);
-            marker = null;
-        }
-        if (polygon) {
-            polygon.setMap(null);
-            polygon = null;
-        }
+        drawnItems.clearLayers();
+        marker = null;
+        polygon = null;
         document.getElementById('latitude').value = '';
         document.getElementById('longitude').value = '';
         document.getElementById('coordenadas_poligono').value = '';
-        drawingManager.setDrawingMode(null);
     });
     
     // Mudança de propriedade
     propriedadesSelect.addEventListener('change', function() {
         document.getElementById('id_propriedade').value = this.value;
-        // Recarregar página com nova propriedade selecionada
         window.location.href = `/alqueires/cadastrar?propriedade=${this.value}`;
     });
     
@@ -234,8 +301,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
     
-    // Inicializar o mapa
-    initMap();
+    // Adicionar controle de desenho ao mapa
+    map.addControl(drawControl);
 });
 </script>
 

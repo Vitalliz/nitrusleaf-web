@@ -28,12 +28,22 @@
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div style="flex-grow: 1;">
-                <div style="position: relative; max-width: 300px;">
-                    <input type="text" placeholder="Pesquisar registros" style="width: 100%; padding: 10px 40px 10px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
-                    <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%);">
-                        <img src="/imgs/search.svg" alt="Pesquisar" style="width: 18px; height: 18px;">
+                <div style="position: relative; max-width: 350px;">
+                    <input type="text" id="search-input" placeholder="Pesquisar registros" style="width: 100%; padding: 14px 50px 14px 18px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+                    <div style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);">
+                        <img src="/imgs/search.png" alt="Pesquisar" style="width: 24px; height: 24px;">
                     </div>
                 </div>
+                <script>
+                document.getElementById('search-input').addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('tbody tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+                </script>
             </div>
             <a href="/talhoes/new" class="btn-primary" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px;">
                 <span style="font-size: 18px;">+</span> Adicionar Talhão

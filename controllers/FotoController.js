@@ -1,8 +1,25 @@
 import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import Auth from "../middleware/Auth.js";
 const router = express.Router();
 import Foto from "../models/Foto.js";
-import Pes from "../models/Pes.js"; // Para associar a tabela "pes"
-import Talhoes from "../models/Talhoes.js"; // Para associar a tabela "talhoes"
+import Pes from "../models/Pes.js";
+import Talhoes from "../models/Talhoes.js";
+import Relatorios from "../models/Relatorios.js";
+import Propriedades from "../models/Propriedades.js";
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage });
 
 // ROTA PARA LISTAR TODAS AS FOTOS
 router.get("/fotos", (req, res) => {
@@ -23,24 +40,76 @@ router.get("/fotos", (req, res) => {
     });
 });
 
-// ROTA PARA CRIAR NOVA FOTO
-router.post("/fotos/new", (req, res) => {
-    const { id_pe, id_talhao, url, data_tiragem, resultado_analise } = req.body;
+// ROTA PARA CRIAR NOVA FOTO COM ANÁLISE
+router.post("/fotos/new", Auth, upload.single('imagem'), async (req, res) => {
+    try {
+        const { id_pe, id_talhao, situacao, deficiencia_cobre, deficiencia_manganes, outros, observacoes } = req.body;
+        const userId = req.session.user.id_usuario;
 
-    Foto.create({
-        id_pe,
-        id_talhao,
-        url,
-        data_tiragem,
-        resultado_analise
-    })
-    .then(() => {
-        res.redirect("/fotos");
-    })
-    .catch((error) => {
-        console.log(error);
-        res.status(500).send("Erro ao criar foto.");
-    });
+        if (!id_pe) {
+            return res.status(400).send("ID do pé não fornecido.");
+        }
+
+        // Verifica se o pé pertence ao usuário
+        const pe = await Pes.findOne({
+            where: { id_pe },
+            include: {
+                model: Talhoes,
+                as: 'talhao',
+                include: {
+                    model: Propriedades,
+                    as: 'propriedade',
+                    where: { id_usuario: userId }
+                }
+            }
+        });
+
+        if (!pe) {
+            return res.status(403).send("Acesso negado.");
+        }
+
+        let urlFoto = null;
+        if (req.file) {
+            urlFoto = `/uploads/${req.file.filename}`;
+        }
+
+        // Atualiza o pé com as informações
+        await Pes.update(
+            {
+                situacao: situacao || pe.situacao,
+                deficiencia_cobre: deficiencia_cobre === 'true' || deficiencia_cobre === true,
+                deficiencia_manganes: deficiencia_manganes === 'true' || deficiencia_manganes === true,
+                outros: outros === 'true' || outros === true
+            },
+            { where: { id_pe } }
+        );
+
+        // Cria a foto se foi enviada
+        if (urlFoto) {
+            await Foto.create({
+                id_pe,
+                id_talhao: id_talhao || pe.id_talhao,
+                url: urlFoto,
+                data_tiragem: new Date(),
+                resultado_analise: observacoes || null
+            });
+        }
+
+        // Cria relatório da análise
+        await Relatorios.create({
+            id_pe,
+            data_analise: new Date(),
+            deficiencia_cobre: deficiencia_cobre === 'true' || deficiencia_cobre === true,
+            deficiencia_manganes: deficiencia_manganes === 'true' || deficiencia_manganes === true,
+            outros: outros === 'true' || outros === true,
+            observacoes: observacoes || null
+        });
+
+        res.redirect(`/pes/${id_pe}`);
+    } catch (error) {
+        console.error("Erro ao criar foto e análise:", error);
+        res.status(500).send("Erro ao criar foto e análise.");
+    }
 });
 
 // ROTA PARA EXCLUIR FOTO

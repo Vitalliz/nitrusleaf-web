@@ -132,7 +132,10 @@ router.post("/talhoes/new", Auth, async (req, res) => {
             nome,
             especie_fruta,
             id_propriedade,
-            id_alqueire: alqueireAssociado ? alqueireAssociado.id_alqueire : null
+            id_alqueire: alqueireAssociado ? alqueireAssociado.id_alqueire : null,
+            latitude: req.body.latitude ? parseFloat(req.body.latitude) : null,
+            longitude: req.body.longitude ? parseFloat(req.body.longitude) : null,
+            coordenadas_poligono: req.body.coordenadas_poligono || null
         });
 
         await atualizarTalhoesRegistrados(id_propriedade);

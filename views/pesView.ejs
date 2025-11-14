@@ -1,0 +1,255 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar-user.ejs') %>
+<main class="main-content home-dashboard">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <section class="dashboard-container">
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="/cadastroPes/<%= pe.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Voltar
+                </a>
+                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Pé: <%= pe.nome %></h1>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="/pes/edit/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px; text-decoration: none;">
+                    <img src="/imgs/btn-editar.svg" alt="Editar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Editar
+                </a>
+            </div>
+        </header>
+
+        <section class="analysis-section">
+            <div class="analysis-card" style="margin-bottom: 24px;">
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Talhão</label>
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                                <%= pe.talhao.nome %>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Situação</label>
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                                <%= pe.situacao || 'Sem-informações' %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Observações</label>
+                        <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102; min-height: 80px;">
+                            <%= pe.observacoes || 'Sem observações' %>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Deficiências Detectadas</label>
+                        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                            <% if (pe.deficiencia_cobre) { %>
+                                <div style="padding: 12px 20px; background: #D84A0F; color: white; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                                    Cobre
+                                </div>
+                            <% } %>
+                            <% if (pe.deficiencia_manganes) { %>
+                                <div style="padding: 12px 20px; background: #FFB534; color: #351102; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                                    Manganês
+                                </div>
+                            <% } %>
+                            <% if (pe.outros) { %>
+                                <div style="padding: 12px 20px; background: #ACACAC; color: white; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                                    Outros
+                                </div>
+                            <% } %>
+                            <% if (!pe.deficiencia_cobre && !pe.deficiencia_manganes && !pe.outros) { %>
+                                <div style="padding: 12px 20px; background: #f0f0f0; color: #666; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                                    Nenhuma deficiência detectada
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Mapa com localização do pé -->
+                    <% if (pe.latitude && pe.longitude) { %>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Localização no Mapa</label>
+                        <div style="background: white; border: 2px solid #F2C48D; border-radius: 15px; padding: 20px;">
+                            <div id="map" style="width: 100%; height: 400px; border-radius: 12px;"></div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Seção de Análise de Imagem -->
+            <div class="analysis-card" style="margin-bottom: 24px;">
+                <div class="card-body">
+                    <h2 style="font-size: 24px; font-weight: 700; color: #351102; margin-bottom: 20px;">Análise de Imagem</h2>
+                    
+                    <form id="form-analise" action="/fotos/new" method="POST" enctype="multipart/form-data" style="margin-bottom: 24px;">
+                        <input type="hidden" name="id_pe" value="<%= pe.id_pe %>">
+                        <input type="hidden" name="id_talhao" value="<%= pe.id_talhao %>">
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Enviar Imagem para Análise</label>
+                            <input type="file" id="imagem-analise" name="imagem" accept="image/*" required 
+                                style="width: 100%; padding: 12px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 16px; background: #FAF0D7;">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Situação do Pé</label>
+                            <select name="situacao" required style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+                                <option value="Sem-informações" <%= pe.situacao === 'Sem-informações' ? 'selected' : '' %>>Sem informações</option>
+                                <option value="Tratado" <%= pe.situacao === 'Tratado' ? 'selected' : '' %>>Tratado</option>
+                                <option value="Não-Tratado" <%= pe.situacao === 'Não-Tratado' ? 'selected' : '' %>>Não-Tratado</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Deficiências Detectadas</label>
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
+                                    <input type="checkbox" name="deficiencia_cobre" value="true" <%= pe.deficiencia_cobre ? 'checked' : '' %> style="width: 20px; height: 20px;">
+                                    <span style="font-size: 16px; font-weight: 600; color: #351102;">Cobre</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
+                                    <input type="checkbox" name="deficiencia_manganes" value="true" <%= pe.deficiencia_manganes ? 'checked' : '' %> style="width: 20px; height: 20px;">
+                                    <span style="font-size: 16px; font-weight: 600; color: #351102;">Manganês</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
+                                    <input type="checkbox" name="outros" value="true" <%= pe.outros ? 'checked' : '' %> style="width: 20px; height: 20px;">
+                                    <span style="font-size: 16px; font-weight: 600; color: #351102;">Outros</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center;">
+                            <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 12px; padding: 16px 48px; border: none; cursor: pointer; font-size: 18px;">
+                                Analisar Imagem
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Histórico de Análises -->
+            <% if (relatorios && relatorios.length > 0) { %>
+            <div class="analysis-card">
+                <div class="card-body">
+                    <h2 style="font-size: 24px; font-weight: 700; color: #351102; margin-bottom: 20px;">Histórico de Análises</h2>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <% relatorios.forEach(relatorio => { %>
+                        <div style="padding: 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <strong style="font-size: 18px; color: #351102;">
+                                        <%= new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(relatorio.data_analise)) %>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+                                <% if (relatorio.deficiencia_cobre) { %>
+                                    <span style="padding: 8px 16px; background: #D84A0F; color: white; border-radius: 6px; font-size: 14px; font-weight: 600;">Cobre</span>
+                                <% } %>
+                                <% if (relatorio.deficiencia_manganes) { %>
+                                    <span style="padding: 8px 16px; background: #FFB534; color: #351102; border-radius: 6px; font-size: 14px; font-weight: 600;">Manganês</span>
+                                <% } %>
+                                <% if (relatorio.outros) { %>
+                                    <span style="padding: 8px 16px; background: #ACACAC; color: white; border-radius: 6px; font-size: 14px; font-weight: 600;">Outros</span>
+                                <% } %>
+                            </div>
+                            <% if (relatorio.observacoes) { %>
+                                <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; font-size: 16px; color: #351102;">
+                                    <%= relatorio.observacoes %>
+                                </div>
+                            <% } %>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- Fotos Enviadas -->
+            <% if (fotos && fotos.length > 0) { %>
+            <div class="analysis-card">
+                <div class="card-body">
+                    <h2 style="font-size: 24px; font-weight: 700; color: #351102; margin-bottom: 20px;">Fotos Enviadas</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                        <% fotos.forEach(foto => { %>
+                        <div style="position: relative;">
+                            <img src="<%= foto.url %>" alt="Foto" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 2px solid #F2C48D;">
+                            <% if (foto.resultado_analise) { %>
+                                <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: rgba(53, 17, 2, 0.9); color: white; padding: 8px; border-radius: 6px; font-size: 14px;">
+                                    <%= foto.resultado_analise %>
+                                </div>
+                            <% } %>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </section>
+    </section>
+</main>
+
+<% if (pe.latitude && pe.longitude) { %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const map = L.map('map').setView([parseFloat(<%= pe.latitude %>), parseFloat(<%= pe.longitude %>)], 18);
+    
+    const satelite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: 'Tiles © Esri' }
+    );
+    
+    const osm = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap' }
+    );
+    
+    satelite.addTo(map);
+    
+    L.control.layers({
+        "Satelite": satelite,
+        "Mapa": osm
+    }).addTo(map);
+    
+    L.marker([parseFloat(<%= pe.latitude %>), parseFloat(<%= pe.longitude %>)])
+        .addTo(map)
+        .bindPopup(`<strong>Pé: <%= pe.nome %></strong>`);
+});
+</script>
+<% } %>
+
+<script>
+document.getElementById('form-analise').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch('/fotos/new', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            alert('Análise enviada com sucesso!');
+            window.location.reload();
+        } else {
+            alert('Erro ao enviar análise.');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao enviar análise.');
+    }
+});
+</script>
+
+<%- include('partials/footer.ejs') %>
+

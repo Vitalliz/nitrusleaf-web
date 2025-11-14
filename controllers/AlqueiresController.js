@@ -97,14 +97,20 @@ router.get('/alqueires/cadastrar', Auth, async (req, res) => {
         }
 
         let propriedade = null;
+        let alqueires = [];
         if (propriedadeSelecionada) {
             propriedade = await Propriedades.findByPk(propriedadeSelecionada);
+            alqueires = await Alqueires.findAll({
+                where: { id_propriedade: propriedadeSelecionada },
+                order: [['nome', 'ASC']]
+            });
         }
 
         res.render('cadastrar-alqueire', {
             propriedades,
             propriedadeSelecionada,
             propriedade,
+            alqueires,
             googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY'
         });
     } catch (error) {

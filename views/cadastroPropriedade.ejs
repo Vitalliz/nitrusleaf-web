@@ -42,6 +42,27 @@
                         </div>
                     </div>
                 
+                    <!-- Campos ocultos para coordenadas -->
+                    <input type="hidden" id="latitude" name="latitude">
+                    <input type="hidden" id="longitude" name="longitude">
+
+                    <!-- Mapa para selecionar localização -->
+                    <div class="row m-3">
+                        <div class="form-group col-12">
+                            <label class="form-label">Localização da Propriedade</label>
+                            <div style="background: white; border: 2px solid #F2C48D; border-radius: 15px; padding: 15px; margin-top: 10px;">
+                                <div style="margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <button type="button" id="btn-marcar-ponto" class="btn-map-action" style="background: #65B741; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                        Marcar Ponto
+                                    </button>
+                                    <button type="button" id="btn-limpar" class="btn-map-action" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                        Limpar
+                                    </button>
+                                </div>
+                                <div id="map" style="width: 100%; height: 400px; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
 
                 <!-- Botão para cadastrar -->
                  <div class="container  my-2">
@@ -88,10 +109,88 @@
 </main>
 <%- include('partials/footer.ejs') %>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
-    // // Mostra ou oculta os campos adicionais ao selecionar a checkbox
-    // document.getElementById('mostrarCampos').addEventListener('change', function () {
-    //     const camposAdicionais = document.getElementById('camposAdicionais');
-    //     camposAdicionais.classList.toggle('d-none', !this.checked);
-    // });
+document.addEventListener("DOMContentLoaded", function () {
+    // Inicializa mapa
+    const map = L.map('map').setView([-24.7150037, -47.9281331], 15);
+
+    // Adiciona layer Satelite da ESRI
+    const satelite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: 'Tiles © Esri' }
+    );
+
+    // Adiciona layer OpenStreetMap
+    const osm = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap' }
+    );
+
+    satelite.addTo(map);
+
+    // Controle para alternar mapa/satelite
+    L.control.layers({
+        "Satelite": satelite,
+        "Mapa": osm
+    }).addTo(map);
+
+    let marker = null;
+    let isDrawing = false;
+
+    // Botão marcar ponto
+    document.getElementById('btn-marcar-ponto').addEventListener('click', function() {
+        isDrawing = true;
+        map.once('click', function(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+            
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat;
+                document.getElementById('longitude').value = pos.lng;
+            });
+            isDrawing = false;
+        });
+    });
+
+    // Botão limpar
+    document.getElementById('btn-limpar').addEventListener('click', function() {
+        if (marker) {
+            map.removeLayer(marker);
+            marker = null;
+        }
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+    });
+
+    // Validação do formulário
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const latitude = document.getElementById('latitude').value;
+        const longitude = document.getElementById('longitude').value;
+        
+        // Coordenadas são opcionais, então não bloqueamos o envio
+        // Mas podemos avisar se não foram preenchidas
+        if (!latitude || !longitude) {
+            if (!confirm('Nenhuma localização foi marcada no mapa. Deseja continuar mesmo assim?')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
+});
 </script>
+
+<style>
+.btn-map-action:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    transition: all 0.2s;
+}
+</style>

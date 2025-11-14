@@ -1,0 +1,77 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar-user.ejs') %>
+
+<main class="main-content home-dashboard">
+  <%- include ('partials/navbar-lateral.ejs') %>
+  <section class="dashboard-container">
+    <header class="dashboard-header">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="/home" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+          <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+          Voltar
+        </a>
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Selecionar Pé para Análise</h1>
+      </div>
+    </header>
+
+    <section class="analysis-section">
+      <% if (pes && pes.length > 0) { %>
+        <div class="analysis-card">
+          <div class="card-body">
+            <div style="margin-bottom: 20px;">
+              <input type="text" id="search-input" placeholder="Pesquisar pés..." style="width: 100%; padding: 14px 50px 14px 18px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+              <% pes.forEach(pe => { %>
+                <a href="/pes/<%= pe.id_pe %>" style="text-decoration: none; display: block;">
+                  <div style="background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 12px; padding: 20px; transition: all 0.3s; cursor: pointer;" 
+                       onmouseover="this.style.background='#fff'; this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.background='#FAF0D7'; this.style.transform='translateY(0)'"
+                       class="pe-card">
+                    <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin: 0 0 12px 0;"><%= pe.nome %></h3>
+                    <p style="font-size: 16px; color: #666; margin: 8px 0;"><strong>Talhão:</strong> <%= pe.talhao.nome %></p>
+                    <p style="font-size: 16px; color: #666; margin: 8px 0;"><strong>Situação:</strong> <%= pe.situacao || 'Sem informações' %></p>
+                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                      <% if (pe.deficiencia_cobre) { %>
+                        <span style="padding: 6px 12px; background: #D84A0F; color: white; border-radius: 6px; font-size: 14px; font-weight: 600;">Cobre</span>
+                      <% } %>
+                      <% if (pe.deficiencia_manganes) { %>
+                        <span style="padding: 6px 12px; background: #FFB534; color: #351102; border-radius: 6px; font-size: 14px; font-weight: 600;">Manganês</span>
+                      <% } %>
+                      <% if (pe.outros) { %>
+                        <span style="padding: 6px 12px; background: #ACACAC; color: white; border-radius: 6px; font-size: 14px; font-weight: 600;">Outros</span>
+                      <% } %>
+                    </div>
+                  </div>
+                </a>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="analysis-card">
+          <div class="card-body" style="text-align: center; padding: 40px;">
+            <p style="font-size: 18px; color: #666;">Nenhum pé cadastrado para análise.</p>
+            <a href="/talhoes" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #65B741; color: white; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              Cadastrar Pés
+            </a>
+          </div>
+        </div>
+      <% } %>
+    </section>
+  </section>
+</main>
+
+<script>
+document.getElementById('search-input').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const cards = document.querySelectorAll('.pe-card');
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.parentElement.style.display = text.includes(searchTerm) ? 'block' : 'none';
+    });
+});
+</script>
+
+<%- include('partials/footer.ejs') %>
+

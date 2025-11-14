@@ -1,0 +1,166 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar-user.ejs') %>
+<main class="main-content home-dashboard">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <section class="dashboard-container">
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="/cadastroPes/<%= pe.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Voltar
+                </a>
+                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Editar Pé</h1>
+            </div>
+        </header>
+
+        <section class="analysis-section">
+            <div class="analysis-card" style="margin-bottom: 24px;">
+                <div class="card-body">
+                    <form action="/pes/update" method="POST">
+                        <input type="hidden" name="id_pe" value="<%= pe.id_pe %>">
+                        <input type="hidden" id="id_talhao" name="id_talhao" value="<%= pe.id_talhao %>">
+                        
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Talhão</label>
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                                <%= pe.talhao.nome %>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <label for="nome" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Nome do Pé</label>
+                            <input type="text" id="nome" name="nome" value="<%= pe.nome %>" required 
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <label for="observacoes" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Observações</label>
+                            <textarea id="observacoes" name="observacoes" 
+                                    style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; min-height: 120px; font-size: 18px; background: #FAF0D7; color: #351102; font-family: 'Roboto', sans-serif;"><%= pe.observacoes || '' %></textarea>
+                        </div>
+                        
+                        <!-- Campos ocultos para coordenadas -->
+                        <input type="hidden" id="latitude" name="latitude" value="<%= pe.latitude || '' %>">
+                        <input type="hidden" id="longitude" name="longitude" value="<%= pe.longitude || '' %>">
+                        
+                        <!-- Mapa para selecionar localização -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">
+                                Localização do Pé
+                                <span style="font-size: 16px; font-weight: 400; color: #666;">(Marque a localização no mapa)</span>
+                            </label>
+                            <div style="background: white; border: 2px solid #F2C48D; border-radius: 15px; padding: 20px;">
+                                <div style="margin-bottom: 15px; display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button type="button" id="btn-marcar-ponto" class="btn-map-action" style="background: #65B741; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
+                                        Marcar Ponto
+                                    </button>
+                                    <button type="button" id="btn-limpar" class="btn-map-action" style="background: #dc3545; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
+                                        Limpar
+                                    </button>
+                                </div>
+                                <div id="map" style="width: 100%; height: 450px; border-radius: 12px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 32px;">
+                            <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 12px; padding: 16px 48px; border: none; cursor: pointer; font-size: 18px;">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </section>
+</main>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Determinar centro inicial do mapa baseado no pé ou talhão
+    let mapCenter = [-24.7150037, -47.9281331];
+    let mapZoom = 15;
+    let marker = null;
+    
+    <% if (pe.latitude && pe.longitude) { %>
+        mapCenter = [parseFloat(<%= pe.latitude %>), parseFloat(<%= pe.longitude %>)];
+        mapZoom = 18;
+    <% } else if (pe.talhao && pe.talhao.latitude && pe.talhao.longitude) { %>
+        mapCenter = [parseFloat(<%= pe.talhao.latitude %>), parseFloat(<%= pe.talhao.longitude %>)];
+    <% } %>
+    
+    // Inicializar mapa
+    const map = L.map('map').setView(mapCenter, mapZoom);
+    
+    // Adiciona layer Satelite da ESRI
+    const satelite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: 'Tiles © Esri' }
+    );
+    
+    // Adiciona layer OpenStreetMap
+    const osm = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap' }
+    );
+    
+    satelite.addTo(map);
+    
+    // Controle para alternar mapa/satelite
+    L.control.layers({
+        "Satelite": satelite,
+        "Mapa": osm
+    }).addTo(map);
+    
+    // Adicionar marcador existente se houver coordenadas
+    <% if (pe.latitude && pe.longitude) { %>
+        marker = L.marker([parseFloat(<%= pe.latitude %>), parseFloat(<%= pe.longitude %>)], { draggable: true }).addTo(map);
+        marker.on('dragend', function(ev) {
+            const pos = ev.target.getLatLng();
+            document.getElementById('latitude').value = pos.lat;
+            document.getElementById('longitude').value = pos.lng;
+        });
+    <% } %>
+    
+    // Botão marcar ponto
+    document.getElementById('btn-marcar-ponto').addEventListener('click', function() {
+        map.once('click', function(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+            
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat;
+                document.getElementById('longitude').value = pos.lng;
+            });
+        });
+    });
+    
+    // Botão limpar
+    document.getElementById('btn-limpar').addEventListener('click', function() {
+        if (marker) {
+            map.removeLayer(marker);
+            marker = null;
+        }
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+    });
+});
+</script>
+
+<style>
+.btn-map-action:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    transition: all 0.2s;
+}
+</style>
+
+<%- include('partials/footer.ejs') %>
+

@@ -80,6 +80,8 @@ router.post("/pes/new", Auth, validarTalhao,async (req, res) => {
             deficiencia_manganes,
             outros,
             observacoes,
+            latitude: req.body.latitude ? parseFloat(req.body.latitude) : null,
+            longitude: req.body.longitude ? parseFloat(req.body.longitude) : null
         });
 
         res.redirect(`/cadastroPes/${id_talhao}`);
@@ -120,6 +122,130 @@ router.get("/pes/delete/:id", Auth, validarTalhao,async (req, res) => {
     } catch (error) {
         console.error("Erro ao excluir pé:", error);
         res.status(500).send("Erro ao excluir pé.");
+    }
+});
+
+// ROTA DE EDIÇÃO DE PÉ
+router.get("/pes/edit/:id", Auth, async (req, res) => {
+    const id = req.params.id;
+    const userId = req.session.user.id_usuario;
+
+    try {
+        const pe = await Pes.findOne({
+            where: { id_pe: id },
+            include: {
+                model: Talhoes,
+                as: 'talhao',
+                include: {
+                    model: Propriedades,
+                    as: 'propriedade',
+                    where: { id_usuario: userId }
+                }
+            }
+        });
+
+        if (!pe) {
+            return res.status(403).send("Acesso negado ou pé não encontrado.");
+        }
+
+        res.render("pesEdit", { pe, talhao: pe.talhao });
+    } catch (error) {
+        console.error("Erro ao buscar pé:", error);
+        res.status(500).send("Erro ao buscar pé.");
+    }
+});
+
+// ROTA PARA ALTERAÇÃO DE PÉ
+router.post("/pes/update", Auth, async (req, res) => {
+    const { id_pe, nome, situacao, deficiencia_cobre, deficiencia_manganes, outros, observacoes, latitude, longitude } = req.body;
+    const userId = req.session.user.id_usuario;
+
+    try {
+        // Verifica se o pé pertence ao usuário
+        const pe = await Pes.findOne({
+            where: { id_pe },
+            include: {
+                model: Talhoes,
+                as: 'talhao',
+                include: {
+                    model: Propriedades,
+                    as: 'propriedade',
+                    where: { id_usuario: userId }
+                }
+            }
+        });
+
+        if (!pe) {
+            return res.status(403).send("Acesso negado.");
+        }
+
+        await Pes.update(
+            {
+                nome,
+                situacao,
+                deficiencia_cobre: deficiencia_cobre === 'on' || deficiencia_cobre === true,
+                deficiencia_manganes: deficiencia_manganes === 'on' || deficiencia_manganes === true,
+                outros: outros === 'on' || outros === true,
+                observacoes,
+                latitude: latitude ? parseFloat(latitude) : null,
+                longitude: longitude ? parseFloat(longitude) : null
+            },
+            { where: { id_pe } }
+        );
+
+        res.redirect(`/cadastroPes/${pe.id_talhao}`);
+    } catch (error) {
+        console.error("Erro ao atualizar pé:", error);
+        res.status(500).send("Erro ao atualizar pé.");
+    }
+});
+
+// ROTA PARA VISUALIZAR PÉ INDIVIDUAL
+router.get("/pes/:id", Auth, async (req, res) => {
+    const id = req.params.id;
+    const userId = req.session.user.id_usuario;
+
+    try {
+        const pe = await Pes.findOne({
+            where: { id_pe: id },
+            include: {
+                model: Talhoes,
+                as: 'talhao',
+                include: {
+                    model: Propriedades,
+                    as: 'propriedade',
+                    where: { id_usuario: userId }
+                }
+            }
+        });
+
+        if (!pe) {
+            return res.status(403).send("Acesso negado ou pé não encontrado.");
+        }
+
+        // Buscar relatórios e fotos do pé
+        const Relatorios = (await import("../models/Relatorios.js")).default;
+        const Foto = (await import("../models/Foto.js")).default;
+        
+        const [relatorios, fotos] = await Promise.all([
+            Relatorios.findAll({ 
+                where: { id_pe: id }, 
+                order: [['data_analise', 'DESC']] 
+            }),
+            Foto.findAll({ 
+                where: { id_pe: id } 
+            })
+        ]);
+
+        res.render("pesView", { 
+            pe, 
+            talhao: pe.talhao,
+            relatorios: relatorios.map(r => r.get({ plain: true })),
+            fotos: fotos.map(f => f.get({ plain: true }))
+        });
+    } catch (error) {
+        console.error("Erro ao buscar pé:", error);
+        res.status(500).send("Erro ao buscar pé.");
     }
 });
 

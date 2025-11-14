@@ -4,11 +4,12 @@
     <%- include ('partials/navbar-lateral.ejs') %>
     <section class="dashboard-container">
         <header class="dashboard-header">
-            <div style="display: flex; align-items: center;">
-                <a href="/talhoes" style="text-decoration: none; display: flex; align-items: center; margin-right: 8px;">
-                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="/cadastroPes/<%= talhao.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Voltar
                 </a>
-                <h1 style="margin: 0; font-size: 24px;">Editar Talhão</h1>
+                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Editar Talhão</h1>
             </div>
         </header>
 

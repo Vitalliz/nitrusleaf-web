@@ -35,7 +35,7 @@
                 
                 <div class="map-and-info-container">
                     <div class="map-wrapper" style="background: white; border-radius: 14px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <div id="map" style="width: 100%; height: 600px; border-radius: 12px; border: 2px solid var(--verde-escuro);"></div>
+                        <div id="map" style="width: 100%; height: 600px; border-radius: 12px; border: 2px solid #F2C48D;"></div>
                         <div id="info-box" class="map-info-box" style="display: none;">
                             <div class="info-box-header">
                                 <strong id="info-box-title"></strong>
@@ -269,9 +269,27 @@
 <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Dados do servidor
+    const propriedades = <%- JSON.stringify(Propriedades) %>;
+    const propriedadeSelecionada = '<%= propriedadeSelecionada || "" %>';
+    const alqueires = <%- alqueires %>;
+    const talhoes = <%- talhoes %>;
+    const pes = <%- pes %>;
+    
+    // Determinar centro inicial do mapa
+    let mapCenter = [-24.7150037, -47.9281331];
+    let mapZoom = 12;
+    
+    if (propriedadeSelecionada) {
+        const propriedade = propriedades.find(p => p.id_propriedade == propriedadeSelecionada);
+        if (propriedade && propriedade.latitude && propriedade.longitude) {
+            mapCenter = [parseFloat(propriedade.latitude), parseFloat(propriedade.longitude)];
+            mapZoom = 15;
+        }
+    }
 
     // ===== 1. Inicializa mapa =====
-    const map = L.map('map').setView([-24.7150037, -47.9281331], 15);
+    const map = L.map('map').setView(mapCenter, mapZoom);
 
     // ===== 2. Adiciona layer Satelite da ESRI (grátis) =====
     const satelite = L.tileLayer(
@@ -293,51 +311,236 @@ document.addEventListener("DOMContentLoaded", function () {
         "Mapa": osm
     }).addTo(map);
 
-    // ===== 4. Marcador arrastável =====
-    let marker;
-    map.on('click', function (e) {
-        if (!marker) {
-            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
-            console.log("Nova localizacao:", e.latlng.lat, e.latlng.lng);
-        } else {
-            marker.setLatLng(e.latlng);
-        }
+    // ===== 4. Adicionar marcadores e polígonos dos cadastrados =====
+    
+    // Ícones personalizados
+    const propriedadeIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+    
+    const alqueireIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+    
+    const talhaoIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+    
+    const peIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [20, 35],
+        iconAnchor: [10, 35],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 
-        marker.on('dragend', function (ev) {
-            console.log("Posicao movida:", ev.target.getLatLng());
+    // Função para adicionar propriedades
+    propriedades.forEach(prop => {
+        if (prop.latitude && prop.longitude) {
+            L.marker([parseFloat(prop.latitude), parseFloat(prop.longitude)], { icon: propriedadeIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <strong>Propriedade: ${prop.nome}</strong><br>
+                    ${prop.logradouro}, ${prop.numero}<br>
+                    ${prop.bairro} - ${prop.cidade}<br>
+                    CEP: ${prop.cep}
+                `);
+        }
+    });
+
+    // Função para adicionar alqueires
+    alqueires.forEach(alq => {
+        if (alq.latitude && alq.longitude) {
+            L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], { icon: alqueireIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <strong>Alqueire: ${alq.nome}</strong><br>
+                    Área: ${alq.area_total || '-'} ha
+                `);
+        }
+        
+        // Adicionar polígono se existir
+        if (alq.coordenadas_poligono) {
+            try {
+                const coords = JSON.parse(alq.coordenadas_poligono);
+                if (Array.isArray(coords) && coords.length > 0) {
+                    const latlngs = coords.map(c => [c.lat, c.lng]);
+                    L.polygon(latlngs, {
+                        color: '#0284E1',
+                        fillColor: '#0284E1',
+                        fillOpacity: 0.3,
+                        weight: 2
+                    }).addTo(map)
+                    .bindPopup(`<strong>Alqueire: ${alq.nome}</strong><br>Área: ${alq.area_total || '-'} ha`);
+                }
+            } catch (e) {
+                console.error('Erro ao parsear coordenadas do alqueire:', e);
+            }
+        }
+    });
+
+    // Função para adicionar talhões
+    talhoes.forEach(tal => {
+        if (tal.latitude && tal.longitude) {
+            L.marker([parseFloat(tal.latitude), parseFloat(tal.longitude)], { icon: talhaoIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <strong>Talhão: ${tal.nome}</strong><br>
+                    Espécie: ${tal.especie_fruta || '-'}
+                `);
+        }
+        
+        // Adicionar polígono se existir
+        if (tal.coordenadas_poligono) {
+            try {
+                const coords = JSON.parse(tal.coordenadas_poligono);
+                if (Array.isArray(coords) && coords.length > 0) {
+                    const latlngs = coords.map(c => [c.lat, c.lng]);
+                    L.polygon(latlngs, {
+                        color: '#65B741',
+                        fillColor: '#65B741',
+                        fillOpacity: 0.3,
+                        weight: 2
+                    }).addTo(map)
+                    .bindPopup(`<strong>Talhão: ${tal.nome}</strong><br>Espécie: ${tal.especie_fruta || '-'}`);
+                }
+            } catch (e) {
+                console.error('Erro ao parsear coordenadas do talhão:', e);
+            }
+        }
+    });
+
+    // Função para adicionar pés
+    pes.forEach(pe => {
+        if (pe.latitude && pe.longitude) {
+            L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <strong>Pé: ${pe.nome}</strong><br>
+                    ${pe.observacoes ? `Obs: ${pe.observacoes}` : ''}
+                `);
+        }
+    });
+
+    // Atualizar mapa quando propriedade for alterada
+    const propriedadesSelect = document.getElementById('propriedades');
+    if (propriedadesSelect) {
+        propriedadesSelect.addEventListener('change', async function() {
+            const idPropriedade = this.value;
+            
+            try {
+                const response = await fetch('/mapa/dados-propriedade/' + idPropriedade, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Limpar mapa
+                    map.eachLayer(function(layer) {
+                        if (layer instanceof L.Marker || layer instanceof L.Polygon) {
+                            map.removeLayer(layer);
+                        }
+                    });
+                    
+                    // Adicionar nova propriedade
+                    if (data.propriedade && data.propriedade.latitude && data.propriedade.longitude) {
+                        map.setView([parseFloat(data.propriedade.latitude), parseFloat(data.propriedade.longitude)], 15);
+                        
+                        L.marker([parseFloat(data.propriedade.latitude), parseFloat(data.propriedade.longitude)], { icon: propriedadeIcon })
+                            .addTo(map)
+                            .bindPopup(`
+                                <strong>Propriedade: ${data.propriedade.nome}</strong><br>
+                                ${data.propriedade.logradouro}, ${data.propriedade.numero}<br>
+                                ${data.propriedade.bairro} - ${data.propriedade.cidade}
+                            `);
+                    }
+                    
+                    // Adicionar alqueires
+                    data.alqueires.forEach(alq => {
+                        if (alq.latitude && alq.longitude) {
+                            L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], { icon: alqueireIcon })
+                                .addTo(map)
+                                .bindPopup(`<strong>Alqueire: ${alq.nome}</strong>`);
+                        }
+                        if (alq.coordenadas_poligono) {
+                            try {
+                                const coords = JSON.parse(alq.coordenadas_poligono);
+                                if (Array.isArray(coords) && coords.length > 0) {
+                                    const latlngs = coords.map(c => [c.lat, c.lng]);
+                                    L.polygon(latlngs, {
+                                        color: '#0284E1',
+                                        fillColor: '#0284E1',
+                                        fillOpacity: 0.3,
+                                        weight: 2
+                                    }).addTo(map)
+                                    .bindPopup(`<strong>Alqueire: ${alq.nome}</strong>`);
+                                }
+                            } catch (e) {
+                                console.error('Erro ao parsear coordenadas:', e);
+                            }
+                        }
+                    });
+                    
+                    // Adicionar talhões
+                    data.talhoes.forEach(tal => {
+                        if (tal.latitude && tal.longitude) {
+                            L.marker([parseFloat(tal.latitude), parseFloat(tal.longitude)], { icon: talhaoIcon })
+                                .addTo(map)
+                                .bindPopup(`<strong>Talhão: ${tal.nome}</strong>`);
+                        }
+                        if (tal.coordenadas_poligono) {
+                            try {
+                                const coords = JSON.parse(tal.coordenadas_poligono);
+                                if (Array.isArray(coords) && coords.length > 0) {
+                                    const latlngs = coords.map(c => [c.lat, c.lng]);
+                                    L.polygon(latlngs, {
+                                        color: '#65B741',
+                                        fillColor: '#65B741',
+                                        fillOpacity: 0.3,
+                                        weight: 2
+                                    }).addTo(map)
+                                    .bindPopup(`<strong>Talhão: ${tal.nome}</strong>`);
+                                }
+                            } catch (e) {
+                                console.error('Erro ao parsear coordenadas:', e);
+                            }
+                        }
+                    });
+                    
+                    // Adicionar pés
+                    data.pes.forEach(pe => {
+                        if (pe.latitude && pe.longitude) {
+                            L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
+                                .addTo(map)
+                                .bindPopup(`<strong>Pé: ${pe.nome}</strong>`);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados da propriedade:', error);
+            }
         });
-    });
-
-    // ===== 5. Ativar ferramenta de desenho (polígonos) =====
-    const drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
-
-    const drawControl = new L.Control.Draw({
-        edit: { featureGroup: drawnItems },
-        draw: {
-            polygon: true,
-            polyline: false,
-            circle: false,
-            rectangle: false,
-            marker: false
-        }
-    });
-
-    map.addControl(drawControl);
-
-    // Quando o polígono for criado:
-    map.on(L.Draw.Event.CREATED, function (event) {
-        const layer = event.layer;
-        drawnItems.addLayer(layer);
-
-        const coords = layer.getLatLngs()[0].map(p => ({
-            lat: p.lat,
-            lng: p.lng
-        }));
-
-        console.log("Poligono desenhado:", coords);
-        alert("Poligono criado! Veja no console as coordenadas.");
-    });
+    }
 
 });
 </script>

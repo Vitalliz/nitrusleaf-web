@@ -4,42 +4,66 @@
     <%- include ('partials/navbar-lateral.ejs') %>
     <section class="dashboard-container">
         <header class="dashboard-header">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <a href="/histal/<%= talhao.id_talhao %>" style="text-decoration: none; display: flex; align-items: center;">
-                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="/histal/<%= talhao.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Voltar
                 </a>
-                <h1>Cadastrar Pé</h1>
+                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Cadastrar Pé</h1>
             </div>
         </header>
 
         <section class="analysis-section">
-            <h2>Novo Pé</h2>
+            <h2 style="font-size: 24px; font-weight: 700; color: #351102; margin-bottom: 20px;">Novo Pé</h2>
             <div class="analysis-card" style="margin-bottom: 24px;">
                 <div class="card-body">
                     <form action="/pes/new" method="POST">
                         <input type="hidden" id="id_talhao" name="id_talhao" value="<%= talhao.id_talhao %>">
                         
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Talhão</label>
-                            <div style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Talhão</label>
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
                                 <%= talhao.nome %>
                             </div>
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label for="nome" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Nome do Pé</label>
+                        <div style="margin-bottom: 24px;">
+                            <label for="nome" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Nome do Pé</label>
                             <input type="text" id="nome" name="nome" placeholder="Insira o nome do pé" required 
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label for="observacoes" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Observações</label>
+                        <div style="margin-bottom: 24px;">
+                            <label for="observacoes" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Observações</label>
                             <textarea id="observacoes" name="observacoes" placeholder="Insira as observações sobre o pé" 
-                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; min-height: 100px;"></textarea>
+                                    style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; min-height: 120px; font-size: 18px; background: #FAF0D7; color: #351102; font-family: 'Roboto', sans-serif;"></textarea>
                         </div>
                         
-                        <div style="text-align: center; margin-top: 20px;">
-                            <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 40px; border: none; cursor: pointer; font-size: 16px;">
+                        <!-- Campos ocultos para coordenadas -->
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+                        
+                        <!-- Mapa para selecionar localização -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">
+                                Localização do Pé
+                                <span style="font-size: 16px; font-weight: 400; color: #666;">(Marque a localização no mapa)</span>
+                            </label>
+                            <div style="background: white; border: 2px solid #F2C48D; border-radius: 15px; padding: 20px;">
+                                <div style="margin-bottom: 15px; display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button type="button" id="btn-marcar-ponto" class="btn-map-action" style="background: #65B741; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
+                                        Marcar Ponto
+                                    </button>
+                                    <button type="button" id="btn-limpar" class="btn-map-action" style="background: #dc3545; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
+                                        Limpar
+                                    </button>
+                                </div>
+                                <div id="map" style="width: 100%; height: 450px; border-radius: 12px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 32px;">
+                            <button type="submit" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 12px; padding: 16px 48px; border: none; cursor: pointer; font-size: 18px;">
                                 Cadastrar
                             </button>
                         </div>
@@ -49,32 +73,33 @@
         </section>
 
         <section class="analysis-section">
-            <h2>Pés Cadastrados</h2>
+            <h2 style="font-size: 24px; font-weight: 700; color: #351102; margin-bottom: 20px;">Pés Cadastrados</h2>
             <div class="analysis-card">
                 <div class="card-body">
                     <% if (pes && pes.length > 0) { %>
                         <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;">
                             <thead>
-                                <tr style="background: #fff;">
-                                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Nome Pé</th>
-                                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Talhão</th>
-                                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Observações</th>
-                                    <th style="width: 80px;"></th>
+                                <tr style="background: #FAF0D7;">
+                                    <th style="font-size: 18px; color: #351102; font-weight: 700; padding: 16px 20px; text-align: left;">Nome Pé</th>
+                                    <th style="font-size: 18px; color: #351102; font-weight: 700; padding: 16px 20px; text-align: left;">Talhão</th>
+                                    <th style="font-size: 18px; color: #351102; font-weight: 700; padding: 16px 20px; text-align: left;">Observações</th>
+                                    <th style="width: 120px;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% pes.forEach(pe => { %>
-                                <tr style="border-bottom: 1px solid #F2C48D;">
-                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px;"><%= pe.nome %></td>
-                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px;"><%= pe.talhao.nome %></td>                            
-                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px;">
-                                        <div style="max-height: 60px; overflow-y: auto; padding: 5px; border: 1px solid #eee; border-radius: 4px;">
+                                <tr style="border-bottom: 2px solid #F2C48D;">
+                                    <td style="font-size: 18px; color: #351102; padding: 16px 20px;"><%= pe.nome %></td>
+                                    <td style="font-size: 18px; color: #351102; padding: 16px 20px;"><%= pe.talhao.nome %></td>                            
+                                    <td style="font-size: 18px; color: #351102; padding: 16px 20px;">
+                                        <div style="max-height: 80px; overflow-y: auto; padding: 8px; border: 1px solid #F2C48D; border-radius: 8px; background: #FAF0D7;">
                                             <%= pe.observacoes || 'Sem observações' %>
                                         </div>
                                     </td>
-                                    <td style="text-align: right; padding: 12px 15px;">
-                                        <a href="/pes/edit/<%= pe.id_pe %>" style="display: inline-block; background: none; border: none;">
-                                            <img src="/imgs/btn-editar.svg" alt="Editar" style="width: 22px; height: 22px;">
+                                    <td style="text-align: right; padding: 16px 20px;">
+                                        <a href="/pes/edit/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 16px; gap: 8px;">
+                                            <img src="/imgs/btn-editar.svg" alt="Editar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                            Editar
                                         </a>
                                     </td>
                                 </tr>
@@ -82,8 +107,8 @@
                             </tbody>
                         </table>
                     <% } else { %>
-                        <div class="empty-state" style="text-align: center; padding: 24px;">
-                            <p style="color: #888; margin: 0;">Nenhum pé cadastrado neste talhão</p>
+                        <div class="empty-state" style="text-align: center; padding: 32px;">
+                            <p style="color: #888; margin: 0; font-size: 18px;">Nenhum pé cadastrado neste talhão</p>
                         </div>
                     <% } %>
                 </div>
@@ -91,4 +116,134 @@
         </section>
     </section>
 </main>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Determinar centro inicial do mapa baseado no talhão
+    let mapCenter = [-24.7150037, -47.9281331];
+    let mapZoom = 15;
+    
+    <% if (talhao && talhao.latitude && talhao.longitude) { %>
+        mapCenter = [parseFloat(<%= talhao.latitude %>), parseFloat(<%= talhao.longitude %>)];
+    <% } %>
+    
+    // Dados do servidor
+    const talhaoData = <%- JSON.stringify(talhao || {}) %>;
+    const pesData = <%- JSON.stringify(pes || []) %>;
+    
+    // Inicializar mapa
+    const map = L.map('map').setView(mapCenter, mapZoom);
+    
+    // Adiciona layer Satelite da ESRI
+    const satelite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: 'Tiles © Esri' }
+    );
+    
+    // Adiciona layer OpenStreetMap
+    const osm = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap' }
+    );
+    
+    satelite.addTo(map);
+    
+    // Controle para alternar mapa/satelite
+    L.control.layers({
+        "Satelite": satelite,
+        "Mapa": osm
+    }).addTo(map);
+    
+    // Mostrar talhão no mapa
+    if (talhaoData && talhaoData.latitude && talhaoData.longitude) {
+        L.marker([parseFloat(talhaoData.latitude), parseFloat(talhaoData.longitude)], {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34]
+            })
+        }).addTo(map).bindPopup(`<strong>Talhão: ${talhaoData.nome}</strong>`);
+    }
+    if (talhaoData && talhaoData.coordenadas_poligono) {
+        try {
+            const coords = JSON.parse(talhaoData.coordenadas_poligono);
+            if (Array.isArray(coords) && coords.length > 0) {
+                const latlngs = coords.map(c => [c.lat, c.lng]);
+                L.polygon(latlngs, {
+                    color: '#65B741',
+                    fillColor: '#65B741',
+                    fillOpacity: 0.2,
+                    weight: 2
+                }).addTo(map).bindPopup(`<strong>Talhão: ${talhaoData.nome}</strong>`);
+            }
+        } catch (e) {
+            console.error('Erro ao parsear coordenadas do talhão:', e);
+        }
+    }
+    
+    // Mostrar pés já cadastrados
+    if (Array.isArray(pesData)) {
+        pesData.forEach(pe => {
+            if (pe.latitude && pe.longitude) {
+                L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], {
+                    icon: L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [20, 35],
+                        iconAnchor: [10, 35],
+                        popupAnchor: [1, -34]
+                    })
+                }).addTo(map).bindPopup(`<strong>Pé: ${pe.nome}</strong>`);
+            }
+        });
+    }
+    
+    let marker = null;
+    let isDrawing = false;
+    
+    // Botão marcar ponto
+    document.getElementById('btn-marcar-ponto').addEventListener('click', function() {
+        isDrawing = true;
+        map.once('click', function(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+            
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat;
+                document.getElementById('longitude').value = pos.lng;
+            });
+            isDrawing = false;
+        });
+    });
+    
+    // Botão limpar
+    document.getElementById('btn-limpar').addEventListener('click', function() {
+        if (marker) {
+            map.removeLayer(marker);
+            marker = null;
+        }
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+    });
+});
+</script>
+
+<style>
+.btn-map-action:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    transition: all 0.2s;
+}
+</style>
+
 <%- include('partials/footer.ejs') %>

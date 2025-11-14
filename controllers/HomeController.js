@@ -176,6 +176,39 @@ router.post('/home', Auth, (req, res) => {
     res.status(200).json({ success: true, message: 'Propriedade selecionada salva na sessão.' });
 });
 
+// ROTA PARA SELECIONAR PÉ PARA ANÁLISE
+router.get("/home/selecionar-pe", Auth, async (req, res) => {
+    try {
+        const propriedadeSelecionada = req.session.propriedadeSelecionada;
+        if (!propriedadeSelecionada) {
+            return res.redirect("/home");
+        }
+
+        const talhoes = await Talhoes.findAll({
+            where: { id_propriedade: propriedadeSelecionada },
+            order: [["nome", "ASC"]]
+        });
+
+        const talhaoIds = talhoes.map(t => t.id_talhao);
+        const pes = talhaoIds.length > 0 ? await Pes.findAll({
+            where: { id_talhao: talhaoIds },
+            include: {
+                model: Talhoes,
+                as: 'talhao'
+            },
+            order: [["nome", "ASC"]]
+        }) : [];
+
+        res.render("selecionarPe", {
+            pes,
+            talhoes
+        });
+    } catch (error) {
+        console.error("Erro ao carregar seleção de pés:", error);
+        res.status(500).send("Erro ao carregar seleção de pés.");
+    }
+});
+
 router.post("/home/new", Auth,(req, res) =>{
     const nome = req.body.nome
     Home.create({
