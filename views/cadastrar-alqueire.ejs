@@ -6,16 +6,17 @@
         <div class="container">
             <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
                 <h2 class="align-self-end m-0 p-0 fonte titulo1">Cadastrar Alqueire</h2>
-                <div id="options-container">
-                    <select id="propriedades" class="options" name="id_propriedade" required>
-                        <% propriedades.forEach(prop => {%>
-                            <option value="<%= prop.id_propriedade%>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome%></option>
-                        <%})%>
-                    </select>
-                    <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+                <div class="property-select">
+                    <label for="propriedades">Propriedade</label>
+                    <div class="select-wrapper">
+                        <select id="propriedades" class="property-dropdown" name="id_propriedade" required>
+                            <% propriedades.forEach(prop => {%>
+                                <option value="<%= prop.id_propriedade%>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome%></option>
+                            <%})%>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
         </div>
         
         <div class="container pt-3">
@@ -29,12 +30,12 @@
                     <div class="form-group" style="flex: 1;">
                         <label for="nome" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Nome do Alqueire</label>
                         <input type="text" id="nome" name="nome" class="form-control" required 
-                               style="width: 100%; padding: 10px; border: 2px solid var(--verde-escuro); border-radius: 8px; font-size: 15px;">
+                               style="width: 100%; padding: 10px; border: 2px solid #F2C48D; border-radius: 8px; font-size: 15px;">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label for="area_total" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Área Total (hectares)</label>
                         <input type="number" id="area_total" name="area_total" step="0.01" class="form-control"
-                               style="width: 100%; padding: 10px; border: 2px solid var(--verde-escuro); border-radius: 8px; font-size: 15px;">
+                               style="width: 100%; padding: 10px; border: 2px solid #F2C48D; border-radius: 8px; font-size: 15px;">
                     </div>
                 </div>
                 
@@ -44,9 +45,9 @@
                         <span style="font-size: 13px; font-weight: 400; color: #666;">(Marque um ponto ou desenhe um polígono no mapa)</span>
                     </label>
                     
-                    <div style="background: white; border: 2px solid var(--verde-escuro); border-radius: 15px; padding: 15px;">
+                    <div style="background: white; border: 2px solid #F2C48D; border-radius: 15px; padding: 15px;">
                         <div style="margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button type="button" id="btn-marcar-ponto" class="btn-map-action" style="background: #65B741; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <button type="button" id="btn-marcar-ponto" class="btn-map-action" style="background: #F2C48D; color: #351102; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
                                 Marcar Ponto
                             </button>
                             <button type="button" id="btn-desenhar-poligono" class="btn-map-action" style="background: #0284E1; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">

@@ -1,14 +1,12 @@
-// Importando os pacotes necessários com ES6 Modules
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import mysql from 'mysql2/promise'; // usado para criar o banco automaticamente
+import mysql from 'mysql2/promise';
 import session from 'express-session';
 import flash from 'express-flash';
-import connection from './config/sequelize-config.js'; // Sequelize configurado
+import connection from './config/sequelize-config.js';
 
-// Importando os Controllers
 import TalhoesController from './controllers/TalhoesController.js';
 import UsuariosController from './controllers/UsuariosController.js';
 import FotoController from './controllers/FotoController.js';
@@ -23,7 +21,6 @@ import MapaController from './controllers/MapaController.js';
 import ConfiguracoesController from './controllers/ConfiguracoesController.js';
 import AlqueiresController from './controllers/AlqueiresController.js';
 
-// Importando os modelos
 import Usuarios from './models/Usuarios.js';
 import Propriedades from './models/Propriedades.js';
 import Alqueires from './models/Alqueires.js';
@@ -36,23 +33,19 @@ import Deficiencia from './models/Deficiencia.js';
 import Historico from './models/Historico.js';
 import configurarRelacionamentos from './config/relacionamentos-config.js';
 
-// Configuração do servidor Express
 const app = express();
 const port = 8080;
 
-// Garantir que o banco existe antes de conectar com Sequelize
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = parseInt(process.env.DB_PORT || '3306', 10);
 const DB_USER = process.env.DB_USER || 'root';
 const DB_PASSWORD = process.env.DB_PASSWORD || '';
-const DB_NAME = process.env.DB_NAME || 'NitrusLeaf_PI'; // Nome do banco (case-sensitive no MySQL)
+const DB_NAME = process.env.DB_NAME || 'NitrusLeaf_PI';
 
-// Função auxiliar para aguardar com retry
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Função para testar conexão com retry
 async function waitForDatabase(maxRetries = 30, delay = 2000) {
     console.log(`⏳ Aguardando banco de dados MySQL em ${DB_HOST}:${DB_PORT}...`);
     
@@ -66,10 +59,7 @@ async function waitForDatabase(maxRetries = 30, delay = 2000) {
                 connectTimeout: 5000
             });
             
-            // Testar se o MySQL está realmente pronto (não apenas aceitando conexões)
             await conn.ping();
-            
-            // Tentar uma query simples para garantir que está totalmente funcional
             await conn.query('SELECT 1');
             
             await conn.end();
@@ -84,7 +74,6 @@ async function waitForDatabase(maxRetries = 30, delay = 2000) {
             const waitTime = Math.floor(delay / 1000);
             console.log(`  Tentativa ${attempt}/${maxRetries} falhou. Aguardando ${waitTime}s...`);
             await sleep(delay);
-            // Aumentar delay progressivamente (backoff exponencial), mas não mais que 10s
             delay = Math.min(delay * 1.2, 10000);
         }
     }
@@ -92,14 +81,9 @@ async function waitForDatabase(maxRetries = 30, delay = 2000) {
 
 async function ensureDatabaseExists() {
     try {
-        // Aguardar banco estar disponível
         await waitForDatabase();
-        
-        // Aguardar um pouco mais para garantir que o MySQL está totalmente inicializado
         console.log('  Aguardando mais 2 segundos para garantir inicialização completa...');
         await sleep(2000);
-        
-        // Criar conexão e banco de dados
         const conn = await mysql.createConnection({
             host: DB_HOST,
             port: DB_PORT,
@@ -108,13 +92,11 @@ async function ensureDatabaseExists() {
             connectTimeout: 10000
         });
 
-        // Criar o banco de dados se não existir
         await conn.query(
             `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`
              CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
         );
         
-        // Verificar se o banco foi criado corretamente
         const [databases] = await conn.query('SHOW DATABASES LIKE ?', [DB_NAME]);
         if (databases.length === 0) {
             throw new Error(`Banco de dados '${DB_NAME}' não foi criado corretamente.`);
@@ -122,8 +104,6 @@ async function ensureDatabaseExists() {
 
         await conn.end();
         console.log(`✓ Banco de dados '${DB_NAME}' verificado/criado com sucesso.`);
-        
-        // Aguardar mais um pouco para garantir que o MySQL processou a criação
         await sleep(1000);
         console.log('');
     } catch (err) {
@@ -133,7 +113,6 @@ async function ensureDatabaseExists() {
     }
 }
 
-// Autenticar conexão com Sequelize com retry
 async function authenticateDatabase(maxRetries = 10, delay = 2000) {
     console.log('⏳ Autenticando conexão com Sequelize...');
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -155,44 +134,31 @@ async function authenticateDatabase(maxRetries = 10, delay = 2000) {
     }
 }
 
-// Criação das tabelas com Sequelize na ordem correta
 async function createTables() {
     try {
         console.log('⏳ Sincronizando tabelas do banco de dados...');
         
-        // Criar tabelas na ordem correta respeitando as dependências de foreign keys
-        // Ordem: tabelas sem dependências primeiro, depois as que dependem delas
         console.log('  Criando tabelas na ordem correta...');
-        
-        // 1. Usuarios (sem dependências)
         await Usuarios.sync({ force: false });
         console.log('  ✓ Tabela Usuarios criada');
         
-        // 2. Propriedades (depende de Usuarios)
         await Propriedades.sync({ force: false });
         console.log('  ✓ Tabela Propriedades criada');
         
-        // 3. Alqueires (depende de Propriedades)
         await Alqueires.sync({ alter: true });
         console.log('  ✓ Tabela Alqueires criada');
         
-        // 4. Talhoes (depende de Propriedades e Alqueires)
         await Talhoes.sync({ alter: true });
         console.log('  ✓ Tabela Talhoes criada');
         
-        // 5. Pes (depende de Talhoes)
         await Pes.sync({ force: false });
         console.log('  ✓ Tabela Pes criada');
         
-        // 6. Foto (depende de Pes e Talhoes)
         await Foto.sync({ force: false });
         console.log('  ✓ Tabela Foto criada');
         
-        // 7. Relatorios (depende de Pes e Foto)
         await Relatorios.sync({ force: false });
         console.log('  ✓ Tabela Relatorios criada');
-        
-        // Sincronizar outros modelos se existirem (sem dependências críticas)
         try {
             await Home.sync({ force: false });
             console.log('  ✓ Tabela Home criada');
@@ -229,7 +195,6 @@ async function createTables() {
     }
 }
 
-// Configuração do Multer para upload de arquivos
 const uploadsDir = './uploads';
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
@@ -246,7 +211,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Configurações Express e Middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(session({
@@ -286,7 +250,6 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
 
-// Endpoint para upload
 app.post('/uploads', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'Nenhum arquivo foi enviado.' });
@@ -294,7 +257,6 @@ app.post('/uploads', upload.single('file'), (req, res) => {
     res.status(200).json({ success: true, message: 'Arquivo enviado com sucesso!', file: req.file });
 });
 
-// Rotas principais
 app.get('/', (req, res) => {
     const messages = {
         success: req.flash('success'),
@@ -306,7 +268,6 @@ app.get('/', (req, res) => {
     res.render('index', { messages });
 });
 
-// Redirecionar /login para / (página inicial) com mensagens flash
 app.get('/login', (req, res) => {
     const messages = {
         success: req.flash('success'),
@@ -318,22 +279,18 @@ app.get('/login', (req, res) => {
     res.render('index', { messages });
 });
 
-// Rota para página de drone
 app.get('/drone', (req, res) => {
     res.render('drone');
 });
 
-// Rota para seleção de tipo de cadastro
 app.get('/selecionar-cadastro', (req, res) => {
     res.render('selecionar-cadastro');
 });
 
-// Rota para segunda etapa do cadastro (login/senha)
 app.get('/cadastroLogin', (req, res) => {
     res.render('cadastroLogin');
 });
 
-// Usando os Controllers
 app.use('/', TalhoesController);
 app.use('/', UsuariosController);
 app.use('/', FotoController);
@@ -348,24 +305,14 @@ app.use('/', MapaController);
 app.use('/', ConfiguracoesController);
 app.use('/', AlqueiresController);
 
-// Inicialização do servidor
 (async () => {
     try {
         console.log('🚀 Iniciando aplicação NitrusLeaf...\n');
         
-        // Passo 1: Aguardar e garantir que o banco existe
         await ensureDatabaseExists();
-        
-        // Passo 2: Configurar relacionamentos dos modelos
         configurarRelacionamentos();
-        
-        // Passo 3: Autenticar conexão com Sequelize (com retry)
         await authenticateDatabase();
-        
-        // Passo 4: Sincronizar/criar tabelas
         await createTables();
-        
-        // Passo 5: Iniciar servidor Express
         app.listen(port, (erro) => {
             if (erro) {
                 console.error('✗ Ocorreu um erro ao iniciar o servidor:', erro);

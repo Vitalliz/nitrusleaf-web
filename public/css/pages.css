@@ -1,0 +1,102 @@
+.historico-resumo {
+    background: #FAF0D7;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.talhoes-search-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.talhao-info-section {
+    background: #FAF0D7;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.talhao-pes-section {
+    margin-top: 24px;
+}
+
+.talhao-pes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.talhao-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.talhao-table thead tr {
+    border-bottom: 1px solid #F2C48D;
+}
+
+.talhao-table th {
+    font-size: 15px;
+    color: #351102;
+    font-weight: 700;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.talhao-table th.text-center {
+    text-align: center;
+}
+
+.talhao-table tbody tr {
+    border-bottom: 1px solid #F2C48D;
+}
+
+.talhao-table td {
+    font-size: 15px;
+    color: #351102;
+    padding: 12px 15px;
+}
+
+.talhao-table td.text-center {
+    text-align: center;
+}
+
+.talhao-table td.text-right {
+    text-align: right;
+}
+
+.talhao-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.talhao-edit-link {
+    display: inline-flex;
+    align-items: center;
+    background: #f0f0f0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.talhao-edit-link span {
+    margin-left: 4px;
+}
+
+.pagination-info {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+

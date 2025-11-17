@@ -26,26 +26,26 @@
 
         <section class="analysis-section">
             <h2>Resumo da Propriedade</h2>
-            <div class="analysis-card" style="margin-bottom: 24px;">
-                <div class="card-body" style="padding: 20px;">
-                    <div style="border-bottom: 1px dashed #ddd; margin-bottom: 16px; padding-bottom: 16px; display: flex; justify-content: space-between; text-align: center;">
-                        <div style="flex: 1;">
-                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Talhões registrados</div>
-                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.talhoes_registrados %></div>
+            <div class="analysis-card resumo-card">
+                <div class="card-body resumo-card-body">
+                    <div class="resumo-row">
+                        <div class="resumo-item">
+                            <div class="resumo-label">Talhões registrados</div>
+                            <div class="resumo-value"><%= resumo.talhoes_registrados %></div>
                         </div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Total de pés</div>
-                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.total_pes %></div>
+                        <div class="resumo-item">
+                            <div class="resumo-label">Total de pés</div>
+                            <div class="resumo-value"><%= resumo.total_pes %></div>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; text-align: center;">
-                        <div style="flex: 1;">
-                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Pés Diagnosticados</div>
-                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.pes_diagnosticados %></div>
+                    <div class="resumo-row">
+                        <div class="resumo-item">
+                            <div class="resumo-label">Pés Diagnosticados</div>
+                            <div class="resumo-value"><%= resumo.pes_diagnosticados %></div>
                         </div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 15px; color: #351102; margin-bottom: 6px;">Pés analisados</div>
-                            <div style="font-size: 32px; font-weight: 700; color: #351102;"><%= resumo.pes_analisados %></div>
+                        <div class="resumo-item">
+                            <div class="resumo-label">Pés analisados</div>
+                            <div class="resumo-value"><%= resumo.pes_analisados %></div>
                         </div>
                     </div>
                 </div>
@@ -53,102 +53,54 @@
         </section>
 
         <section class="analysis-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">Alqueires</h2>
-                <a href="/alqueires/cadastrar<%= propriedadeSelecionada ? '?propriedade=' + propriedadeSelecionada : '' %>" 
-                   class="btn-primary" 
-                   style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 14px;">
-                    <span>+</span> Cadastrar Alqueire
-                </a>
-            </div>
-            <% if (alqueires && alqueires.length > 0) { %>
-                <div class="analysis-grid" style="display: block;">
-                    <% alqueires.forEach(alqueire => { %>
-                        <article class="analysis-card" style="margin-bottom: 24px;">
-                            <header class="card-header">
-                                <h3><%= alqueire.nome %></h3>
-                                <div style="display: flex; align-items: center; gap: 16px;">
-                                    <span style="font-size: 14px; color: #351102;">
-                                        <strong><%= alqueire.total_talhoes %></strong> talhões | 
-                                        <strong><%= alqueire.total_pes %></strong> pés | 
-                                        <strong><%= alqueire.pes_analisados %></strong> analisados
-                                    </span>
-                                    <a href="/talhoes?alqueire=<%= alqueire.id_alqueire %>" class="btn-primary" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 8px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px;">
-                                        <img src="/imgs/arrow-down.svg" style="width: 18px; height: 18px; transform: rotate(-90deg);" alt=""> Ver Detalhes
-                                    </a>
-                                </div>
-                            </header>
-                            <div class="card-body">
-                                <% if (alqueire.talhoes && alqueire.talhoes.length > 0) { %>
-                                    <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;">
-                                        <thead>
-                                            <tr style="background: #fff;">
-                                                <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Nome Talhão</th>
-                                                <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Pés analisados</th>
-                                                <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Data de Criação</th>
-                                                <th style="width: 60px;"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% alqueire.talhoes.forEach(tal => { %>
-                                                <tr style="border-bottom: 1px solid #F2C48D;">
-                                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px;"><%= tal.nome %></td>
-                                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= tal.pes_analisados %>/<%= tal.total_pes %></td>
-                                                    <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= tal.createdAt.toLocaleDateString() %></td>
-                                                    <td style="text-align: right; padding: 12px 15px;">
-                                                        <a href="/histal/<%= tal.id_talhao %>" style="display: inline-block; background: none; border: none;">
-                                                            <img src="/imgs/setinha.svg" style="width: 22px; height: 22px;" alt="Ir">
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            <% }) %>
-                                        </tbody>
-                                    </table>
-                                <% } else { %>
-                                    <div class="empty-state" style="text-align: center; padding: 24px; background: #fff; border-radius: 12px;">
-                                        <p style="color: #888; margin: 0;">Nenhum talhão cadastrado neste alqueire</p>
-                                    </div>
-                                <% } %>
-                            </div>
-                        </article>
-                    <% }) %>
+            <article class="analysis-card analysis-card-custom">
+                <header class="card-header card-header-custom">
+                    <div class="card-header-custom-top">
+                        <h3>Alqueires</h3>
+                        <a href="/alqueires/cadastrar<%= propriedadeSelecionada ? '?propriedade=' + propriedadeSelecionada : '' %>" class="btn-primary-custom">
+                            <span>+</span> Cadastrar Alqueire
+                        </a>
+                    </div>
+                    <div class="card-header-divider"></div>
+                </header>
+                <div class="card-body card-body-custom">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Nome Alqueire</th>
+                                <th class="text-center">Talhões</th>
+                                <th class="text-center">Data de Criação</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (alqueires && alqueires.length > 0) { %>
+                                <% alqueires.forEach(alqueire => { %>
+                                    <tr>
+                                        <td><%= alqueire.nome %></td>
+                                        <td class="text-center"><%= alqueire.total_talhoes || 0 %></td>
+                                        <td class="text-center"><%= alqueire.createdAt ? new Date(alqueire.createdAt).toLocaleDateString('pt-BR') : '-' %></td>
+                                        <td class="text-right">
+                                            <a href="/talhoes?alqueire=<%= alqueire.id_alqueire %>" class="btn-icon">
+                                                <img src="/imgs/setinha.svg" alt="Ir">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" class="empty-state-custom">
+                                        <p>Nenhum alqueire cadastrado nesta propriedade</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
                 </div>
-            <% } else { %>
-                <div class="empty-state" style="text-align: center; padding: 24px; background: #FAF0D7; border-radius: 14px; margin-bottom: 24px;">
-                    <p style="color: #888; margin: 0;">Nenhum alqueire cadastrado nesta propriedade</p>
-                </div>
-            <% } %>
+            </article>
         </section>
     </section>
 </main>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const propriedadesSelect = document.getElementById("propriedades");
-
-    propriedadesSelect.addEventListener("change", async (e) => {
-        const idPropriedade = e.target.value;
-
-        try {
-            const response = await fetch("/historico/selecionar-propriedade", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id_propriedade: idPropriedade }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Erro ao atualizar a propriedade selecionada.");
-            }
-
-            // Recarrega a página para atualizar os dados
-            window.location.reload();
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao trocar a propriedade selecionada.");
-        }
-    });
-});
-</script>
+<script src="/js/historico.js"></script>
 <%- include ('partials/footer.ejs') %>

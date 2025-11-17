@@ -17,120 +17,82 @@
             </a>
         </header>
 
-        <div style="background: #FAF0D7; border-radius: 14px; padding: 24px; margin-bottom: 24px;">
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
-                <div>
-                    <h3 style="font-size: 16px; color: #351102; margin: 0 0 8px 0;">Propriedade</h3>
-                    <div style="padding: 10px; border-radius: 8px; background: #fff; font-size: 15px; color: #351102;">
-                        <%= talhao.propriedade.nome %>
-                    </div>
+        <article class="analysis-card analysis-card-custom">
+            <header class="card-header card-header-custom">
+                <div class="card-header-custom-top">
+                    <h3>Pés</h3>
                 </div>
-                <div>
-                    <h3 style="font-size: 16px; color: #351102; margin: 0 0 8px 0;">Alqueire</h3>
-                    <div style="padding: 10px; border-radius: 8px; background: #fff; font-size: 15px; color: #351102;">
-                        <%= talhao.alqueire ? talhao.alqueire.nome : 'Sem alqueire' %>
+                <div class="card-header-divider"></div>
+            </header>
+            <div class="card-body card-body-custom">
+                <div class="talhoes-search-bar">
+                    <div style="position: relative; flex: 1; max-width: 400px;">
+                        <input type="text" id="search-input" placeholder="Pesquisar registros" class="search-input-talhoes">
+                        <div style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+                            <img src="/imgs/search.png" alt="Pesquisar" style="width: 24px; height: 24px;">
+                        </div>
                     </div>
+                    <a href="/cadastroPes/<%= talhao.id_talhao %>" class="btn-primary-custom">
+                        <span>+</span> Adicionar Pé
+                    </a>
+                </div>
+                <table id="pes-table" class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Nome Pé</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Data de Criação</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (pes && pes.length > 0) { %>
+                            <% pes.forEach(pe => { %>
+                            <tr>
+                                <td><%= pe.nome %></td>
+                                <td class="text-center">
+                                    <% if (pe.situacao === 'Tratado') { %>
+                                        <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                            <span style="display: inline-block; width: 12px; height: 12px; background-color: #6C5CE7; border-radius: 50%;"></span>
+                                            Tratado
+                                        </span>
+                                    <% } else if (pe.situacao === 'Não-Tratado') { %>
+                                        <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                            <span style="display: inline-block; width: 12px; height: 12px; background-color: #FF7675; border-radius: 50%;"></span>
+                                            Não Tratado
+                                        </span>
+                                    <% } else { %>
+                                        <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                            <span style="display: inline-block; width: 12px; height: 12px; background-color: #B2BEC3; border-radius: 50%;"></span>
+                                            Sem informações
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="text-center"><%= pe.createdAt.toLocaleDateString() %></td>
+                                <td class="text-right">
+                                    <a href="/pes/<%= pe.id_pe %>" class="btn-icon">
+                                        <img src="/imgs/setinha.svg" alt="Ir">
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="empty-state-custom">
+                                    <p>Nenhum pé cadastrado neste talhão</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <div class="talhoes-pagination">
+                    1-<%= pes ? pes.length : 0 %>
                 </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                <div>
-                    <h3 style="font-size: 16px; color: #351102; margin: 0 0 8px 0;">Espécie Plantada</h3>
-                    <div style="padding: 10px; border-radius: 8px; background: #fff; font-size: 15px; color: #351102;">
-                        <%= talhao.especie_fruta %>
-                    </div>
-                </div>
-                <div>
-                    <h3 style="font-size: 16px; color: #351102; margin: 0 0 8px 0;">Pés Analisados</h3>
-                    <div style="padding: 10px; border-radius: 8px; background: #fff; font-size: 15px; color: #351102;">
-                        <%= talhao.pes_analisados %>/<%= talhao.total_pes %>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div style="flex-grow: 1;">
-                <div style="position: relative; max-width: 350px;">
-                    <input type="text" id="search-input" placeholder="Pesquisar registros" style="width: 100%; padding: 14px 50px 14px 18px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
-                    <div style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);">
-                        <img src="/imgs/search.png" alt="Pesquisar" style="width: 24px; height: 24px;">
-                    </div>
-                </div>
-                <script>
-                document.getElementById('search-input').addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('tbody tr');
-                    rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(searchTerm) ? '' : 'none';
-                    });
-                });
-                </script>
-            </div>
-            <a href="/cadastroPes/<%= talhao.id_talhao %>" class="btn-primary" style="background: #65B741; color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px;">
-                <span style="font-size: 18px;">+</span> Adicionar Pé
-            </a>
-        </div>
-
-        <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
-            <thead>
-                <tr style="border-bottom: 1px solid #F2C48D;">
-                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: left;">Nome Pé</th>
-                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Status</th>
-                    <th style="font-size: 15px; color: #351102; font-weight: 700; padding: 12px 15px; text-align: center;">Data de Criação</th>
-                    <th style="width: 120px;"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (pes && pes.length > 0) { %>
-                    <% pes.forEach(pe => { %>
-                    <tr style="border-bottom: 1px solid #F2C48D;">
-                        <td style="font-size: 15px; color: #351102; padding: 12px 15px;"><%= pe.nome %></td>
-                        <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;">
-                            <% if (pe.situacao === 'Tratado') { %>
-                                <span style="display: inline-flex; align-items: center; gap: 5px;">
-                                    <span style="display: inline-block; width: 12px; height: 12px; background-color: #6C5CE7; border-radius: 50%;"></span>
-                                    Tratado
-                                </span>
-                            <% } else if (pe.situacao === 'Não-Tratado') { %>
-                                <span style="display: inline-flex; align-items: center; gap: 5px;">
-                                    <span style="display: inline-block; width: 12px; height: 12px; background-color: #FF7675; border-radius: 50%;"></span>
-                                    Não Tratado
-                                </span>
-                            <% } else { %>
-                                <span style="display: inline-flex; align-items: center; gap: 5px;">
-                                    <span style="display: inline-block; width: 12px; height: 12px; background-color: #B2BEC3; border-radius: 50%;"></span>
-                                    Sem informações
-                                </span>
-                            <% } %>
-                        </td>
-                        <td style="font-size: 15px; color: #351102; padding: 12px 15px; text-align: center;"><%= pe.createdAt.toLocaleDateString() %></td>
-                        <td style="text-align: right; padding: 12px 15px;">
-                            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                                <a href="/pes/edit/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; background: #f0f0f0; border-radius: 4px; padding: 4px 8px; text-decoration: none; color: #333; font-size: 14px;">
-                                    Editar <span style="margin-left: 4px;">▼</span>
-                                </a>
-                                <a href="/pes/<%= pe.id_pe %>" style="display: inline-block; background: none; border: none;">
-                                    <img src="/imgs/setinha.svg" style="width: 22px; height: 22px;" alt="Ir">
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="4" style="text-align: center; padding: 24px;">
-                            <p style="color: #888; margin: 0;">Nenhum pé cadastrado neste talhão</p>
-                        </td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
-        
-        <div style="text-align: center; color: #666; font-size: 14px;">
-            1-<%= pes ? pes.length : 0 %>
-        </div>
+        </article>
     </section>
 </main>
+
+<script src="/js/talhao-search.js"></script>
 
 <%- include ('partials/footer.ejs') %>

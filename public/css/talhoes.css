@@ -1,0 +1,154 @@
+.search-input-talhoes {
+    width: 100%;
+    padding: 12px 50px 12px 18px;
+    border: 2px solid #F2C48D;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #FAF0D7;
+    color: #351102;
+    outline: none;
+}
+
+.search-input-talhoes:focus {
+    border-color: #E88239;
+    box-shadow: 0 0 0 3px rgba(242, 196, 141, 0.2);
+}
+
+#talhoes-table {
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+#talhoes-table thead tr {
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#talhoes-table thead th {
+    font-size: 15px;
+    color: #351102;
+    font-weight: 700;
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#talhoes-table thead th.text-center {
+    text-align: center;
+}
+
+#talhoes-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+#talhoes-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+#talhoes-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+#talhoes-table tbody td {
+    font-size: 15px;
+    color: #351102;
+    padding: 14px 20px;
+}
+
+#talhoes-table tbody td:first-child {
+    padding-left: 28px;
+}
+
+#talhoes-table tbody td:last-child {
+    padding-right: 28px;
+}
+
+#talhoes-table tbody td.text-center {
+    text-align: center;
+}
+
+#talhoes-table tbody td.text-right {
+    text-align: right;
+}
+
+.talhoes-search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.talhoes-pagination {
+    text-align: center;
+    padding: 16px;
+    color: #666;
+    font-size: 14px;
+    border-top: 1px solid #e0e0e0;
+    background: #fff;
+}
+
+#pes-table {
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+#pes-table thead tr {
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#pes-table thead th {
+    font-size: 15px;
+    color: #351102;
+    font-weight: 700;
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#pes-table thead th.text-center {
+    text-align: center;
+}
+
+#pes-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+#pes-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+#pes-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+#pes-table tbody td {
+    font-size: 15px;
+    color: #351102;
+    padding: 14px 20px;
+}
+
+#pes-table tbody td:first-child {
+    padding-left: 28px;
+}
+
+#pes-table tbody td:last-child {
+    padding-right: 28px;
+}
+
+#pes-table tbody td.text-center {
+    text-align: center;
+}
+
+#pes-table tbody td.text-right {
+    text-align: right;
+}
+
