@@ -5,7 +5,7 @@
     <section class="dashboard-container">
         <header class="dashboard-header">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="/cadastroPes/<%= pe.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                <a href="/pes/<%= pe.id_pe %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
                     <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
                     Voltar
                 </a>
@@ -22,7 +22,7 @@
                         
                         <div style="margin-bottom: 24px;">
                             <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Talhão</label>
-                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <%= pe.talhao.nome %>
                             </div>
                         </div>
@@ -30,13 +30,13 @@
                         <div style="margin-bottom: 24px;">
                             <label for="nome" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Nome do Pé</label>
                             <input type="text" id="nome" name="nome" value="<%= pe.nome %>" required 
-                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                         </div>
                         
                         <div style="margin-bottom: 24px;">
                             <label for="observacoes" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Observações</label>
                             <textarea id="observacoes" name="observacoes" 
-                                    style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; min-height: 120px; font-size: 18px; background: #FAF0D7; color: #351102; font-family: 'Roboto', sans-serif;"><%= pe.observacoes || '' %></textarea>
+                                    style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; min-height: 120px; font-size: 18px; background: #fff; color: #351102; font-family: 'Roboto', sans-serif;"><%= pe.observacoes || '' %></textarea>
                         </div>
                         
                         <!-- Campos ocultos para coordenadas -->

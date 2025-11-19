@@ -46,7 +46,7 @@ svg{
     background: var(--background-gradient);
     margin-top: auto;
     width: 100%;
-    padding: 24px 40px;
+    padding: 24px 110px;
     border-top: 2px solid var(--verde-escuro);
     font-family: var(--fonte-roboto);
     display: flex;

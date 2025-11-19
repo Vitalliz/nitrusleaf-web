@@ -429,11 +429,26 @@ document.addEventListener("DOMContentLoaded", function () {
     // Função para adicionar pés
     pes.forEach(pe => {
         if (pe.latitude && pe.longitude) {
+            let situacaoTexto = 'Sem informações';
+            if (pe.situacao === 'Tratado') {
+                situacaoTexto = 'Tratado';
+            } else if (pe.situacao === 'Não-Tratado') {
+                situacaoTexto = 'Não-Tratado';
+            }
+            
+            let deficiencias = [];
+            if (pe.deficiencia_cobre) deficiencias.push('Cobre');
+            if (pe.deficiencia_manganes) deficiencias.push('Manganês');
+            if (pe.outros) deficiencias.push('Outros');
+            const deficienciasTexto = deficiencias.length > 0 ? deficiencias.join(', ') : 'Nenhuma';
+            
             L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
                 .addTo(map)
                 .bindPopup(`
                     <strong>Pé: ${pe.nome}</strong><br>
-                    ${pe.observacoes ? `Obs: ${pe.observacoes}` : ''}
+                    <strong>Situação:</strong> ${situacaoTexto}<br>
+                    <strong>Deficiências:</strong> ${deficienciasTexto}<br>
+                    ${pe.observacoes ? `<strong>Obs:</strong> ${pe.observacoes}` : ''}
                 `);
         }
     });
@@ -530,9 +545,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Adicionar pés
                     data.pes.forEach(pe => {
                         if (pe.latitude && pe.longitude) {
+                            let situacaoTexto = 'Sem informações';
+                            if (pe.situacao === 'Tratado') {
+                                situacaoTexto = 'Tratado';
+                            } else if (pe.situacao === 'Não-Tratado') {
+                                situacaoTexto = 'Não-Tratado';
+                            }
+                            
+                            let deficiencias = [];
+                            if (pe.deficiencia_cobre) deficiencias.push('Cobre');
+                            if (pe.deficiencia_manganes) deficiencias.push('Manganês');
+                            if (pe.outros) deficiencias.push('Outros');
+                            const deficienciasTexto = deficiencias.length > 0 ? deficiencias.join(', ') : 'Nenhuma';
+                            
                             L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
                                 .addTo(map)
-                                .bindPopup(`<strong>Pé: ${pe.nome}</strong>`);
+                                .bindPopup(`
+                                    <strong>Pé: ${pe.nome}</strong><br>
+                                    <strong>Situação:</strong> ${situacaoTexto}<br>
+                                    <strong>Deficiências:</strong> ${deficienciasTexto}<br>
+                                    ${pe.observacoes ? `<strong>Obs:</strong> ${pe.observacoes}` : ''}
+                                `);
                         }
                     });
                 }

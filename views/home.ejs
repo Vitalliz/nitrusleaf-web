@@ -73,7 +73,7 @@
             <p class="analysis-total"><strong><%= totalPesAnalisados %></strong> pés analisados</p>
           </div>
           <div class="card-footer">
-            <button type="button" class="card-action">Detalhar</button>
+            <a href="/analises/ocorrencias" class="card-action" style="text-decoration: none; display: inline-block;">Detalhar</a>
           </div>
         </article>
 
@@ -87,7 +87,7 @@
             <div id="talhoes-empty" class="empty-state hidden"><%= talhoesMensagem || 'Nenhum dado disponível' %></div>
           </div>
           <div class="card-footer">
-            <button type="button" class="card-action">Detalhar</button>
+            <a href="/analises/deficiencia-talhao" class="card-action" style="text-decoration: none; display: inline-block;">Detalhar</a>
           </div>
         </article>
 
@@ -101,7 +101,7 @@
             <div id="evolucao-empty" class="empty-state hidden"><%= evolucaoMensagem || 'Nenhum dado feito nos últimos meses' %></div>
           </div>
           <div class="card-footer">
-            <button type="button" class="card-action">Detalhar</button>
+            <a href="/analises/evolucao" class="card-action" style="text-decoration: none; display: inline-block;">Detalhar</a>
           </div>
         </article>
       </div>

@@ -4,7 +4,13 @@
     <%- include ('partials/navbar-lateral.ejs') %>
     <section class="dashboard-container">
         <header class="dashboard-header">
-            <h1>Talhões</h1>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="/historico" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Voltar
+                </a>
+                <h1 style="margin: 0;">Talhões</h1>
+            </div>
             <div class="property-select">
                 <label for="propriedades">Propriedade</label>
                 <div class="select-wrapper">

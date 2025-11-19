@@ -76,15 +76,15 @@ router.post("/pes/new", Auth, validarTalhao,async (req, res) => {
             nome,
             id_talhao,
             situacao,
-            deficiencia_cobre,
-            deficiencia_manganes,
-            outros,
+            deficiencia_cobre: deficiencia_cobre === 'true' || deficiencia_cobre === true,
+            deficiencia_manganes: deficiencia_manganes === 'true' || deficiencia_manganes === true,
+            outros: outros === 'true' || outros === true,
             observacoes,
             latitude: req.body.latitude ? parseFloat(req.body.latitude) : null,
             longitude: req.body.longitude ? parseFloat(req.body.longitude) : null
         });
 
-        res.redirect(`/cadastroPes/${id_talhao}`);
+        res.redirect(`/talhao/${id_talhao}`);
     } catch (error) {
         console.error("Erro ao criar pé:", error);
         res.status(500).send("Erro ao criar pé.");

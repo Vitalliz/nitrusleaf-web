@@ -21,7 +21,7 @@
                         
                         <div style="margin-bottom: 24px;">
                             <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Propriedade</label>
-                            <div style="padding: 16px; border: 2px solid white; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <% const propriedadeAtual = propriedades.find(prop => prop.id_propriedade == propriedadeSelecionada); %>
                                 <% if (propriedadeAtual) { %>
                                     <%= propriedadeAtual.nome %>
@@ -33,7 +33,7 @@
                         
                         <div style="margin-bottom: 24px;">
                             <label for="id_alqueire" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Alqueire (opcional)</label>
-                            <select id="id_alqueire" name="id_alqueire" style="width: 100%; padding: 16px; border: 2px solid white; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
+                            <select id="id_alqueire" name="id_alqueire" style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                                 <option value="">Selecione um alqueire (opcional)</option>
                                 <% if (alqueires && alqueires.length > 0) { %>
                                     <% alqueires.forEach(alq => { %>
@@ -46,13 +46,13 @@
                         <div style="margin-bottom: 24px;">
                             <label for="nome" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Nome do Talhão</label>
                             <input type="text" id="nome" name="nome" placeholder="Insira o nome do talhão" required 
-                                style="width: 100%; padding: 16px; border: 2px solid white; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                         </div>
                         
                         <div style="margin-bottom: 24px;">
                             <label for="especie_fruta" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Espécie Plantada</label>
                             <input type="text" id="especie_fruta" name="especie_fruta" placeholder="Insira a espécie de fruta" required 
-                                style="width: 100%; padding: 16px; border: 2px solid white; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                         </div>
                         
                         <!-- Campos ocultos para coordenadas -->

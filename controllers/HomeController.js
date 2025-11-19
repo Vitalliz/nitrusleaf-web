@@ -55,12 +55,20 @@ router.get("/home", Auth, async (req, res) => {
                 }));
                 talhoesMensagem = talhoesComparacao.length === 0 ? "Nenhum talhão cadastrado nesta propriedade" : "Nenhum dado disponível para os talhões selecionados";
                 if (peIds.length > 0) {
-                    const relatorios = await Relatorios.findAll({
-                        where: { id_pe: peIds },
-                        order: [["data_analise", "DESC"]]
-                    });
+                    // Busca apenas a última análise de cada pé
+                    const ultimosRelatorios = [];
+                    for (const peId of peIds) {
+                        const ultimoRelatorio = await Relatorios.findOne({
+                            where: { id_pe: peId },
+                            order: [["data_analise", "DESC"]]
+                        });
+                        if (ultimoRelatorio) {
+                            ultimosRelatorios.push(ultimoRelatorio);
+                        }
+                    }
+                    
                     const counts = { cobre: 0, manganes: 0, outros: 0 };
-                    relatorios.forEach(relatorio => {
+                    ultimosRelatorios.forEach(relatorio => {
                         if (relatorio.deficiencia_cobre) {
                             counts.cobre += 1;
                         }
@@ -71,6 +79,9 @@ router.get("/home", Auth, async (req, res) => {
                             counts.outros += 1;
                         }
                     });
+                    
+                    // Atualiza totalPesAnalisados para contar apenas pés com análises
+                    totalPesAnalisados = ultimosRelatorios.length;
                     totalOcorrencias = counts.cobre + counts.manganes + counts.outros;
                     resumoDeficiencias = {
                         percentuais: {
@@ -89,7 +100,7 @@ router.get("/home", Auth, async (req, res) => {
                         mensagemStatus = "Nenhum pé cadastrado nesta propriedade";
                     }
                     const talhaoStats = new Map();
-                    relatorios.forEach(relatorio => {
+                    ultimosRelatorios.forEach(relatorio => {
                         const talhaoId = peTalhaoMap.get(relatorio.id_pe);
                         if (!talhaoId) {
                             return;
@@ -116,22 +127,32 @@ router.get("/home", Auth, async (req, res) => {
                     if (talhoesComparacao.length > 0 && talhoesComparacao.some(item => item.cobre || item.manganes)) {
                         talhoesMensagem = null;
                     }
+                    // Para evolução, usa apenas a última análise de cada pé por data
                     const evolucaoMap = new Map();
-                    relatorios.forEach(relatorio => {
+                    const peDataMap = new Map(); // Para garantir apenas uma análise por pé por data
+                    
+                    ultimosRelatorios.forEach(relatorio => {
                         if (!relatorio.data_analise) {
                             return;
                         }
                         const chave = relatorio.data_analise.toISOString().split('T')[0];
-                        if (!evolucaoMap.has(chave)) {
-                            evolucaoMap.set(chave, { cobre: 0, manganes: 0, total: 0 });
-                        }
-                        const atual = evolucaoMap.get(chave);
-                        atual.total += 1;
-                        if (relatorio.deficiencia_cobre) {
-                            atual.cobre += 1;
-                        }
-                        if (relatorio.deficiencia_manganes) {
-                            atual.manganes += 1;
+                        const peKey = `${relatorio.id_pe}_${chave}`;
+                        
+                        // Evita contar o mesmo pé múltiplas vezes na mesma data
+                        if (!peDataMap.has(peKey)) {
+                            peDataMap.set(peKey, true);
+                            
+                            if (!evolucaoMap.has(chave)) {
+                                evolucaoMap.set(chave, { cobre: 0, manganes: 0, total: 0 });
+                            }
+                            const atual = evolucaoMap.get(chave);
+                            atual.total += 1;
+                            if (relatorio.deficiencia_cobre) {
+                                atual.cobre += 1;
+                            }
+                            if (relatorio.deficiencia_manganes) {
+                                atual.manganes += 1;
+                            }
                         }
                     });
                     const evolucaoOrdenada = [...evolucaoMap.entries()].sort((a, b) => new Date(b[0]) - new Date(a[0])).slice(0, 4).reverse();

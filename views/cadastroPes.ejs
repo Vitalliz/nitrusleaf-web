@@ -5,7 +5,7 @@
     <section class="dashboard-container">
         <header class="dashboard-header">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="/histal/<%= talhao.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                <a href="/talhao/<%= talhao.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
                     <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
                     Voltar
                 </a>
@@ -22,7 +22,7 @@
                         
                         <div style="margin-bottom: 24px;">
                             <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Talhão</label>
-                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <%= talhao.nome %>
                             </div>
                         </div>
@@ -30,13 +30,13 @@
                         <div style="margin-bottom: 24px;">
                             <label for="nome" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Nome do Pé</label>
                             <input type="text" id="nome" name="nome" placeholder="Insira o nome do pé" required 
-                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                         </div>
                         
                         <div style="margin-bottom: 24px;">
                             <label for="observacoes" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Observações</label>
                             <textarea id="observacoes" name="observacoes" placeholder="Insira as observações sobre o pé" 
-                                    style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; min-height: 120px; font-size: 18px; background: #FAF0D7; color: #351102; font-family: 'Roboto', sans-serif;"></textarea>
+                                    style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; min-height: 120px; font-size: 18px; background: #fff; color: #351102; font-family: 'Roboto', sans-serif;"></textarea>
                         </div>
                         
                         <!-- Campos ocultos para coordenadas -->
@@ -68,49 +68,6 @@
                             </button>
                         </div>
                     </form>
-                </div>
-            </div>
-        </section>
-
-        <section class="analysis-section">
-            <h2 style="font-size: 24px; font-weight: 700; color: #351102; margin-bottom: 20px;">Pés Cadastrados</h2>
-            <div class="analysis-card">
-                <div class="card-body">
-                    <% if (pes && pes.length > 0) { %>
-                        <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;">
-                            <thead>
-                                <tr style="background: #FAF0D7;">
-                                    <th style="font-size: 18px; color: #351102; font-weight: 700; padding: 16px 20px; text-align: left;">Nome Pé</th>
-                                    <th style="font-size: 18px; color: #351102; font-weight: 700; padding: 16px 20px; text-align: left;">Talhão</th>
-                                    <th style="font-size: 18px; color: #351102; font-weight: 700; padding: 16px 20px; text-align: left;">Observações</th>
-                                    <th style="width: 120px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% pes.forEach(pe => { %>
-                                <tr style="border-bottom: 2px solid #F2C48D;">
-                                    <td style="font-size: 18px; color: #351102; padding: 16px 20px;"><%= pe.nome %></td>
-                                    <td style="font-size: 18px; color: #351102; padding: 16px 20px;"><%= pe.talhao.nome %></td>                            
-                                    <td style="font-size: 18px; color: #351102; padding: 16px 20px;">
-                                        <div style="max-height: 80px; overflow-y: auto; padding: 8px; border: 1px solid #F2C48D; border-radius: 8px; background: #FAF0D7;">
-                                            <%= pe.observacoes || 'Sem observações' %>
-                                        </div>
-                                    </td>
-                                    <td style="text-align: right; padding: 16px 20px;">
-                                        <a href="/pes/edit/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 16px; gap: 8px;">
-                                            <img src="/imgs/btn-editar.svg" alt="Editar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
-                                            Editar
-                                        </a>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                    <% } else { %>
-                        <div class="empty-state" style="text-align: center; padding: 32px;">
-                            <p style="color: #888; margin: 0; font-size: 18px;">Nenhum pé cadastrado neste talhão</p>
-                        </div>
-                    <% } %>
                 </div>
             </div>
         </section>
@@ -178,8 +135,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     color: '#65B741',
                     fillColor: '#65B741',
                     fillOpacity: 0.2,
-                    weight: 2
-                }).addTo(map).bindPopup(`<strong>Talhão: ${talhaoData.nome}</strong>`);
+                    weight: 2,
+                    interactive: false
+                }).addTo(map);
             }
         } catch (e) {
             console.error('Erro ao parsear coordenadas do talhão:', e);

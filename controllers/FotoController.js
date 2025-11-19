@@ -74,15 +74,18 @@ router.post("/fotos/new", Auth, upload.single('imagem'), async (req, res) => {
         }
 
         // Atualiza o pé com as informações
-        await Pes.update(
-            {
-                situacao: situacao || pe.situacao,
-                deficiencia_cobre: deficiencia_cobre === 'true' || deficiencia_cobre === true,
-                deficiencia_manganes: deficiencia_manganes === 'true' || deficiencia_manganes === true,
-                outros: outros === 'true' || outros === true
-            },
-            { where: { id_pe } }
-        );
+        const updateData = {
+            deficiencia_cobre: deficiencia_cobre === 'true' || deficiencia_cobre === true,
+            deficiencia_manganes: deficiencia_manganes === 'true' || deficiencia_manganes === true,
+            outros: outros === 'true' || outros === true
+        };
+        
+        // Atualiza a situação se foi fornecida
+        if (situacao) {
+            updateData.situacao = situacao;
+        }
+        
+        await Pes.update(updateData, { where: { id_pe } });
 
         // Cria a foto se foi enviada
         if (urlFoto) {

@@ -20,6 +20,7 @@ import HistoricoController from './controllers/HistoricoController.js';
 import MapaController from './controllers/MapaController.js';
 import ConfiguracoesController from './controllers/ConfiguracoesController.js';
 import AlqueiresController from './controllers/AlqueiresController.js';
+import AnalisesController from './controllers/AnalisesController.js';
 
 import Usuarios from './models/Usuarios.js';
 import Propriedades from './models/Propriedades.js';
@@ -304,6 +305,7 @@ app.use('/', HistoricoController);
 app.use('/', MapaController);
 app.use('/', ConfiguracoesController);
 app.use('/', AlqueiresController);
+app.use('/', AnalisesController);
 
 (async () => {
     try {

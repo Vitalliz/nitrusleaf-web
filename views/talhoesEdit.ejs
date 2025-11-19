@@ -5,7 +5,7 @@
     <section class="dashboard-container">
         <header class="dashboard-header">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="/cadastroPes/<%= talhao.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                <a href="/talhao/<%= talhao.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
                     <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
                     Voltar
                 </a>
@@ -20,30 +20,30 @@
                         <input type="hidden" name="id_propriedade" value="<%= talhao.id_propriedade%>">
                         <input type="hidden" name="id_talhao" value="<%= talhao.id_talhao%>">
                         
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Propriedade</label>
-                            <div style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Propriedade</label>
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <%= talhao.propriedade.nome %>
                             </div>
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Alqueire</label>
-                            <div style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Alqueire</label>
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <%= talhao.alqueire ? talhao.alqueire.nome : 'Sem alqueire' %>
                             </div>
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label for="nome" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Nome do Talhão</label>
+                        <div style="margin-bottom: 24px;">
+                            <label for="nome" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Nome do Talhão</label>
                             <input type="text" id="nome" name="nome" value="<%= talhao.nome %>" required 
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label for="especie_fruta" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102;">Espécie Plantada</label>
+                        <div style="margin-bottom: 24px;">
+                            <label for="especie_fruta" style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Espécie Plantada</label>
                             <input type="text" id="especie_fruta" name="especie_fruta" value="<%= talhao.especie_fruta %>" required 
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                                style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                         </div>
                         
                         <div style="text-align: center; margin-top: 20px;">

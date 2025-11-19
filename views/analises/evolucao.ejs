@@ -1,0 +1,118 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/navbar-user.ejs') %>
+<main class="main-content home-dashboard">
+    <%- include('../partials/navbar-lateral.ejs') %>
+    <section class="dashboard-container">
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="/home" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                    Voltar
+                </a>
+                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Evolução das Deficiências</h1>
+            </div>
+            <div class="property-select">
+                <label for="propriedades">Propriedade</label>
+                <div class="select-wrapper">
+                    <% if (propriedades && propriedades.length > 0) { %>
+                        <select id="propriedades" class="property-dropdown">
+                            <% propriedades.forEach(prop => { %>
+                                <option value="<%= prop.id_propriedade %>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome %></option>
+                            <% }) %>
+                        </select>
+                    <% } else { %>
+                        <select id="propriedades" class="property-dropdown" disabled>
+                            <option>Nenhuma propriedade cadastrada</option>
+                        </select>
+                    <% } %>
+                </div>
+            </div>
+        </header>
+
+        <section class="analysis-section">
+            <div class="analysis-card" style="margin-bottom: 24px;">
+                <div class="card-body">
+                    <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 24px;">Histórico de Todas as Análises</h3>
+                    <div class="table-custom-wrapper">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Data da Análise</th>
+                                    <th>Pé</th>
+                                    <th>Talhão</th>
+                                    <th class="text-center">Deficiências Detectadas</th>
+                                    <th>Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (historicoAnalises && historicoAnalises.length > 0) { %>
+                                    <% historicoAnalises.forEach(analise => { %>
+                                    <tr>
+                                        <td><%= new Date(analise.data_analise).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></td>
+                                        <td><%= analise.pe_nome %></td>
+                                        <td><%= analise.talhao_nome %></td>
+                                        <td class="text-center">
+                                            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                                <% if (analise.deficiencia_cobre) { %>
+                                                    <span style="padding: 6px 12px; background: #D84A0F; color: white; border-radius: 6px; font-size: 12px; font-weight: 600;">Cobre</span>
+                                                <% } %>
+                                                <% if (analise.deficiencia_manganes) { %>
+                                                    <span style="padding: 6px 12px; background: #FFB534; color: #351102; border-radius: 6px; font-size: 12px; font-weight: 600;">Manganês</span>
+                                                <% } %>
+                                                <% if (analise.outros) { %>
+                                                    <span style="padding: 6px 12px; background: #ACACAC; color: white; border-radius: 6px; font-size: 12px; font-weight: 600;">Outros</span>
+                                                <% } %>
+                                                <% if (!analise.deficiencia_cobre && !analise.deficiencia_manganes && !analise.outros) { %>
+                                                    <span style="padding: 6px 12px; background: #f0f0f0; color: #666; border-radius: 6px; font-size: 12px;">Nenhuma</span>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td><%= analise.observacoes || '-' %></td>
+                                    </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="empty-state-custom">
+                                            <p>Nenhuma análise encontrada</p>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</main>
+
+<script>
+const propriedadeSelecionada = '<%= propriedadeSelecionada || "" %>';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Atualizar propriedade
+    const propriedadesSelect = document.getElementById('propriedades');
+    if (propriedadesSelect) {
+        propriedadesSelect.addEventListener('change', async (e) => {
+            const idPropriedade = e.target.value;
+            try {
+                const response = await fetch("/home", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id_propriedade: idPropriedade }),
+                });
+                if (response.ok) {
+                    window.location.href = `/analises/evolucao?propriedade=${idPropriedade}`;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    }
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>
+

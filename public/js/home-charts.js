@@ -34,7 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 },
-                cutout: '60%'
+                cutout: '60%',
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1.2
             }
         });
     } else if (donutCanvas && donutEmpty) {
@@ -84,14 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 },
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 1.3,
                 scales: {
                     x: {
                         ticks: {
                             color: '#351102',
                             font: {
                                 family: 'Roboto',
-                                weight: '600'
+                                weight: '600',
+                                size: 11
                             }
                         },
                         grid: { display: false }
@@ -104,7 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             color: '#351102',
                             font: {
                                 family: 'Roboto',
-                                weight: '600'
+                                weight: '600',
+                                size: 11
                             }
                         },
                         grid: {
@@ -169,14 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 },
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 1.3,
                 scales: {
                     x: {
                         ticks: {
                             color: '#351102',
                             font: {
                                 family: 'Roboto',
-                                weight: '600'
+                                weight: '600',
+                                size: 11
                             }
                         },
                         grid: { display: false }
@@ -191,7 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             color: '#351102',
                             font: {
                                 family: 'Roboto',
-                                weight: '600'
+                                weight: '600',
+                                size: 11
                             }
                         },
                         grid: {

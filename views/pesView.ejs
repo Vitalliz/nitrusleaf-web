@@ -5,7 +5,7 @@
     <section class="dashboard-container">
         <header class="dashboard-header">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="/cadastroPes/<%= pe.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
+                <a href="/talhao/<%= pe.id_talhao %>" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
                     <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
                     Voltar
                 </a>
@@ -13,7 +13,6 @@
             </div>
             <div style="display: flex; gap: 12px;">
                 <a href="/pes/edit/<%= pe.id_pe %>" style="display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px; text-decoration: none;">
-                    <img src="/imgs/btn-editar.svg" alt="Editar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
                     Editar
                 </a>
             </div>
@@ -25,13 +24,13 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
                         <div>
                             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Talhão</label>
-                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <%= pe.talhao.nome %>
                             </div>
                         </div>
                         <div>
                             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Situação</label>
-                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102;">
+                            <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102;">
                                 <%= pe.situacao || 'Sem-informações' %>
                             </div>
                         </div>
@@ -39,7 +38,7 @@
 
                     <div style="margin-bottom: 24px;">
                         <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 18px;">Observações</label>
-                        <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #FAF0D7; font-size: 18px; color: #351102; min-height: 80px;">
+                        <div style="padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; background: #fff; font-size: 18px; color: #351102; min-height: 80px;">
                             <%= pe.observacoes || 'Sem observações' %>
                         </div>
                     </div>
@@ -94,12 +93,12 @@
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Enviar Imagem para Análise</label>
                             <input type="file" id="imagem-analise" name="imagem" accept="image/*" required 
-                                style="width: 100%; padding: 12px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 16px; background: #FAF0D7;">
+                                style="width: 100%; padding: 12px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 16px; background: #fff;">
                         </div>
 
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Situação do Pé</label>
-                            <select name="situacao" required style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #FAF0D7; color: #351102;">
+                            <select name="situacao" required style="width: 100%; padding: 16px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 18px; background: #fff; color: #351102;">
                                 <option value="Sem-informações" <%= pe.situacao === 'Sem-informações' ? 'selected' : '' %>>Sem informações</option>
                                 <option value="Tratado" <%= pe.situacao === 'Tratado' ? 'selected' : '' %>>Tratado</option>
                                 <option value="Não-Tratado" <%= pe.situacao === 'Não-Tratado' ? 'selected' : '' %>>Não-Tratado</option>
@@ -109,15 +108,15 @@
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #351102; font-size: 18px;">Deficiências Detectadas</label>
                             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fff; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
                                     <input type="checkbox" name="deficiencia_cobre" value="true" <%= pe.deficiencia_cobre ? 'checked' : '' %> style="width: 20px; height: 20px;">
                                     <span style="font-size: 16px; font-weight: 600; color: #351102;">Cobre</span>
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fff; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
                                     <input type="checkbox" name="deficiencia_manganes" value="true" <%= pe.deficiencia_manganes ? 'checked' : '' %> style="width: 20px; height: 20px;">
                                     <span style="font-size: 16px; font-weight: 600; color: #351102;">Manganês</span>
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fff; border: 2px solid #F2C48D; border-radius: 8px; cursor: pointer;">
                                     <input type="checkbox" name="outros" value="true" <%= pe.outros ? 'checked' : '' %> style="width: 20px; height: 20px;">
                                     <span style="font-size: 16px; font-weight: 600; color: #351102;">Outros</span>
                                 </label>
