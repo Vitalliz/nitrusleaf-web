@@ -84,12 +84,22 @@ router.get("/historico", Auth, async (req, res) => {
             });
         }
 
+        // Busca todos os talhões da propriedade primeiro
+        const todosTalhoes = propriedadeSelecionada ? await Talhoes.findAll({
+            where: { id_propriedade: Number(propriedadeSelecionada) },
+            order: [['createdAt', 'DESC']]
+        }) : [];
+
         // Busca os talhoes de cada alqueire
         for (let alqueire of alqueires) {
-            const talhoes = await Talhoes.findAll({
-                where: { id_alqueire: alqueire.id_alqueire },
-                order: [['createdAt', 'DESC']]
+            const alqueireId = Number(alqueire.id_alqueire);
+            
+            // Filtrar talhões que pertencem a este alqueire
+            const talhoes = todosTalhoes.filter(t => {
+                const talhaoAlqueireId = t.id_alqueire ? Number(t.id_alqueire) : null;
+                return talhaoAlqueireId === alqueireId;
             });
+            
             // Adiciona dados agregados para cada talhão
             alqueire.dataValues.talhoes = talhoes.map(talhao => ({
                 ...talhao.dataValues,
@@ -97,9 +107,11 @@ router.get("/historico", Auth, async (req, res) => {
                 pes_analisados: talhao.pes_analisados || 0,
                 createdAt: talhao.createdAt
             }));
+            
+            // Contagem real de talhões
             alqueire.dataValues.total_talhoes = talhoes.length;
-            alqueire.dataValues.total_pes = talhoes.reduce((acc, t) => acc + (t.total_pes || 0), 0);
-            alqueire.dataValues.pes_analisados = talhoes.reduce((acc, t) => acc + (t.pes_analisados || 0), 0);
+            alqueire.dataValues.total_pes = talhoes.reduce((acc, t) => acc + (Number(t.total_pes) || 0), 0);
+            alqueire.dataValues.pes_analisados = talhoes.reduce((acc, t) => acc + (Number(t.pes_analisados) || 0), 0);
         }
 
         res.render('historico', {

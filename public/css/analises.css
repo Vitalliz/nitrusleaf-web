@@ -1,0 +1,254 @@
+/* Estilos para páginas de análises */
+
+/* Ocorrências */
+.analises-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.analises-back-button {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    background: #65B741;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    gap: 8px;
+}
+
+.analises-back-button img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+.analises-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #351102;
+}
+
+.analises-filter-container {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.analises-filter-wrapper {
+    flex: 1;
+    min-width: 200px;
+}
+
+.analises-filter-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #351102;
+    font-size: 16px;
+}
+
+.analises-filter-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #F2C48D;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #fff;
+    color: #351102;
+}
+
+.analises-filter-button {
+    background: #65B741;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 28px;
+}
+
+.analises-filter-button:hover {
+    background: #5aa338;
+}
+
+/* Grid de gráficos */
+.analises-chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.analises-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.analises-chart-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #351102;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.analises-chart-canvas {
+    width: 100% !important;
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Resumo */
+.analises-resumo-panel {
+    background: #FAF0D7;
+    border: 2px solid #F2C48D;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.analises-resumo-item {
+    margin-bottom: 16px;
+}
+
+.analises-resumo-item:last-child {
+    margin-bottom: 0;
+}
+
+.analises-resumo-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.analises-resumo-badge {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.analises-resumo-badge-large {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.analises-resumo-label {
+    font-size: 18px;
+    color: #351102;
+    font-weight: 700;
+}
+
+.analises-resumo-text {
+    margin: 0;
+    color: #351102;
+    font-size: 14px;
+    margin-left: 32px;
+}
+
+.analises-resumo-text-indented {
+    margin: 0;
+    color: #351102;
+    font-size: 14px;
+    line-height: 1.6;
+    padding-left: 36px;
+}
+
+.analises-resumo-divider {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #F2C48D;
+}
+
+.analises-resumo-total {
+    margin: 0;
+    font-size: 16px;
+    color: #351102;
+    font-weight: 700;
+}
+
+/* Badges de ocorrências */
+.analises-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.analises-badge-cobre {
+    background: #D84A0F;
+    color: white;
+}
+
+.analises-badge-manganes {
+    background: #FFB534;
+    color: #351102;
+}
+
+.analises-badge-outros {
+    background: #ACACAC;
+    color: white;
+}
+
+.analises-badge-none {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.analises-badges-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Seção de tabela */
+.analises-section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #351102;
+    margin-bottom: 20px;
+}
+
+/* Deficiência por Talhão - Grid maior */
+.analises-chart-grid-large {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.analises-chart-container-large {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 450px;
+}
+
+/* Ajustes para gráficos maiores */
+.analises-chart-container canvas,
+.analises-chart-container-large canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Espaçamento do card */
+.analysis-card {
+    margin-bottom: 24px;
+}
+

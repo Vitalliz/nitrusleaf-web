@@ -3,6 +3,7 @@ const router = express.Router();
 import Auth from "../middleware/Auth.js";
 import Propriedades from "../models/Propriedades.js";
 import Talhoes from "../models/Talhoes.js";
+import Alqueires from "../models/Alqueires.js";
 import Pes from "../models/Pes.js";
 import Relatorios from "../models/Relatorios.js";
 import { Op } from "sequelize";
@@ -23,80 +24,100 @@ router.get("/analises/ocorrencias", Auth, async (req, res) => {
             req.session.propriedadeSelecionada = propriedadeSelecionada;
         }
 
-        let talhoes = [];
-        let analises = [];
+        let alqueires = [];
+        let talhoesComDados = [];
         let resumoDeficiencias = {
             percentuais: { cobre: 0, manganes: 0, outros: 0 },
             totais: { cobre: 0, manganes: 0, outros: 0 },
             total: 0
         };
-        let talhaoFiltro = req.query.talhao || null;
+        let alqueireFiltro = req.query.alqueire || null;
 
         if (propriedadeSelecionada) {
             const propriedadeId = Number(propriedadeSelecionada);
-            talhoes = await Talhoes.findAll({
+            
+            // Buscar alqueires da propriedade
+            alqueires = await Alqueires.findAll({
                 where: { id_propriedade: propriedadeId },
                 order: [["nome", "ASC"]]
             });
 
-            const talhaoIds = talhoes.map(t => t.id_talhao);
-            let talhoesFiltrados = talhaoIds;
-            
-            if (talhaoFiltro) {
-                talhoesFiltrados = [Number(talhaoFiltro)];
+            // Buscar todos os talhões da propriedade
+            let talhoes = await Talhoes.findAll({
+                where: { id_propriedade: propriedadeId },
+                order: [["nome", "ASC"]]
+            });
+
+            // Filtrar por alqueire se selecionado
+            if (alqueireFiltro) {
+                talhoes = talhoes.filter(t => t.id_alqueire == alqueireFiltro);
             }
 
-            if (talhoesFiltrados.length > 0) {
-                const pes = await Pes.findAll({
-                    where: { id_talhao: { [Op.in]: talhoesFiltrados } },
-                    include: {
-                        model: Talhoes,
-                        as: 'talhao'
-                    }
-                });
+            if (talhoes.length > 0) {
+                const talhaoIds = talhoes.map(t => t.id_talhao);
 
-                const peIds = pes.map(p => p.id_pe);
-                
-                // Busca última análise de cada pé
-                const ultimosRelatorios = [];
-                for (const peId of peIds) {
-                    const ultimoRelatorio = await Relatorios.findOne({
-                        where: { id_pe: peId },
-                        order: [["data_analise", "DESC"]]
+                // Para cada talhão, buscar pés e suas últimas análises
+                for (const talhao of talhoes) {
+                    const pesDoTalhao = await Pes.findAll({
+                        where: { id_talhao: talhao.id_talhao }
                     });
-                    if (ultimoRelatorio) {
-                        const pe = await Pes.findByPk(peId, {
-                            include: {
-                                model: Talhoes,
-                                as: 'talhao'
-                            }
+
+                    const peIds = pesDoTalhao.map(p => p.id_pe);
+                    
+                    // Buscar última análise de cada pé
+                    const ultimosRelatorios = [];
+                    for (const peId of peIds) {
+                        const ultimoRelatorio = await Relatorios.findOne({
+                            where: { id_pe: peId },
+                            order: [["data_analise", "DESC"]]
                         });
-                        if (pe) {
-                            ultimosRelatorios.push({
-                                ...ultimoRelatorio.toJSON(),
-                                pe: pe.toJSON()
-                            });
+                        if (ultimoRelatorio) {
+                            ultimosRelatorios.push(ultimoRelatorio);
                         }
                     }
+
+                    // Contar ocorrências por tipo
+                    const counts = { cobre: 0, manganes: 0, outros: 0 };
+                    ultimosRelatorios.forEach(relatorio => {
+                        if (relatorio.deficiencia_cobre) counts.cobre += 1;
+                        if (relatorio.deficiencia_manganes) counts.manganes += 1;
+                        if (relatorio.outros) counts.outros += 1;
+                    });
+
+                    const totalOcorrencias = counts.cobre + counts.manganes + counts.outros;
+
+                    talhoesComDados.push({
+                        id_talhao: talhao.id_talhao,
+                        nome: talhao.nome,
+                        total_pes: pesDoTalhao.length,
+                        ocorrencias: {
+                            cobre: counts.cobre,
+                            manganes: counts.manganes,
+                            outros: counts.outros,
+                            total: totalOcorrencias
+                        },
+                        ultima_analise: ultimosRelatorios.length > 0 
+                            ? ultimosRelatorios.sort((a, b) => new Date(b.data_analise) - new Date(a.data_analise))[0].data_analise
+                            : null
+                    });
                 }
 
-                analises = ultimosRelatorios.sort((a, b) => new Date(b.data_analise) - new Date(a.data_analise));
-
-                const counts = { cobre: 0, manganes: 0, outros: 0 };
-                ultimosRelatorios.forEach(relatorio => {
-                    if (relatorio.deficiencia_cobre) counts.cobre += 1;
-                    if (relatorio.deficiencia_manganes) counts.manganes += 1;
-                    if (relatorio.outros) counts.outros += 1;
+                // Calcular resumo geral
+                const countsGeral = { cobre: 0, manganes: 0, outros: 0 };
+                talhoesComDados.forEach(talhao => {
+                    countsGeral.cobre += talhao.ocorrencias.cobre;
+                    countsGeral.manganes += talhao.ocorrencias.manganes;
+                    countsGeral.outros += talhao.ocorrencias.outros;
                 });
 
-                const totalOcorrencias = counts.cobre + counts.manganes + counts.outros;
+                const totalOcorrencias = countsGeral.cobre + countsGeral.manganes + countsGeral.outros;
                 resumoDeficiencias = {
                     percentuais: {
-                        cobre: totalOcorrencias ? Math.round((counts.cobre * 100) / totalOcorrencias) : 0,
-                        manganes: totalOcorrencias ? Math.round((counts.manganes * 100) / totalOcorrencias) : 0,
-                        outros: totalOcorrencias ? Math.round((counts.outros * 100) / totalOcorrencias) : 0
+                        cobre: totalOcorrencias ? Math.round((countsGeral.cobre * 100) / totalOcorrencias) : 0,
+                        manganes: totalOcorrencias ? Math.round((countsGeral.manganes * 100) / totalOcorrencias) : 0,
+                        outros: totalOcorrencias ? Math.round((countsGeral.outros * 100) / totalOcorrencias) : 0
                     },
-                    totais: counts,
+                    totais: countsGeral,
                     total: totalOcorrencias
                 };
             }
@@ -105,10 +126,10 @@ router.get("/analises/ocorrencias", Auth, async (req, res) => {
         res.render("analises/ocorrencias", {
             propriedades,
             propriedadeSelecionada,
-            talhoes,
-            analises,
+            alqueires,
+            talhoesComDados,
             resumoDeficiencias,
-            talhaoFiltro
+            alqueireFiltro
         });
     } catch (error) {
         console.error('Erro ao carregar ocorrências:', error);

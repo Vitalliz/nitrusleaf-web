@@ -31,7 +31,7 @@ router.get("/talhoes", Auth, async (req, res) => {
             whereTalhao.id_alqueire = alqueireSelecionado;
         }
 
-        const talhoes = propriedadeSelecionada ? await Talhoes.findAll({
+        let talhoes = propriedadeSelecionada ? await Talhoes.findAll({
             include: [
                 {
                     model: Propriedades,
@@ -45,6 +45,23 @@ router.get("/talhoes", Auth, async (req, res) => {
             where: whereTalhao,
             order: [['createdAt', 'DESC']]
         }) : [];
+
+        // Calcular pes_analisados corretamente (apenas pés com situação diferente de "Sem informações")
+        if (talhoes.length > 0) {
+            for (let talhao of talhoes) {
+                const pesDoTalhao = await Pes.findAll({
+                    where: { id_talhao: talhao.id_talhao }
+                });
+                
+                const totalPes = pesDoTalhao.length;
+                const pesAnalisados = pesDoTalhao.filter(pe => 
+                    pe.situacao && pe.situacao !== 'Sem-informações' && pe.situacao !== 'Sem informações' && pe.situacao !== null
+                ).length;
+                
+                talhao.dataValues.total_pes = totalPes;
+                talhao.dataValues.pes_analisados = pesAnalisados;
+            }
+        }
 
         const alqueires = propriedadeSelecionada ? await Alqueires.findAll({
             where: { id_propriedade: propriedadeSelecionada },

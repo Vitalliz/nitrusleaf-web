@@ -74,7 +74,7 @@
                         <% } else { %>
                             <tr>
                                 <td colspan="4" class="empty-state-custom">
-                                    <p>Nenhum talhão cadastrado nesta propriedade</p>
+                                    <p><%= alqueireSelecionado ? 'Nenhum talhão cadastrado neste alqueire' : 'Nenhum talhão cadastrado nesta propriedade' %></p>
                                 </td>
                             </tr>
                         <% } %>

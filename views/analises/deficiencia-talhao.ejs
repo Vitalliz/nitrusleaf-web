@@ -1,15 +1,16 @@
 <%- include('../partials/header.ejs') %>
 <%- include('../partials/navbar-user.ejs') %>
+<link rel="stylesheet" href="/css/analises.css">
 <main class="main-content home-dashboard">
     <%- include('../partials/navbar-lateral.ejs') %>
     <section class="dashboard-container">
         <header class="dashboard-header">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="/home" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
-                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+            <div class="analises-header">
+                <a href="/home" class="analises-back-button">
+                    <img src="/imgs/back.svg" alt="Voltar">
                     Voltar
                 </a>
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Deficiência por Talhão</h1>
+                <h1 class="analises-title">Deficiência por Talhão</h1>
             </div>
             <div class="property-select">
                 <label for="propriedades">Propriedade</label>
@@ -32,10 +33,10 @@
         <section class="analysis-section">
             <div class="analysis-card" style="margin-bottom: 24px;">
                 <div class="card-body">
-                    <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center;">
-                        <div style="flex: 1; min-width: 200px;">
-                            <label for="talhao-filtro" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 16px;">Filtrar por Talhão</label>
-                            <select id="talhao-filtro" style="width: 100%; padding: 12px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 16px; background: #fff; color: #351102;">
+                    <div class="analises-filter-container">
+                        <div class="analises-filter-wrapper">
+                            <label for="talhao-filtro" class="analises-filter-label">Filtrar por Talhão</label>
+                            <select id="talhao-filtro" class="analises-filter-select">
                                 <option value="">Todos os talhões</option>
                                 <% if (talhoes && talhoes.length > 0) { %>
                                     <% talhoes.forEach(tal => { %>
@@ -44,37 +45,35 @@
                                 <% } %>
                             </select>
                         </div>
-                        <div style="margin-top: 28px;">
-                            <button onclick="aplicarFiltro()" style="background: #65B741; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
-                                Filtrar
-                            </button>
-                        </div>
+                        <button onclick="aplicarFiltro()" class="analises-filter-button">
+                            Filtrar
+                        </button>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;">
-                        <div>
-                            <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 20px;">Gráfico de Deficiências</h3>
-                            <canvas id="chart-talhao" style="max-height: 350px;"></canvas>
+                    <div class="analises-chart-grid-large">
+                        <div class="analises-chart-container-large">
+                            <h3 class="analises-chart-title">Gráfico de Deficiências</h3>
+                            <canvas id="chart-talhao" class="analises-chart-canvas"></canvas>
                         </div>
                         <div>
-                            <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 20px;">Descrição das Deficiências</h3>
-                            <div style="background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 12px; padding: 24px;">
-                                <div style="margin-bottom: 24px;">
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                        <span style="display: inline-block; width: 24px; height: 24px; background-color: #D84A0F; border-radius: 4px;"></span>
-                                        <strong style="font-size: 18px; color: #351102;">Deficiência de Cobre</strong>
+                            <h3 class="analises-chart-title">Descrição das Deficiências</h3>
+                            <div class="analises-resumo-panel">
+                                <div class="analises-resumo-item">
+                                    <div class="analises-resumo-header">
+                                        <span class="analises-resumo-badge-large" style="background-color: #D84A0F;"></span>
+                                        <strong class="analises-resumo-label">Deficiência de Cobre</strong>
                                     </div>
-                                    <p style="margin: 0; color: #351102; font-size: 14px; line-height: 1.6; padding-left: 36px;">
+                                    <p class="analises-resumo-text-indented">
                                         Nas folhas de mexerica, a deficiência de cobre geralmente se manifesta como clorose intervenal (amarelecimento entre as nervuras), 
                                         folhas pequenas e deformadas, e em casos severos, pode causar morte de brotos e ramos novos.
                                     </p>
                                 </div>
-                                <div>
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                        <span style="display: inline-block; width: 24px; height: 24px; background-color: #FFB534; border-radius: 4px;"></span>
-                                        <strong style="font-size: 18px; color: #351102;">Deficiência de Manganês</strong>
+                                <div class="analises-resumo-item">
+                                    <div class="analises-resumo-header">
+                                        <span class="analises-resumo-badge-large" style="background-color: #FFB534;"></span>
+                                        <strong class="analises-resumo-label">Deficiência de Manganês</strong>
                                     </div>
-                                    <p style="margin: 0; color: #351102; font-size: 14px; line-height: 1.6; padding-left: 36px;">
+                                    <p class="analises-resumo-text-indented">
                                         A deficiência de manganês em folhas de mexerica aparece como clorose intervenal nas folhas mais novas, 
                                         com as nervuras permanecendo verdes. As folhas podem apresentar manchas necróticas e queda prematura.
                                     </p>
@@ -84,7 +83,7 @@
                     </div>
 
                     <div>
-                        <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 20px;">Pés com Deficiências</h3>
+                        <h3 class="analises-section-title">Pés com Deficiências</h3>
                         <div class="table-custom-wrapper">
                             <table class="table-custom">
                                 <thead>
@@ -101,15 +100,15 @@
                                             <td><%= pe.nome %></td>
                                             <td><%= pe.talhao %></td>
                                             <td class="text-center">
-                                                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                                <div class="analises-badges-container">
                                                     <% if (pe.deficiencia_cobre) { %>
-                                                        <span style="padding: 6px 12px; background: #D84A0F; color: white; border-radius: 6px; font-size: 12px; font-weight: 600;">Cobre</span>
+                                                        <span class="analises-badge analises-badge-cobre">Cobre</span>
                                                     <% } %>
                                                     <% if (pe.deficiencia_manganes) { %>
-                                                        <span style="padding: 6px 12px; background: #FFB534; color: #351102; border-radius: 6px; font-size: 12px; font-weight: 600;">Manganês</span>
+                                                        <span class="analises-badge analises-badge-manganes">Manganês</span>
                                                     <% } %>
                                                     <% if (pe.outros) { %>
-                                                        <span style="padding: 6px 12px; background: #ACACAC; color: white; border-radius: 6px; font-size: 12px; font-weight: 600;">Outros</span>
+                                                        <span class="analises-badge analises-badge-outros">Outros</span>
                                                     <% } %>
                                                 </div>
                                             </td>
@@ -134,123 +133,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const talhoesComparacao = <%- JSON.stringify(talhoesComparacao) %>;
-const maxTalhaoValor = <%- JSON.stringify(maxTalhaoValor || 0) %>;
-const propriedadeSelecionada = '<%= propriedadeSelecionada || "" %>';
-
-function aplicarFiltro() {
-    const talhaoFiltro = document.getElementById('talhao-filtro').value;
-    const url = new URL(window.location.href);
-    url.searchParams.set('propriedade', propriedadeSelecionada);
-    if (talhaoFiltro) {
-        url.searchParams.set('talhao', talhaoFiltro);
-    } else {
-        url.searchParams.delete('talhao');
-    }
-    window.location.href = url.toString();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('chart-talhao');
-    const possuiTalhoes = Array.isArray(talhoesComparacao) && talhoesComparacao.length > 0 && talhoesComparacao.some(item => item.cobre || item.manganes);
-    
-    if (canvas && possuiTalhoes) {
-        new Chart(canvas, {
-            type: 'bar',
-            data: {
-                labels: talhoesComparacao.map(item => item.nome),
-                datasets: [
-                    {
-                        label: 'Cobre',
-                        data: talhoesComparacao.map(item => item.cobre),
-                        backgroundColor: '#D84A0F',
-                        borderRadius: 6
-                    },
-                    {
-                        label: 'Manganês',
-                        data: talhoesComparacao.map(item => item.manganes),
-                        backgroundColor: '#FFB534',
-                        borderRadius: 6
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: 'rectRounded',
-                            padding: 16,
-                            color: '#351102',
-                            font: {
-                                size: 12,
-                                family: 'Roboto',
-                                weight: '600'
-                            }
-                        }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1.3,
-                scales: {
-                    x: {
-                        ticks: {
-                            color: '#351102',
-                            font: {
-                                family: 'Roboto',
-                                weight: '600',
-                                size: 11
-                            }
-                        },
-                        grid: { display: false }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        suggestedMax: maxTalhaoValor ? maxTalhaoValor + 2 : 5,
-                        ticks: {
-                            precision: 0,
-                            color: '#351102',
-                            font: {
-                                family: 'Roboto',
-                                weight: '600',
-                                size: 11
-                            }
-                        },
-                        grid: {
-                            color: '#F2D6A4'
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // Atualizar propriedade
-    const propriedadesSelect = document.getElementById('propriedades');
-    if (propriedadesSelect) {
-        propriedadesSelect.addEventListener('change', async (e) => {
-            const idPropriedade = e.target.value;
-            try {
-                const response = await fetch("/home", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id_propriedade: idPropriedade }),
-                });
-                if (response.ok) {
-                    window.location.href = `/analises/deficiencia-talhao?propriedade=${idPropriedade}`;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    }
-});
+    window.talhoesComparacao = <%- JSON.stringify(talhoesComparacao) %>;
+    window.maxTalhaoValor = <%- JSON.stringify(maxTalhaoValor || 0) %>;
+    window.propriedadeSelecionada = '<%= propriedadeSelecionada || "" %>';
+    window.aplicarFiltro = function() { aplicarFiltro('talhao'); };
 </script>
+<script src="/js/analises.js"></script>
 
 <%- include('../partials/footer.ejs') %>
-

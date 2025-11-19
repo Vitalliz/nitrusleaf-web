@@ -1,272 +1,65 @@
 <%- include ('partials/header.ejs') %>
 <%- include('partials/navbar-user.ejs') %>
-<main class="main-content">
-    <%- include ('partials/navbar-lateral.ejs') %>  
-    <div class="container cont">     
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-between mt-2" id="hist">
-                <h2 class="align-self-end m-0 p-0 fonte titulo1">Mapas</h2>
-                <div id="options-container">
-                    <select id="propriedades" class="options">
-                        <% Propriedades.forEach(prop => {%>
-                            <option value="<%= prop.id_propriedade%>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome%></option>
-                        <%})%>
-                    </select>
-                    <img src="/imgs/seta-prop.svg" alt="Seta" class="menu-arrowp" id="setajs"/>
+<main class="main-content home-dashboard">
+    <%- include ('partials/navbar-lateral.ejs') %>
+    <section class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Mapa</h1>
+            <div class="property-select">
+                <label for="propriedades">Propriedade</label>
+                <div class="select-wrapper">
+                    <% if (Propriedades && Propriedades.length > 0) { %>
+                        <select id="propriedades" class="property-dropdown">
+                            <% Propriedades.forEach(prop => { %>
+                                <option value="<%= prop.id_propriedade %>" <%= propriedadeSelecionada == prop.id_propriedade ? 'selected' : '' %>><%= prop.nome %></option>
+                            <% }) %>
+                        </select>
+                    <% } else { %>
+                        <select id="propriedades" class="property-dropdown" disabled>
+                            <option>Nenhuma propriedade cadastrada</option>
+                        </select>
+                    <% } %>
                 </div>
             </div>
-            <img src="/imgs/linha.png" alt="" id="voltar-linha" class="p-0 mt-0" />
-        </div>
-        
-        <div class="container pt-3">
-            <div class="map-container-wrapper" style="background: #FAF0D7; border-radius: 14px; padding: 24px; margin-bottom: 24px;">
-                <div class="custom-menu" tabindex="0" style="margin-bottom: 20px;">
-                    <div class="menu-header">
-                        <span class="menu-selected">Mapa Imagem de Satélite</span>
-                        <img src="/imgs/arrow-down.svg" alt="Seta" class="menu-arrow" />
-                    </div>
-                    <ul class="menu-options">
-                        <li class="menu-option" data-value="satellite">Mapa Imagem de Satélite</li>
-                        <li class="menu-option" data-value="roadmap">Mapa Localização Pés (Apex)</li>
-                        <li class="menu-option" data-value="heatmap">Mapa de Calor (Apex)</li>
-                        <li class="menu-option" data-value="ndvi">Mapa Infravermelho (NDVI)</li>
-                    </ul>
-                </div>
-                
-                <div class="map-and-info-container">
-                    <div class="map-wrapper" style="background: white; border-radius: 14px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <div id="map" style="width: 100%; height: 600px; border-radius: 12px; border: 2px solid #F2C48D;"></div>
-                        <div id="info-box" class="map-info-box" style="display: none;">
-                            <div class="info-box-header">
-                                <strong id="info-box-title"></strong>
-                            </div>
-                            <div class="info-box-body">
-                                <div id="info-box-address"></div>
-                                <div class="info-box-actions">
-                                    <a href="#" id="info-box-link" target="_blank">Ver mapa ampliado</a>
-                                    <button id="info-box-routes" class="btn-routes">Rotas</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="property-info-panel" class="property-info-panel" style="display: none;">
-                        <div class="panel-header">
-                            <h3 id="panel-title">Mapa de Satélite</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="info-item">
-                                <label>Região:</label>
-                                <span id="panel-regiao">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Endereço:</label>
-                                <span id="panel-endereco">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label>CEP:</label>
-                                <span id="panel-cep">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Data:</label>
-                                <select id="panel-data" class="date-selector">
-                                    <option>25 de Maio de 2024 (25/05/2024)</option>
-                                </select>
-                            </div>
-                            <button id="panel-expand" class="btn-expand">
-                                <span>Expandir</span>
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6 2L2 6M2 6L6 10M2 6H14M10 14L14 10M14 10L10 6M14 10H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+        </header>
+
+        <section class="analysis-section">
+            <div class="analysis-card" style="margin-bottom: 24px; padding: 0;">
+                <div class="card-body" style="padding: 0;">
+                    <div id="map" style="width: 100%; height: 600px; border-radius: 12px;"></div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="analysis-card analysis-card-custom">
+                <header class="card-header card-header-custom">
+                    <div class="card-header-custom-top">
+                        <h3>Marcadores no Mapa</h3>
+                    </div>
+                    <div class="card-header-divider"></div>
+                </header>
+                <div class="card-body card-body-custom">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Nome</th>
+                                <th>Localização</th>
+                                <th style="width: 100px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="marcadores-table">
+                            <!-- Será preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </section>
 </main>
-
-<style>
-.map-container-wrapper {
-    margin-top: 20px;
-    background: #FAF0D7;
-    border-radius: 14px;
-    padding: 24px;
-}
-
-.map-container-wrapper .custom-menu .menu-header {
-    background-color: white;
-    border: 2px solid #F2C48D;
-    border-radius: 12px;
-}
-
-.map-container-wrapper .custom-menu.open .menu-header {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom: none;
-}
-
-.map-container-wrapper .custom-menu .menu-options {
-    background-color: white;
-    border: 2px solid #F2C48D;
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-}
-
-.map-and-info-container {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.map-wrapper {
-    flex: 1;
-    position: relative;
-}
-
-.map-info-box {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    z-index: 1000;
-    max-width: 300px;
-}
-
-.info-box-header {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #351102;
-}
-
-.info-box-body {
-    font-size: 14px;
-    color: #666;
-}
-
-.info-box-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.info-box-actions a {
-    color: #0284E1;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.info-box-actions a:hover {
-    text-decoration: underline;
-}
-
-.btn-routes {
-    background: #65B741;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.property-info-panel {
-    width: 350px;
-    background: white;
-    border-radius: 14px;
-    border: 2px solid #F2C48D;
-    padding: 24px;
-    height: fit-content;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.panel-header h3 {
-    margin: 0 0 20px 0;
-    font-size: 20px;
-    font-weight: 700;
-    color: #351102;
-}
-
-.panel-body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.info-item label {
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-}
-
-.info-item span {
-    font-size: 15px;
-    color: #351102;
-    font-weight: 600;
-}
-
-.date-selector {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #351102;
-}
-
-.btn-expand {
-    margin-top: 10px;
-    background: #65B741;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    align-self: flex-end;
-}
-
-.btn-expand:hover {
-    background: #5aa338;
-}
-
-@media (max-width: 1024px) {
-    .map-and-info-container {
-        flex-direction: column;
-    }
-    
-    .property-info-panel {
-        width: 100%;
-    }
-}
-</style>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<!-- Plugin para desenho de polígonos/edição -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
-<script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     // Dados do servidor
@@ -275,6 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const alqueires = <%- alqueires %>;
     const talhoes = <%- talhoes %>;
     const pes = <%- pes %>;
+    
+    // Armazenar todos os marcadores para controle
+    const marcadores = new Map();
+    const marcadoresData = [];
     
     // Determinar centro inicial do mapa
     let mapCenter = [-24.7150037, -47.9281331];
@@ -288,16 +85,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ===== 1. Inicializa mapa =====
+    // Inicializa mapa
     const map = L.map('map').setView(mapCenter, mapZoom);
 
-    // ===== 2. Adiciona layer Satelite da ESRI (grátis) =====
+    // Adiciona layer Satelite da ESRI
     const satelite = L.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         { attribution: 'Tiles © Esri' }
     );
 
-    // ===== 3. Adiciona layer OpenStreetMap (mapa comum) =====
+    // Adiciona layer OpenStreetMap
     const osm = L.tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         { attribution: '© OpenStreetMap' }
@@ -311,8 +108,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "Mapa": osm
     }).addTo(map);
 
-    // ===== 4. Adicionar marcadores e polígonos dos cadastrados =====
-    
     // Ícones personalizados
     const propriedadeIcon = L.icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -353,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Função para adicionar propriedades
     propriedades.forEach(prop => {
         if (prop.latitude && prop.longitude) {
-            L.marker([parseFloat(prop.latitude), parseFloat(prop.longitude)], { icon: propriedadeIcon })
+            const marker = L.marker([parseFloat(prop.latitude), parseFloat(prop.longitude)], { icon: propriedadeIcon })
                 .addTo(map)
                 .bindPopup(`
                     <strong>Propriedade: ${prop.nome}</strong><br>
@@ -361,18 +156,40 @@ document.addEventListener("DOMContentLoaded", function () {
                     ${prop.bairro} - ${prop.cidade}<br>
                     CEP: ${prop.cep}
                 `);
+            
+            const key = `prop_${prop.id_propriedade}`;
+            marcadores.set(key, marker);
+            marcadoresData.push({
+                key: key,
+                tipo: 'Propriedade',
+                nome: prop.nome,
+                lat: parseFloat(prop.latitude),
+                lng: parseFloat(prop.longitude),
+                marker: marker
+            });
         }
     });
 
     // Função para adicionar alqueires
     alqueires.forEach(alq => {
         if (alq.latitude && alq.longitude) {
-            L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], { icon: alqueireIcon })
+            const marker = L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], { icon: alqueireIcon })
                 .addTo(map)
                 .bindPopup(`
                     <strong>Alqueire: ${alq.nome}</strong><br>
                     Área: ${alq.area_total || '-'} ha
                 `);
+            
+            const key = `alq_${alq.id_alqueire}`;
+            marcadores.set(key, marker);
+            marcadoresData.push({
+                key: key,
+                tipo: 'Alqueire',
+                nome: alq.nome,
+                lat: parseFloat(alq.latitude),
+                lng: parseFloat(alq.longitude),
+                marker: marker
+            });
         }
         
         // Adicionar polígono se existir
@@ -381,13 +198,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 const coords = JSON.parse(alq.coordenadas_poligono);
                 if (Array.isArray(coords) && coords.length > 0) {
                     const latlngs = coords.map(c => [c.lat, c.lng]);
-                    L.polygon(latlngs, {
+                    const polygon = L.polygon(latlngs, {
                         color: '#0284E1',
                         fillColor: '#0284E1',
                         fillOpacity: 0.3,
                         weight: 2
                     }).addTo(map)
                     .bindPopup(`<strong>Alqueire: ${alq.nome}</strong><br>Área: ${alq.area_total || '-'} ha`);
+                    
+                    // Adicionar polígono aos marcadores para controle
+                    const key = `alq_poly_${alq.id_alqueire}`;
+                    marcadores.set(key, polygon);
                 }
             } catch (e) {
                 console.error('Erro ao parsear coordenadas do alqueire:', e);
@@ -398,12 +219,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // Função para adicionar talhões
     talhoes.forEach(tal => {
         if (tal.latitude && tal.longitude) {
-            L.marker([parseFloat(tal.latitude), parseFloat(tal.longitude)], { icon: talhaoIcon })
+            const marker = L.marker([parseFloat(tal.latitude), parseFloat(tal.longitude)], { icon: talhaoIcon })
                 .addTo(map)
                 .bindPopup(`
                     <strong>Talhão: ${tal.nome}</strong><br>
                     Espécie: ${tal.especie_fruta || '-'}
                 `);
+            
+            const key = `tal_${tal.id_talhao}`;
+            marcadores.set(key, marker);
+            marcadoresData.push({
+                key: key,
+                tipo: 'Talhão',
+                nome: tal.nome,
+                lat: parseFloat(tal.latitude),
+                lng: parseFloat(tal.longitude),
+                marker: marker
+            });
         }
         
         // Adicionar polígono se existir
@@ -412,13 +244,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 const coords = JSON.parse(tal.coordenadas_poligono);
                 if (Array.isArray(coords) && coords.length > 0) {
                     const latlngs = coords.map(c => [c.lat, c.lng]);
-                    L.polygon(latlngs, {
+                    const polygon = L.polygon(latlngs, {
                         color: '#65B741',
                         fillColor: '#65B741',
                         fillOpacity: 0.3,
                         weight: 2
                     }).addTo(map)
                     .bindPopup(`<strong>Talhão: ${tal.nome}</strong><br>Espécie: ${tal.especie_fruta || '-'}`);
+                    
+                    // Adicionar polígono aos marcadores para controle
+                    const key = `tal_poly_${tal.id_talhao}`;
+                    marcadores.set(key, polygon);
                 }
             } catch (e) {
                 console.error('Erro ao parsear coordenadas do talhão:', e);
@@ -442,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (pe.outros) deficiencias.push('Outros');
             const deficienciasTexto = deficiencias.length > 0 ? deficiencias.join(', ') : 'Nenhuma';
             
-            L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
+            const marker = L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
                 .addTo(map)
                 .bindPopup(`
                     <strong>Pé: ${pe.nome}</strong><br>
@@ -450,14 +286,117 @@ document.addEventListener("DOMContentLoaded", function () {
                     <strong>Deficiências:</strong> ${deficienciasTexto}<br>
                     ${pe.observacoes ? `<strong>Obs:</strong> ${pe.observacoes}` : ''}
                 `);
+            
+            const key = `pe_${pe.id_pe}`;
+            marcadores.set(key, marker);
+            marcadoresData.push({
+                key: key,
+                tipo: 'Pé',
+                nome: pe.nome,
+                lat: parseFloat(pe.latitude),
+                lng: parseFloat(pe.longitude),
+                marker: marker,
+                situacao: situacaoTexto,
+                deficiencias: deficienciasTexto
+            });
         }
     });
+
+    // Função para atualizar tabela de marcadores
+    function atualizarTabelaMarcadores() {
+        const tbody = document.getElementById('marcadores-table');
+        tbody.innerHTML = '';
+        
+        if (marcadoresData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-state-custom"><p>Nenhum marcador encontrado</p></td></tr>';
+            return;
+        }
+        
+        marcadoresData.forEach(item => {
+            const row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+            row.onmouseover = () => row.style.backgroundColor = '#FAF0D7';
+            row.onmouseout = () => row.style.backgroundColor = '';
+            
+            const tipoBadge = item.tipo === 'Propriedade' ? '#D84A0F' : 
+                             item.tipo === 'Alqueire' ? '#0284E1' : 
+                             item.tipo === 'Talhão' ? '#65B741' : '#FFB534';
+            
+            row.innerHTML = `
+                <td>
+                    <span style="display: inline-block; width: 12px; height: 12px; background-color: ${tipoBadge}; border-radius: 50%; margin-right: 8px;"></span>
+                    ${item.tipo}
+                </td>
+                <td>${item.nome}</td>
+                <td>${item.lat.toFixed(6)}, ${item.lng.toFixed(6)}</td>
+                <td class="text-center">
+                    <button onclick="mostrarNoMapa('${item.key}')" style="background: #65B741; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                        Ver no Mapa
+                    </button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+    }
+
+    // Função para mostrar marcador no mapa com zoom
+    window.mostrarNoMapa = function(key) {
+        const item = marcadoresData.find(m => m.key === key);
+        if (item && item.marker) {
+            // Fazer scroll para o topo do mapa
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            // Pequeno delay para garantir que o scroll aconteceu
+            setTimeout(() => {
+                map.setView([item.lat, item.lng], 18);
+                item.marker.openPopup();
+                
+                // Destacar o marcador
+                if (item.marker.setIcon) {
+                    const originalIcon = item.marker.options.icon;
+                    const highlightIcon = L.icon({
+                        iconUrl: originalIcon.options.iconUrl,
+                        shadowUrl: originalIcon.options.shadowUrl,
+                        iconSize: [35, 50],
+                        iconAnchor: [17, 50],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    item.marker.setIcon(highlightIcon);
+                    
+                    setTimeout(() => {
+                        item.marker.setIcon(originalIcon);
+                    }, 2000);
+                }
+            }, 300);
+        }
+    };
+
+    // Inicializar tabela
+    atualizarTabelaMarcadores();
 
     // Atualizar mapa quando propriedade for alterada
     const propriedadesSelect = document.getElementById('propriedades');
     if (propriedadesSelect) {
         propriedadesSelect.addEventListener('change', async function() {
             const idPropriedade = this.value;
+            
+            // Atualizar sessão
+            try {
+                await fetch('/mapa/selecionar-propriedade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id_propriedade: idPropriedade })
+                });
+            } catch (error) {
+                console.error('Erro ao atualizar sessão:', error);
+            }
             
             try {
                 const response = await fetch('/mapa/dados-propriedade/' + idPropriedade, {
@@ -470,48 +409,78 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Limpar mapa
+                    // Limpar mapa e dados
                     map.eachLayer(function(layer) {
                         if (layer instanceof L.Marker || layer instanceof L.Polygon) {
                             map.removeLayer(layer);
                         }
                     });
                     
+                    marcadores.clear();
+                    marcadoresData.length = 0;
+                    
                     // Adicionar nova propriedade
                     if (data.propriedade && data.propriedade.latitude && data.propriedade.longitude) {
                         map.setView([parseFloat(data.propriedade.latitude), parseFloat(data.propriedade.longitude)], 15);
                         
-                        L.marker([parseFloat(data.propriedade.latitude), parseFloat(data.propriedade.longitude)], { icon: propriedadeIcon })
+                        const marker = L.marker([parseFloat(data.propriedade.latitude), parseFloat(data.propriedade.longitude)], { icon: propriedadeIcon })
                             .addTo(map)
                             .bindPopup(`
                                 <strong>Propriedade: ${data.propriedade.nome}</strong><br>
                                 ${data.propriedade.logradouro}, ${data.propriedade.numero}<br>
                                 ${data.propriedade.bairro} - ${data.propriedade.cidade}
                             `);
+                        
+                        const key = `prop_${data.propriedade.id_propriedade}`;
+                        marcadores.set(key, marker);
+                        marcadoresData.push({
+                            key: key,
+                            tipo: 'Propriedade',
+                            nome: data.propriedade.nome,
+                            lat: parseFloat(data.propriedade.latitude),
+                            lng: parseFloat(data.propriedade.longitude),
+                            marker: marker
+                        });
                     }
                     
                     // Adicionar alqueires
                     data.alqueires.forEach(alq => {
                         if (alq.latitude && alq.longitude) {
-                            L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], { icon: alqueireIcon })
+                            const marker = L.marker([parseFloat(alq.latitude), parseFloat(alq.longitude)], { icon: alqueireIcon })
                                 .addTo(map)
                                 .bindPopup(`<strong>Alqueire: ${alq.nome}</strong>`);
+                            
+                            const key = `alq_${alq.id_alqueire}`;
+                            marcadores.set(key, marker);
+                            marcadoresData.push({
+                                key: key,
+                                tipo: 'Alqueire',
+                                nome: alq.nome,
+                                lat: parseFloat(alq.latitude),
+                                lng: parseFloat(alq.longitude),
+                                marker: marker
+                            });
                         }
+                        
+                        // Adicionar polígono se existir
                         if (alq.coordenadas_poligono) {
                             try {
                                 const coords = JSON.parse(alq.coordenadas_poligono);
                                 if (Array.isArray(coords) && coords.length > 0) {
                                     const latlngs = coords.map(c => [c.lat, c.lng]);
-                                    L.polygon(latlngs, {
+                                    const polygon = L.polygon(latlngs, {
                                         color: '#0284E1',
                                         fillColor: '#0284E1',
                                         fillOpacity: 0.3,
                                         weight: 2
                                     }).addTo(map)
-                                    .bindPopup(`<strong>Alqueire: ${alq.nome}</strong>`);
+                                    .bindPopup(`<strong>Alqueire: ${alq.nome}</strong><br>Área: ${alq.area_total || '-'} ha`);
+                                    
+                                    const key = `alq_poly_${alq.id_alqueire}`;
+                                    marcadores.set(key, polygon);
                                 }
                             } catch (e) {
-                                console.error('Erro ao parsear coordenadas:', e);
+                                console.error('Erro ao parsear coordenadas do alqueire:', e);
                             }
                         }
                     });
@@ -519,25 +488,41 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Adicionar talhões
                     data.talhoes.forEach(tal => {
                         if (tal.latitude && tal.longitude) {
-                            L.marker([parseFloat(tal.latitude), parseFloat(tal.longitude)], { icon: talhaoIcon })
+                            const marker = L.marker([parseFloat(tal.latitude), parseFloat(tal.longitude)], { icon: talhaoIcon })
                                 .addTo(map)
                                 .bindPopup(`<strong>Talhão: ${tal.nome}</strong>`);
+                            
+                            const key = `tal_${tal.id_talhao}`;
+                            marcadores.set(key, marker);
+                            marcadoresData.push({
+                                key: key,
+                                tipo: 'Talhão',
+                                nome: tal.nome,
+                                lat: parseFloat(tal.latitude),
+                                lng: parseFloat(tal.longitude),
+                                marker: marker
+                            });
                         }
+                        
+                        // Adicionar polígono se existir
                         if (tal.coordenadas_poligono) {
                             try {
                                 const coords = JSON.parse(tal.coordenadas_poligono);
                                 if (Array.isArray(coords) && coords.length > 0) {
                                     const latlngs = coords.map(c => [c.lat, c.lng]);
-                                    L.polygon(latlngs, {
+                                    const polygon = L.polygon(latlngs, {
                                         color: '#65B741',
                                         fillColor: '#65B741',
                                         fillOpacity: 0.3,
                                         weight: 2
                                     }).addTo(map)
-                                    .bindPopup(`<strong>Talhão: ${tal.nome}</strong>`);
+                                    .bindPopup(`<strong>Talhão: ${tal.nome}</strong><br>Espécie: ${tal.especie_fruta || '-'}`);
+                                    
+                                    const key = `tal_poly_${tal.id_talhao}`;
+                                    marcadores.set(key, polygon);
                                 }
                             } catch (e) {
-                                console.error('Erro ao parsear coordenadas:', e);
+                                console.error('Erro ao parsear coordenadas do talhão:', e);
                             }
                         }
                     });
@@ -558,7 +543,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             if (pe.outros) deficiencias.push('Outros');
                             const deficienciasTexto = deficiencias.length > 0 ? deficiencias.join(', ') : 'Nenhuma';
                             
-                            L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
+                            const marker = L.marker([parseFloat(pe.latitude), parseFloat(pe.longitude)], { icon: peIcon })
                                 .addTo(map)
                                 .bindPopup(`
                                     <strong>Pé: ${pe.nome}</strong><br>
@@ -566,15 +551,29 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <strong>Deficiências:</strong> ${deficienciasTexto}<br>
                                     ${pe.observacoes ? `<strong>Obs:</strong> ${pe.observacoes}` : ''}
                                 `);
+                            
+                            const key = `pe_${pe.id_pe}`;
+                            marcadores.set(key, marker);
+                            marcadoresData.push({
+                                key: key,
+                                tipo: 'Pé',
+                                nome: pe.nome,
+                                lat: parseFloat(pe.latitude),
+                                lng: parseFloat(pe.longitude),
+                                marker: marker,
+                                situacao: situacaoTexto,
+                                deficiencias: deficienciasTexto
+                            });
                         }
                     });
+                    
+                    atualizarTabelaMarcadores();
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados da propriedade:', error);
             }
         });
     }
-
 });
 </script>
 

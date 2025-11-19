@@ -334,3 +334,8 @@
     color: #351102;
 }
 
+.card-action {
+    text-decoration: none;
+    display: inline-block;
+}
+

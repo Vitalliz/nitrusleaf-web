@@ -1,15 +1,16 @@
 <%- include('../partials/header.ejs') %>
 <%- include('../partials/navbar-user.ejs') %>
+<link rel="stylesheet" href="/css/analises.css">
 <main class="main-content home-dashboard">
     <%- include('../partials/navbar-lateral.ejs') %>
     <section class="dashboard-container">
         <header class="dashboard-header">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="/home" style="text-decoration: none; display: inline-flex; align-items: center; background: #65B741; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 16px; gap: 8px;">
-                    <img src="/imgs/back.svg" alt="Voltar" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+            <div class="analises-header">
+                <a href="/home" class="analises-back-button">
+                    <img src="/imgs/back.svg" alt="Voltar">
                     Voltar
                 </a>
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #351102;">Ocorrências Totais de Deficiências</h1>
+                <h1 class="analises-title">Ocorrências Totais de Deficiências</h1>
             </div>
             <div class="property-select">
                 <label for="propriedades">Propriedade</label>
@@ -32,102 +33,108 @@
         <section class="analysis-section">
             <div class="analysis-card" style="margin-bottom: 24px;">
                 <div class="card-body">
-                    <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center;">
-                        <div style="flex: 1; min-width: 200px;">
-                            <label for="talhao-filtro" style="display: block; margin-bottom: 8px; font-weight: 600; color: #351102; font-size: 16px;">Filtrar por Talhão</label>
-                            <select id="talhao-filtro" style="width: 100%; padding: 12px; border: 2px solid #F2C48D; border-radius: 12px; font-size: 16px; background: #fff; color: #351102;">
-                                <option value="">Todos os talhões</option>
-                                <% if (talhoes && talhoes.length > 0) { %>
-                                    <% talhoes.forEach(tal => { %>
-                                        <option value="<%= tal.id_talhao %>" <%= talhaoFiltro == tal.id_talhao ? 'selected' : '' %>><%= tal.nome %></option>
+                    <div class="analises-filter-container">
+                        <div class="analises-filter-wrapper">
+                            <label for="alqueire-filtro" class="analises-filter-label">Filtrar por Alqueire</label>
+                            <select id="alqueire-filtro" class="analises-filter-select">
+                                <option value="">Todos os alqueires</option>
+                                <% if (alqueires && alqueires.length > 0) { %>
+                                    <% alqueires.forEach(alq => { %>
+                                        <option value="<%= alq.id_alqueire %>" <%= alqueireFiltro == alq.id_alqueire ? 'selected' : '' %>><%= alq.nome %></option>
                                     <% }) %>
                                 <% } %>
                             </select>
                         </div>
-                        <div style="margin-top: 28px;">
-                            <button onclick="aplicarFiltro()" style="background: #65B741; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
-                                Filtrar
-                            </button>
-                        </div>
+                        <button onclick="aplicarFiltro()" class="analises-filter-button">
+                            Filtrar
+                        </button>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
-                        <div>
-                            <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 20px;">Gráfico de Ocorrências</h3>
-                            <canvas id="chart-ocorrencias" style="max-height: 300px;"></canvas>
+                    <div class="analises-chart-grid">
+                        <div class="analises-chart-container">
+                            <h3 class="analises-chart-title">Gráfico de Ocorrências</h3>
+                            <canvas id="chart-ocorrencias" class="analises-chart-canvas"></canvas>
                         </div>
                         <div>
-                            <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 20px;">Resumo</h3>
-                            <div style="background: #FAF0D7; border: 2px solid #F2C48D; border-radius: 12px; padding: 24px;">
-                                <div style="margin-bottom: 16px;">
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                        <span style="display: inline-block; width: 20px; height: 20px; background-color: #D84A0F; border-radius: 50%;"></span>
-                                        <strong style="font-size: 18px; color: #351102;">Cobre: <%= resumoDeficiencias.percentuais.cobre %>%</strong>
+                            <h3 class="analises-chart-title">Resumo</h3>
+                            <div class="analises-resumo-panel">
+                                <div class="analises-resumo-item">
+                                    <div class="analises-resumo-header">
+                                        <span class="analises-resumo-badge" style="background-color: #D84A0F;"></span>
+                                        <strong class="analises-resumo-label">Cobre: <%= resumoDeficiencias.percentuais.cobre %>%</strong>
                                     </div>
-                                    <p style="margin: 0; color: #351102; font-size: 14px; margin-left: 32px;"><%= resumoDeficiencias.totais.cobre %> ocorrência(s)</p>
+                                    <p class="analises-resumo-text"><%= resumoDeficiencias.totais.cobre %> ocorrência(s)</p>
                                 </div>
-                                <div style="margin-bottom: 16px;">
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                        <span style="display: inline-block; width: 20px; height: 20px; background-color: #FFB534; border-radius: 50%;"></span>
-                                        <strong style="font-size: 18px; color: #351102;">Manganês: <%= resumoDeficiencias.percentuais.manganes %>%</strong>
+                                <div class="analises-resumo-item">
+                                    <div class="analises-resumo-header">
+                                        <span class="analises-resumo-badge" style="background-color: #FFB534;"></span>
+                                        <strong class="analises-resumo-label">Manganês: <%= resumoDeficiencias.percentuais.manganes %>%</strong>
                                     </div>
-                                    <p style="margin: 0; color: #351102; font-size: 14px; margin-left: 32px;"><%= resumoDeficiencias.totais.manganes %> ocorrência(s)</p>
+                                    <p class="analises-resumo-text"><%= resumoDeficiencias.totais.manganes %> ocorrência(s)</p>
                                 </div>
-                                <div>
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                        <span style="display: inline-block; width: 20px; height: 20px; background-color: #ACACAC; border-radius: 50%;"></span>
-                                        <strong style="font-size: 18px; color: #351102;">Adversos: <%= resumoDeficiencias.percentuais.outros %>%</strong>
+                                <div class="analises-resumo-item">
+                                    <div class="analises-resumo-header">
+                                        <span class="analises-resumo-badge" style="background-color: #ACACAC;"></span>
+                                        <strong class="analises-resumo-label">Adversos: <%= resumoDeficiencias.percentuais.outros %>%</strong>
                                     </div>
-                                    <p style="margin: 0; color: #351102; font-size: 14px; margin-left: 32px;"><%= resumoDeficiencias.totais.outros %> ocorrência(s)</p>
+                                    <p class="analises-resumo-text"><%= resumoDeficiencias.totais.outros %> ocorrência(s)</p>
                                 </div>
-                                <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #F2C48D;">
-                                    <p style="margin: 0; font-size: 16px; color: #351102;"><strong>Total: <%= resumoDeficiencias.total %> ocorrência(s)</strong></p>
+                                <div class="analises-resumo-divider">
+                                    <p class="analises-resumo-total">Total: <%= resumoDeficiencias.total %> ocorrência(s)</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <h3 style="font-size: 20px; font-weight: 700; color: #351102; margin-bottom: 20px;">Análises Recentes</h3>
+                        <h3 class="analises-section-title">Talhões e Ocorrências</h3>
                         <div class="table-custom-wrapper">
                             <table class="table-custom">
                                 <thead>
                                     <tr>
-                                        <th>Data da Análise</th>
-                                        <th>Pé</th>
                                         <th>Talhão</th>
-                                        <th class="text-center">Deficiências</th>
+                                        <th class="text-center">Total de Pés</th>
+                                        <th class="text-center">Ocorrências</th>
+                                        <th class="text-center">Última Análise</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (analises && analises.length > 0) { %>
-                                        <% analises.forEach(analise => { %>
+                                    <% if (talhoesComDados && talhoesComDados.length > 0) { %>
+                                        <% talhoesComDados.forEach(talhao => { %>
                                         <tr>
-                                            <td><%= new Date(analise.data_analise).toLocaleDateString('pt-BR') %></td>
-                                            <td><%= analise.pe ? analise.pe.nome : 'N/A' %></td>
-                                            <td><%= analise.pe && analise.pe.talhao ? analise.pe.talhao.nome : 'N/A' %></td>
+                                            <td><strong><%= talhao.nome %></strong></td>
+                                            <td class="text-center"><%= talhao.total_pes %></td>
                                             <td class="text-center">
-                                                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-                                                    <% if (analise.deficiencia_cobre) { %>
-                                                        <span style="padding: 6px 12px; background: #D84A0F; color: white; border-radius: 6px; font-size: 12px; font-weight: 600;">Cobre</span>
+                                                <div class="analises-badges-container">
+                                                    <% if (talhao.ocorrencias.cobre > 0) { %>
+                                                        <span class="analises-badge analises-badge-cobre">
+                                                            Cobre: <%= talhao.ocorrencias.cobre %>
+                                                        </span>
                                                     <% } %>
-                                                    <% if (analise.deficiencia_manganes) { %>
-                                                        <span style="padding: 6px 12px; background: #FFB534; color: #351102; border-radius: 6px; font-size: 12px; font-weight: 600;">Manganês</span>
+                                                    <% if (talhao.ocorrencias.manganes > 0) { %>
+                                                        <span class="analises-badge analises-badge-manganes">
+                                                            Manganês: <%= talhao.ocorrencias.manganes %>
+                                                        </span>
                                                     <% } %>
-                                                    <% if (analise.outros) { %>
-                                                        <span style="padding: 6px 12px; background: #ACACAC; color: white; border-radius: 6px; font-size: 12px; font-weight: 600;">Outros</span>
+                                                    <% if (talhao.ocorrencias.outros > 0) { %>
+                                                        <span class="analises-badge analises-badge-outros">
+                                                            Outros: <%= talhao.ocorrencias.outros %>
+                                                        </span>
                                                     <% } %>
-                                                    <% if (!analise.deficiencia_cobre && !analise.deficiencia_manganes && !analise.outros) { %>
-                                                        <span style="padding: 6px 12px; background: #f0f0f0; color: #666; border-radius: 6px; font-size: 12px;">Nenhuma</span>
+                                                    <% if (talhao.ocorrencias.total === 0) { %>
+                                                        <span class="analises-badge analises-badge-none">Nenhuma</span>
                                                     <% } %>
                                                 </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <%= talhao.ultima_analise ? new Date(talhao.ultima_analise).toLocaleDateString('pt-BR') : 'N/A' %>
                                             </td>
                                         </tr>
                                         <% }) %>
                                     <% } else { %>
                                         <tr>
                                             <td colspan="4" class="empty-state-custom">
-                                                <p>Nenhuma análise encontrada</p>
+                                                <p>Nenhum talhão encontrado</p>
                                             </td>
                                         </tr>
                                     <% } %>
@@ -143,81 +150,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const resumoDeficiencias = <%- JSON.stringify(resumoDeficiencias) %>;
-const propriedadeSelecionada = '<%= propriedadeSelecionada || "" %>';
-
-function aplicarFiltro() {
-    const talhaoFiltro = document.getElementById('talhao-filtro').value;
-    const url = new URL(window.location.href);
-    url.searchParams.set('propriedade', propriedadeSelecionada);
-    if (talhaoFiltro) {
-        url.searchParams.set('talhao', talhaoFiltro);
-    } else {
-        url.searchParams.delete('talhao');
-    }
-    window.location.href = url.toString();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('chart-ocorrencias');
-    if (canvas && resumoDeficiencias && resumoDeficiencias.total > 0) {
-        new Chart(canvas, {
-            type: 'doughnut',
-            data: {
-                labels: ['Cobre', 'Manganês', 'Adversos'],
-                datasets: [{
-                    data: [resumoDeficiencias.totais.cobre, resumoDeficiencias.totais.manganes, resumoDeficiencias.totais.outros],
-                    backgroundColor: ['#D84A0F', '#FFB534', '#ACACAC'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 16,
-                            color: '#351102',
-                            font: {
-                                size: 14,
-                                weight: '600'
-                            }
-                        }
-                    }
-                },
-                cutout: '60%',
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1.2
-            }
-        });
-    }
-
-    // Atualizar propriedade
-    const propriedadesSelect = document.getElementById('propriedades');
-    if (propriedadesSelect) {
-        propriedadesSelect.addEventListener('change', async (e) => {
-            const idPropriedade = e.target.value;
-            try {
-                const response = await fetch("/home", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id_propriedade: idPropriedade }),
-                });
-                if (response.ok) {
-                    window.location.href = `/analises/ocorrencias?propriedade=${idPropriedade}`;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    }
-});
+    window.resumoDeficiencias = <%- JSON.stringify(resumoDeficiencias) %>;
+    window.propriedadeSelecionada = '<%= propriedadeSelecionada || "" %>';
+    window.aplicarFiltro = function() { aplicarFiltro('alqueire'); };
 </script>
+<script src="/js/analises.js"></script>
 
 <%- include('../partials/footer.ejs') %>
-
