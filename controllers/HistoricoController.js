@@ -4,7 +4,6 @@ import Talhoes from "../models/Talhoes.js";
 import Alqueires from "../models/Alqueires.js";
 import Pes from "../models/Pes.js";
 import Auth from "../middleware/Auth.js";
-import { Op } from "sequelize";
 
 const router = express.Router();
 
@@ -25,7 +24,7 @@ router.get("/historico", Auth, async (req, res) => {
             req.session.propriedadeSelecionada = propriedadeSelecionada;
         }
 
-        // Resumo da propriedade - calcula dados reais dos pés
+        // Resumo da propriedade
         let resumo = {
             talhoes_registrados: 0,
             total_pes: 0,
@@ -34,44 +33,12 @@ router.get("/historico", Auth, async (req, res) => {
         };
 
         if (propriedadeSelecionada) {
-            // Conta talhões registrados
-            const talhoesCount = await Talhoes.count({
-                where: { id_propriedade: propriedadeSelecionada }
-            });
-            resumo.talhoes_registrados = talhoesCount;
-
-            // Busca todos os talhões da propriedade para contar os pés
-            const talhoes = await Talhoes.findAll({
-                where: { id_propriedade: propriedadeSelecionada },
-                attributes: ['id_talhao']
-            });
-
-            const talhoesIds = talhoes.map(t => t.id_talhao);
-
-            if (talhoesIds.length > 0) {
-                // Conta total de pés
-                const totalPes = await Pes.count({
-                    where: { id_talhao: { [Op.in]: talhoesIds } }
-                });
-                resumo.total_pes = totalPes;
-
-                // Conta pés analisados (Tratado + Não-Tratado)
-                const pesAnalisados = await Pes.count({
-                    where: {
-                        id_talhao: { [Op.in]: talhoesIds },
-                        situacao: { [Op.in]: ['Tratado', 'Não-Tratado'] }
-                    }
-                });
-                resumo.pes_analisados = pesAnalisados;
-
-                // Conta pés diagnosticados (apenas Tratado)
-                const pesDiagnosticados = await Pes.count({
-                    where: {
-                        id_talhao: { [Op.in]: talhoesIds },
-                        situacao: 'Tratado'
-                    }
-                });
-                resumo.pes_diagnosticados = pesDiagnosticados;
+            const propriedade = await Propriedades.findByPk(propriedadeSelecionada);
+            if (propriedade) {
+                resumo.talhoes_registrados = propriedade.talhoes_registrados;
+                resumo.total_pes = propriedade.total_pes;
+                resumo.pes_diagnosticados = propriedade.pes_diagnosticados;
+                resumo.pes_analisados = propriedade.pes_analisados;
             }
         }
 
@@ -84,22 +51,12 @@ router.get("/historico", Auth, async (req, res) => {
             });
         }
 
-        // Busca todos os talhões da propriedade primeiro
-        const todosTalhoes = propriedadeSelecionada ? await Talhoes.findAll({
-            where: { id_propriedade: Number(propriedadeSelecionada) },
-            order: [['createdAt', 'DESC']]
-        }) : [];
-
         // Busca os talhoes de cada alqueire
         for (let alqueire of alqueires) {
-            const alqueireId = Number(alqueire.id_alqueire);
-            
-            // Filtrar talhões que pertencem a este alqueire
-            const talhoes = todosTalhoes.filter(t => {
-                const talhaoAlqueireId = t.id_alqueire ? Number(t.id_alqueire) : null;
-                return talhaoAlqueireId === alqueireId;
+            const talhoes = await Talhoes.findAll({
+                where: { id_alqueire: alqueire.id_alqueire },
+                order: [['createdAt', 'DESC']]
             });
-            
             // Adiciona dados agregados para cada talhão
             alqueire.dataValues.talhoes = talhoes.map(talhao => ({
                 ...talhao.dataValues,
@@ -107,11 +64,9 @@ router.get("/historico", Auth, async (req, res) => {
                 pes_analisados: talhao.pes_analisados || 0,
                 createdAt: talhao.createdAt
             }));
-            
-            // Contagem real de talhões
             alqueire.dataValues.total_talhoes = talhoes.length;
-            alqueire.dataValues.total_pes = talhoes.reduce((acc, t) => acc + (Number(t.total_pes) || 0), 0);
-            alqueire.dataValues.pes_analisados = talhoes.reduce((acc, t) => acc + (Number(t.pes_analisados) || 0), 0);
+            alqueire.dataValues.total_pes = talhoes.reduce((acc, t) => acc + (t.total_pes || 0), 0);
+            alqueire.dataValues.pes_analisados = talhoes.reduce((acc, t) => acc + (t.pes_analisados || 0), 0);
         }
 
         res.render('historico', {

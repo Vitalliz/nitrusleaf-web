@@ -5,6 +5,9 @@ import Usuarios from "../models/Usuarios.js";
 import Propriedades from "../models/Propriedades.js";
 import Talhoes from "../models/Talhoes.js";
 import Pes from "../models/Pes.js";
+import Relatorios from "../models/Relatorios.js";
+import Foto from "../models/Foto.js";
+import Alqueires from "../models/Alqueires.js";
 import session from 'express-session';
 import flash from 'express-flash';
 const router = express.Router();
@@ -439,3 +442,65 @@ router.get("/usuarios/:id", Auth, async (req, res) => {
 });
 
 export default router;
+
+// Rota para deletar conta do usuário logado (remove dependências e encerra sessão)
+router.post('/usuarios/delete-account', Auth, async (req, res) => {
+    const userId = req.session.user && req.session.user.id_usuario;
+    if (!userId) {
+        req.flash('danger', 'Usuário não autenticado.');
+        return res.redirect('/perfil');
+    }
+
+    try {
+        // Busca propriedades do usuário
+        const propriedades = await Propriedades.findAll({ where: { id_usuario: userId } });
+        const propriedadeIds = propriedades.map(p => p.id_propriedade);
+
+        // Para cada propriedade, removemos alqueires, talhões, pés, relatórios e fotos relacionados
+        if (propriedadeIds.length > 0) {
+            // Apaga alqueires
+            await Alqueires.destroy({ where: { id_propriedade: propriedadeIds } });
+
+            // Busca talhões dessas propriedades
+            const talhoes = await Talhoes.findAll({ where: { id_propriedade: propriedadeIds } });
+            const talhaoIds = talhoes.map(t => t.id_talhao);
+
+            if (talhaoIds.length > 0) {
+                // Busca pés associados aos talhões
+                const pes = await Pes.findAll({ where: { id_talhao: talhaoIds } });
+                const peIds = pes.map(p => p.id_pe);
+
+                if (peIds.length > 0) {
+                    // Deleta relatórios e fotos ligados aos pés
+                    await Relatorios.destroy({ where: { id_pe: peIds } });
+                    await Foto.destroy({ where: { id_pe: peIds } });
+                }
+
+                // Deleta fotos atreladas aos talhões
+                await Foto.destroy({ where: { id_talhao: talhaoIds } });
+
+                // Deleta os pés
+                await Pes.destroy({ where: { id_talhao: talhaoIds } });
+
+                // Deleta os talhões
+                await Talhoes.destroy({ where: { id_propriedade: propriedadeIds } });
+            }
+
+            // Por fim, deleta as propriedades
+            await Propriedades.destroy({ where: { id_propriedade: propriedadeIds } });
+        }
+
+        // Deleta o usuário
+        await Usuarios.destroy({ where: { id_usuario: userId } });
+
+        // Destroi sessão e redireciona para página inicial
+        req.session.destroy(err => {
+            if (err) console.error('Erro ao destruir sessão após exclusão de conta:', err);
+            res.redirect('/');
+        });
+    } catch (error) {
+        console.error('Erro ao deletar conta do usuário:', error);
+        req.flash('danger', 'Erro ao deletar conta. Tente novamente mais tarde.');
+        res.redirect('/perfil');
+    }
+});

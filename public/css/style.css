@@ -12,9 +12,13 @@
     --fonte-roboto: 'Roboto', sans-serif;
     --font-weight-bold: 700;
     --header-height: 100px;
-    --footer-height: 130px;
+    --footer-height: 130px; /* altura do footer (usada para evitar sobreposição) */
 }
 
+#dropdown {
+    margin-left: 1200px;
+    margin-bottom: 20px;
+}
 
 html, body {
     background-color: var(--cor-fundo-bege);
@@ -46,7 +50,7 @@ svg{
     background: var(--background-gradient);
     margin-top: auto;
     width: 100%;
-    padding: 24px 110px;
+    padding: 24px 40px;
     border-top: 2px solid var(--verde-escuro);
     font-family: var(--fonte-roboto);
     display: flex;
@@ -55,26 +59,19 @@ svg{
     box-sizing: border-box;
     color: var(--texto-marrom);
     gap: 24px;
+}
+
+/* Footer: make it full-width and sit behind the fixed lateral navbar */
+#footer, footer {
     position: relative;
-    z-index: 1;
-}
-
-#footer h6 {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-main.main-content + #footer {
-    margin-left: 110px;
-    width: calc(100% - 110px);
-}
-
-@media (max-width: 992px) {
-    main.main-content + #footer {
-        margin-left: 0;
-        width: 100%;
-    }
+    margin-left: 0;
+    width: 100%;
+    padding: 24px 40px;
+    background: var(--background-gradient);
+    border-top: 2px solid var(--verde-escuro);
+    color: var(--texto-marrom);
+    box-sizing: border-box;
+    z-index: 10; /* lower than .navbar-lateral (z-index:80) so navbar appears on top */
 }
 
 ul {
@@ -85,8 +82,14 @@ ul {
 a {
     color: var(--texto-marrom);
     text-decoration: none;
+    padding: 20px;
 }
 
+th, td {
+    padding: 10px;
+}
+
+    
 /* Header fixo no topo */
 #navbar-lp {
     background-color: #FFFFFF;
@@ -276,18 +279,74 @@ a {
     margin-bottom: 0;
     
    
+    /* clip-path: path("M0,30 Q500,230 1000,90 T2000,80 L2000,500 L0,600 Z"); */
+    
     clip-path: polygon(100% 100%, 0% 100% , 0.00% 10.69%, 2.50% 14.54%, 5.00% 18.95%, 7.50% 23.82%, 10.00% 29.03%, 12.50% 34.45%, 15.00% 39.94%, 17.50% 45.37%, 20.00% 50.61%, 22.50% 55.53%, 25.00% 60.00%, 27.50% 63.91%, 30.00% 67.18%, 32.50% 69.72%, 35.00% 71.46%, 37.50% 72.37%, 40.00% 72.41%, 42.50% 71.60%, 45.00% 69.95%, 47.50% 67.50%, 50.00% 64.31%, 52.50% 60.46%, 55.00% 56.05%, 57.50% 51.18%, 60.00% 45.97%, 62.50% 40.55%, 65.00% 35.06%, 67.50% 29.63%, 70.00% 24.39%, 72.50% 19.47%, 75.00% 15.00%, 77.50% 11.09%, 80.00% 7.82%, 82.50% 5.28%, 85.00% 3.54%, 87.50% 2.63%, 90.00% 2.59%, 92.50% 3.40%, 95.00% 5.05%, 97.50% 7.50%, 100.00% 10.69%);
+    
 }
+
+/* Cards Infos */
+
+#mexericas{
+    border-radius: 35px;
+    box-shadow: 0px 14px 10px #FFD9C0;
+}
+
+#texto{
+    display:block;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--font-weight-bold);
+    text-align: justify;
+}
+#texto h1{
+    font-family: var(--font-weight-bold);
+    font-weight: bold;
+    color: var(--texto-marrom)
+}
+#teste{
+    display: flex;
+    justify-content: space-between;
+}
+#cartas{
+    background-color: #ffffff;
+    display:block;
+    height: auto;
+    width: 300px;
+    border-radius: 40px;
+    box-shadow: 0px 14px 10px #FFD9C0;
+}
+
+#textocarta{
+    text-align: inherit;
+    margin-bottom: 2rem;
+}
+#vetores{
+    margin-top: 50px;
+    margin-bottom: 10px;
+    width: 100px;
+    height: 100px;
+    object-fit:fill;
+}
+
+/*  */
 
 .transparent-container {
     background-color: rgba(255, 255, 255, 0);
     border: none;
 }
 
+#div-index{
+    margin-top: 90px;
+    
+}
+
 #bg-card {
     border-radius: 24px;
     overflow: hidden !important;
 }
+
+/* ----------- */
 
 #form-bg{
     background-color: var(--cor-fundo-form);
@@ -406,18 +465,33 @@ margin-right: 20%;
     justify-content: center;
 }
 
+#btn-upload{
+    background-color: var(--verde-escuro);
+    width: 600px;
+    height: 110px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 #popup {
-    display: none;
+    display: none; /* Escondemos a popup inicialmente */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
     justify-content: center;
     align-items: center;
-}
+    
+  }
 
   .popup-content {
     z-index: 1;
@@ -455,10 +529,12 @@ margin-right: 20%;
     margin-left: 10px;
     margin-bottom: 50px;
   }
-#file-input {
+   /* Esconde o input de arquivo, mas ainda mantém sua funcionalidade */
+   #file-input {
     display: none;
 }
 
+/* Estiliza o botão de upload */
 #btn-upload {
     background-color: var(--verde-escuro);
     color: white;
@@ -466,6 +542,52 @@ margin-right: 20%;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.graficoContainer {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    position: relative;
+    background: conic-gradient(#D84A0F 0% 19%, #ACACAC 19% 62%, #FFB534 62% 100%);
+    margin: 0 auto;
+}
+
+/* Estilos das porcentagens */
+.porcentagem {
+    position: absolute;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    pointer-events: none;
+}
+
+.titulo{
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.titulo1{
+    font-weight: 700;
+    font-size: 48px;
+}
+
+#row-home{
+    display: flex;
+    gap: 21px;
+    margin-bottom: 100px;
+    margin-top: 5%;
+}
+
+#row-home:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#column-home{
+    float: left;
+    column-gap: 40px;
 }
 
 .graficoContainer {
@@ -484,6 +606,9 @@ margin-right: 20%;
     margin-top: 5%;
 }
 
+  
+/* Estilo da legenda */
+/* Estilo geral para a legenda */
 
 #legenda {
       display: flex;
@@ -624,9 +749,9 @@ a#voltar{
 }
 
 .tabe{
-    border-collapse: separate;
-    border-spacing: 0 15px;
-    width: 100%;
+    border-collapse: separate; /* Allow spacing between rows */
+    border-spacing: 0 15px; /* Add 10px vertical spacing between rows */
+    width: 100%; /* Make the table responsive */
 }
 
 .tb{
@@ -641,20 +766,20 @@ a#voltar{
  }
 
  .tb:hover {
-    background-color: #e6f7ff;
+    background-color: #e6f7ff; /* Highlight row on hover */
 }
 
  .tb td:first-child {
-    border-radius: 10px 0 0 10px;
+    border-radius: 10px 0 0 10px; /* Raio no canto superior esquerdo e inferior esquerdo */
 }
 
 .tb td:last-child {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 10px 10px 0; /* Raio no canto superior direito e inferior direito */
 }
 
 #tabody:last-child {
-    text-align: center;
-    padding-left: 5px;
+    text-align: center; /* Centraliza o caractere '>' */
+    padding-left: 5px; /* Reduza o espaçamento à esquerda */
 }
 
 .search{
@@ -685,40 +810,40 @@ a#voltar{
 
 /*Mapas*/
 .options {
-    border: none;
-    background: none;
-    outline: none;
-    font-size: 30px;
-    color: inherit;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 100%;
-    padding-right: 40px;
+    border: none; /* Remove a borda */
+    background: none; /* Remove o fundo */
+    outline: none; /* Remove o contorno ao focar */
+    font-size: 30px; /* Ajuste o tamanho da fonte, se necessário */
+    color: inherit; /* Cor do texto */
+    appearance: none; /* Remove o estilo padrão do navegador */
+    -webkit-appearance: none; /* Remove o estilo em navegadores WebKit */
+    -moz-appearance: none; /* Remove o estilo em navegadores Mozilla */
+    width: 100%; /* Faz o select ocupar a largura do contêiner */
+    padding-right: 40px; /* Deixa espaço para a seta */
 }
 
 .optionspo {
-    border: 2px solid var(--verde-escuro);
-    background-color: white;
-    outline: none;
-    font-size: 14px;
-    color: inherit;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 100%;
-    padding-right: 40px;
+    border: 2px solid var(--verde-escuro); /* Remove a borda */
+    background-color: white; /* Remove o fundo */
+    outline: none; /* Remove o contorno ao focar */
+    font-size: 14px; /* Ajuste o tamanho da fonte, se necessário */
+    color: inherit; /* Cor do texto */
+    appearance: none; /* Remove o estilo padrão do navegador */
+    -webkit-appearance: none; /* Remove o estilo em navegadores WebKit */
+    -moz-appearance: none; /* Remove o estilo em navegadores Mozilla */
+    width: 100%; /* Faz o select ocupar a largura do contêiner */
+    padding-right: 40px; /* Deixa espaço para a seta */
 }
 
 .options-container {
-    display: inline-block;
-    position: relative;
+    display: inline-block; /* Para alinhar corretamente o contêiner */
+    position: relative; /* Para elementos adicionais no contêiner */
 }
 
 #options-container {
-    display: inline-block;
-    position: relative;
-    width: 300px;
+    display: inline-block; /* Para alinhar corretamente o contêiner */
+    position: relative; /* Para elementos adicionais no contêiner */
+    width: 300px; /* Ajuste a largura conforme necessário */
 }
 
 .opcaot{
@@ -727,11 +852,11 @@ a#voltar{
 
 .menu-arrowp {
     position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    transition: 0.3s ease;
+  right: 10px; /* Ajuste conforme necessário*/ 
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Para não interferir na seleção*/
+  transition: 0.3s ease; /* Animação suave ao girar*/
 }
 
 .menuseta-girar {
@@ -740,6 +865,7 @@ a#voltar{
     transition: 0.3s ease;
 }
 
+/* Container do menu */
 .custom-menu {
     position: relative;
     width: 500px;
@@ -748,7 +874,8 @@ a#voltar{
     cursor: pointer;
     user-select: none;
 }
-
+  
+/* Cabeçalho do menu (item selecionado e seta) */
 .menu-header {
     display: flex;
     justify-content: space-between;
@@ -763,17 +890,20 @@ a#voltar{
     background-color: #f9f9f9;
 }
 
+/* Alterar bordas ao abrir o menu */
 .custom-menu.open .menu-header {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
+/* Seta do menu */
 .menu-arrow {
     width: 14px;
     height: 14px;
     transition: 0.3s ease;
 }
 
+/* Girar a seta ao abrir o menu */
 .custom-menu.open .menu-arrow {
     transform: rotate(180deg);
 }
@@ -782,46 +912,51 @@ a#voltar{
     transform: rotate(180deg);
 }
 
+/* Exibir as opções quando o menu estiver aberto */
 .custom-menu.open .menu-options {
     display: block;
 }
-
+/* Lista de opções */
 .menu-options {
     position: absolute;
     top: 100%;
-    width: 100%;
+    width: 100%; /* Ocupa 100% da largura do contêiner pai */
     font-weight: 400;
     left: 0;
     right: 0;
     z-index: 100;
     display: none;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    list-style: none; /* Remove os marcadores padrão de lista */
+    margin: 0; /* Remove o espaçamento externo */
+    padding: 0; /* Remove o espaçamento interno */
     background-color: #fff;
     border: 2px solid var(--verde-escuro);
     border-top: none;
-    border-radius: 0 0 15px 15px;
+    border-radius: 0 0 15px 15px; /* Arredonda apenas as bordas inferiores */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo de cada opção */
 .menu-option {
-    padding: 10px;
+    padding: 10px; /* Espaçamento interno apenas no conteúdo */
     font-size: 25px;
     color: #333;
     transition: 0.3s ease;
     cursor: pointer;
 }
 
+/* Remover borda superior da primeira opção */
 .menu-option:first-child {
     border-top: none;
 }
 
+/* Última opção com borda arredondada */
 .menu-options li:last-child {
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
 }
 
+/* Hover para as opções */
 .menu-option:hover {
     background-color: #f0f0f0;
 }
@@ -849,6 +984,7 @@ a#voltar{
     text-decoration: underline;
 } 
 
+/* Configurações gerais para o layout */
 body {
     margin: 0;
     padding: 0;
@@ -860,6 +996,7 @@ body {
     min-height: calc(100vh - var(--header-height));
 }
 
+/* Navbar Lateral */
 .navbar-lateral {
     width: 100px;
     background-image: var(--background-gradient);
@@ -965,7 +1102,7 @@ body {
     padding: 28px;
     box-shadow: none;
     border: 1px solid #F2C48D;
-    overflow: hidden;
+    overflow: hidden; /* impede que o gradient ultrapasse */
 }
 
 .upload-card-content {
@@ -1065,7 +1202,7 @@ body {
 }
 
 .card-body {
-    padding: 0 24px 24px 24px;
+    padding: 20px 24px 24px 24px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -1124,7 +1261,7 @@ body {
     margin-top: auto;
     display: flex;
     justify-content: center;
-    overflow: hidden !important;
+    overflow: hidden !important; /* impede que o gradient ultrapasse */
     border-bottom-left-radius: 24px;
     border-bottom-right-radius: 24px;
 }
@@ -1455,6 +1592,7 @@ body {
     }
 }
 
+/* Lista de navegação */
 .navbar-lateral ul {
     display: flex;
     flex-direction: column;
@@ -1482,6 +1620,27 @@ body {
 .navbar-lateral ul li a:hover {
     background-image: linear-gradient(to left, #ffc45d, #df9662);
     border-radius: 5px;
+}
+
+/* Conteúdo principal */
+
+/* Footer */
+/* keep footer full-width on small screens as well */
+@media (max-width: 992px) {
+    #footer, footer {
+        padding: 20px 24px;
+    }
+}
+
+/* Move the left footer text a bit to the right for better visual balance */
+#footer > div:first-child {
+    padding-left: 120px;
+}
+
+@media (max-width: 992px) {
+    #footer > div:first-child {
+        padding-left: 24px;
+    }
 }
 
 .cont{

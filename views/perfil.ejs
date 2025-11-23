@@ -8,8 +8,25 @@
         <p> Faça login para acessar o seu perfil %></p>
     <% } %> 
     <% if(nome) { %>
-        <P>Olá!, <%= nome %>!Seja bem-vindo(a)!</P>
+        <P>Olá!, <%= nome %>! Seja bem-vindo(a)!</P>
+        <section style="margin-top:24px;">
+            <div style="background:#FFF7EB; border:1px solid #F2DAB8; padding:20px; border-radius:12px; max-width:720px;">
+                <h3 style="margin-top:0;">Gerenciar Conta</h3>
+                <p>Ao excluir sua conta, todos os seus dados (propriedades, talhões, pés, fotos e relatórios) serão removidos permanentemente.</p>
+                <form id="delete-account-form" action="/usuarios/delete-account" method="POST">
+                    <button type="button" id="btn-delete-account" class="button-danger">Excluir minha conta</button>
+                </form>
+            </div>
+        </section>
     <% } %>
     
 </div>
     <%- include ('partials/footer.ejs') %>
+
+<script>
+document.getElementById('btn-delete-account')?.addEventListener('click', function(e){
+    if (confirm('Tem certeza que deseja excluir sua conta? Esta ação é irreversível.')){
+        document.getElementById('delete-account-form').submit();
+    }
+});
+</script>
